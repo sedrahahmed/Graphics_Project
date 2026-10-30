@@ -1,11 +1,11 @@
+// main.cpp: opens the window and runs the game loop. Owner: Person A
 #include <glad/glad.h>        // must be BEFORE GLFW
 #include <GLFW/glfw3.h>
 #include <iostream>
 
 #include "Config.h"
-#include "Entities.h"
 #include "Draw.h"
-#include "CharacterDraw.h"
+#include "Input.h"
 #include "StateManager.h"
 
 int main() {
@@ -34,12 +34,26 @@ int main() {
     glfwGetFramebufferSize(window, &fbW, &fbH);
     glViewport(0, 0, fbW, fbH);
 
+    glEnable(GL_BLEND);                            // transparency (sprites, glows, highlights)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    initDraw();
+    initInput(window);
+    // TODO later: initText(ASSET_DIR "fonts/...", 48); initSound();
+
+    float lastTime = (float)glfwGetTime();
+
     while (!glfwWindowShouldClose(window)) {
-        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-            glfwSetWindowShouldClose(window, true);
+        float now = (float)glfwGetTime();
+        float dt = now - lastTime;
+        lastTime = now;
+
+        updateInput();
+        updateCurrentState(dt);
 
         glClearColor(0.15f, 0.05f, 0.2f, 1.0f);   // dark carnival purple
         glClear(GL_COLOR_BUFFER_BIT);
+        drawCurrentState();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
