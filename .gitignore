@@ -1,12 +1,14 @@
-.vs/
+# Build output
 build/
 out/
-x64/
-Debug/
-Release/
 *.exe
 *.obj
+*.o
+
+# Editors
+.vs/
+.vscode/
 *.user
 *.suo
-.vscode/
-.idea/
+.DS_Store
+CMakeSettings.json
