@@ -1,0 +1,12 @@
+.vs/
+build/
+out/
+x64/
+Debug/
+Release/
+*.exe
+*.obj
+*.user
+*.suo
+.vscode/
+.idea/
