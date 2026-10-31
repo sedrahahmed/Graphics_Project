@@ -56,8 +56,12 @@ void updateCurrentState(float dt) {
 
     case CUTSCENE:
         updateCutscene(dt);
-        if (keyPressed(GLFW_KEY_ENTER) || keyPressed(GLFW_KEY_SPACE)) skipCutscene();
-        if (isCutsceneFinished()) changeState(PLAYING);
+        // Enter / Space skips straight to the game
+        if (keyPressed(GLFW_KEY_ENTER) || keyPressed(GLFW_KEY_SPACE)) {
+            skipCutscene();
+            changeState(PLAYING);
+        }
+        else if (isCutsceneFinished()) changeState(PLAYING);
         break;
 
     case PLAYING:

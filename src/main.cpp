@@ -7,6 +7,8 @@
 #include "Draw.h"
 #include "Input.h"
 #include "StateManager.h"
+#include "Button.h"
+
 
 int main() {
     glfwInit();
@@ -70,6 +72,9 @@ int main() {
         setGrayscale(true);                                                                 // grayscale test
         drawSprite(testTex, frame, 4, 1056, 160, 128, 128, 0.0f, white);
         setGrayscale(false);
+        Button testButton = { 640, 600, 260, 70, "START" };   // x, y (center), width, height, label
+        drawButton(testButton);
+        if (isClicked(testButton)) std::cout << "clicked!" << std::endl;
 
         // ----------------------------------
 

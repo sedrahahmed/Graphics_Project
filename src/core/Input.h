@@ -19,3 +19,6 @@ bool keyHeld(int key);         // is down right now
 
 // Helper: is the mouse inside a rectangle? (x, y = center)
 bool mouseInRect(float x, float y, float w, float h);
+
+// Closes the game (used by the main menu's Exit button)
+void requestExit();

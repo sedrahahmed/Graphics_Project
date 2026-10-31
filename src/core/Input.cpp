@@ -68,3 +68,9 @@ bool mouseInRect(float x, float y, float w, float h) {
     glm::vec2 m = mousePos();
     return m.x >= x - w / 2 && m.x <= x + w / 2 && m.y >= y - h / 2 && m.y <= y + h / 2;
 }
+
+// Same as learnopengl's processInput: glfwSetWindowShouldClose(window, true).
+// The game loop in main.cpp checks glfwWindowShouldClose and stops.
+void requestExit() {
+    if (inputWindow) glfwSetWindowShouldClose(inputWindow, true);
+}
