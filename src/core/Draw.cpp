@@ -1,6 +1,7 @@
 // Draw.cpp. Owner: Person A
 // Follow learnopengl: Hello Triangle -> Shaders -> Transformations -> Textures.
 #include "Draw.h"
+#include "Config.h"   // SCREEN_W, SCREEN_H
 #include <glad/glad.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -17,22 +18,28 @@ static void initSprites();
 static void shutdownSprites();
 // ---------- Shaders (same idea as the lab, but ONE color for the whole shape) ----------
 static const char* vertexShaderSource = R"(
-#version 430 core
+#version 330 core
 layout (location = 0) in vec3 aPos;
 uniform mat4 u_Transform;
+uniform mat4 projection;   // turns pixels into OpenGL's -1 to 1 range (learnopengl: 2D Game -> Rendering Sprites)
 void main()
 {
-    gl_Position = u_Transform * vec4(aPos, 1.0);
+    gl_Position = projection * u_Transform * vec4(aPos, 1.0);
 }
 )";
 
 static const char* fragmentShaderSource = R"(
-#version 430 core
+#version 330 core
 out vec4 FragColor;
 uniform vec4 u_Color;   // r, g, b, alpha
+uniform bool u_Grayscale;
 void main()
 {
     FragColor = u_Color;
+    if (u_Grayscale) {   // learnopengl: Framebuffers -> Post-processing -> Grayscale
+        float average = 0.2126 * FragColor.r + 0.7152 * FragColor.g + 0.0722 * FragColor.b;
+        FragColor = vec4(average, average, average, FragColor.a);   // keep alpha so see-through stays see-through
+    }
 }
 )";
 
@@ -40,6 +47,12 @@ void main()
 static GLuint shaderProgram = 0;
 static GLint locTransform = -1;
 static GLint locColor = -1;
+static GLint locGrayscale = -1;
+static bool grayscaleOn = false;   // set by setGrayscale(), sent to both shaders on every draw
+
+// Pixel coordinates: (0,0) = bottom-left, (SCREEN_W, SCREEN_H) = top-right.
+// learnopengl uses ortho(0, 800, 600, 0) for a top-left origin; we swap the last two for bottom-left.
+static glm::mat4 projection = glm::ortho(0.0f, (float)SCREEN_W, 0.0f, (float)SCREEN_H, -1.0f, 1.0f);
 
 // One VAO/VBO per base shape. Each is a "unit" shape that we scale/rotate/move later.
 static GLuint squareVAO, squareVBO;
@@ -88,6 +101,11 @@ void initDraw() {
 
     locTransform = glGetUniformLocation(shaderProgram, "u_Transform");
     locColor = glGetUniformLocation(shaderProgram, "u_Color");
+    locGrayscale = glGetUniformLocation(shaderProgram, "u_Grayscale");
+
+    // The projection never changes, so send it once (like learnopengl does in Init)
+    glUseProgram(shaderProgram);
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     // Lets the alpha (4th number of the color) make shapes see-through
     glEnable(GL_BLEND);
@@ -137,6 +155,7 @@ static void drawShape(GLuint vao, GLenum mode, int vertexCount,
     glUseProgram(shaderProgram);
     glUniformMatrix4fv(locTransform, 1, GL_FALSE, glm::value_ptr(t));
     glUniform4fv(locColor, 1, glm::value_ptr(color));
+    glUniform1i(locGrayscale, grayscaleOn);
     glBindVertexArray(vao);
     glDrawArrays(mode, 0, vertexCount);
     glBindVertexArray(0);
@@ -176,7 +195,7 @@ glm::vec4 damageTint(glm::vec4 color, float healthFrac) {
     return glm::mix(color, red, hurt * 0.8f);      // 0.8 so it never becomes a flat red blob
 }
 
-void setGrayscale(bool on) { }
+void setGrayscale(bool on) { grayscaleOn = on; }
 
 // =====================================================================================
 //                                  SPRITES (PNG images)
@@ -194,7 +213,8 @@ layout (location = 0) in vec3 aPos;      // corner position (the unit square, -0
 layout (location = 1) in vec2 aUV;       // which spot of the picture this corner points at (0 to 1)
 
 uniform mat4  u_Transform;               // move/rotate/scale, exactly like drawShape
-uniform float u_Frame;                   // which frame of the strip to show (0, 1, 2, ...)
+uniform mat4  projection;                // pixels -> OpenGL's -1 to 1 range
+uniform float u_Frame;                  // which frame of the strip to show (0, 1, 2, ...)
 uniform float u_FrameCount;              // how many frames the strip has
 uniform float u_FlipX;                   // 0 = normal, 1 = mirrored left-right
 
@@ -202,7 +222,7 @@ out vec2 vUV;                            // sent to the fragment shader
 
 void main()
 {
-    gl_Position = u_Transform * vec4(aPos, 1.0);   // put the corner in the right place on screen
+    gl_Position = projection * u_Transform * vec4(aPos, 1.0);   // put the corner in the right place on screen
 
     float u = aUV.x;                               // horizontal spot inside ONE frame (0 to 1)
     if (u_FlipX > 0.5) u = 1.0 - u;                // mirror: 0 becomes 1 and 1 becomes 0
@@ -221,10 +241,15 @@ out vec4 FragColor;                      // the final pixel color
 
 uniform sampler2D u_Texture;             // the picture
 uniform vec4 u_Tint;                     // color multiplied with the picture (white = unchanged)
+uniform bool u_Grayscale;                // true = draw in gray (locked cards)
 
 void main()
 {
     FragColor = texture(u_Texture, vUV) * u_Tint;  // read the picture's pixel and tint it
+    if (u_Grayscale) {                             // same grayscale as the shape shader
+        float average = 0.2126 * FragColor.r + 0.7152 * FragColor.g + 0.0722 * FragColor.b;
+        FragColor = vec4(average, average, average, FragColor.a);
+    }
 }
 )";
 
@@ -237,6 +262,7 @@ static GLint locSpriteFrameCount = -1;
 static GLint locSpriteFlipX = -1;
 static GLint locSpriteTint = -1;
 static GLint locSpriteTexture = -1;
+static GLint locSpriteGrayscale = -1;
 
 static void initSprites() {
     // Compile both shaders and link them into one program (same steps as initDraw)
@@ -256,6 +282,11 @@ static void initSprites() {
     locSpriteFlipX = glGetUniformLocation(spriteProgram, "u_FlipX");
     locSpriteTint = glGetUniformLocation(spriteProgram, "u_Tint");
     locSpriteTexture = glGetUniformLocation(spriteProgram, "u_Texture");
+    locSpriteGrayscale = glGetUniformLocation(spriteProgram, "u_Grayscale");
+
+    // Send the projection once, same as the shape shader
+    glUseProgram(spriteProgram);
+    glUniformMatrix4fv(glGetUniformLocation(spriteProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
     // The unit square again, but now each corner is: x, y, z, u, v (5 floats)
     // Corner order goes around the square so GL_TRIANGLE_FAN fills it.
@@ -348,6 +379,7 @@ void drawSprite(unsigned int texture, int frame, int frameCount,
     glUniform1f(locSpriteFrameCount, (float)frameCount);                      // send how many frames there are
     glUniform1f(locSpriteFlipX, flipX ? 1.0f : 0.0f);                         // send mirror on/off
     glUniform4fv(locSpriteTint, 1, glm::value_ptr(tint));                     // send the tint color
+    glUniform1i(locSpriteGrayscale, grayscaleOn);                             // send grayscale on/off
 
     glActiveTexture(GL_TEXTURE0);                // use texture slot 0
     glBindTexture(GL_TEXTURE_2D, texture);       // put our picture in slot 0
