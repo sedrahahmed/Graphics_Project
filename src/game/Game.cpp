@@ -27,6 +27,9 @@ void drawGame() {
     // drawBackground, drawEnvironment, drawHomeBase, drawLanes, tokens,
     // guards, villains, shots, health bars, drawHUD, drawPlayerCards
     drawLanes();
+    drawHealthBar(400, 650, 3, 5);
+    drawHealthBar(600, 650, 7, 7);
+    drawHealthBar(800, 650, 1, 5);
 }
 
 float laneCenterY(int lane) { return LANE_BOTTOM + LANE_HEIGHT * lane + LANE_HEIGHT / 2.0f; }
