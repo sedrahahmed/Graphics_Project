@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 
 void initDraw();   // call once at startup: builds shapes, compiles shaders
-
+void shutdownDraw();
 // ---------- Shapes ----------
 // x, y = center of the shape. rotation in degrees.
 void drawRect(float x, float y, float w, float h, float rotation, glm::vec4 color);

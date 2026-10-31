@@ -10,9 +10,11 @@ add_subdirectory(external/glfw)
 
 # Every .cpp in src/ is included automatically
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
-add_executable(Carnival ${SOURCES} external/glad/src/glad.c "src/game/Shots.h" "src/game/Shots.cpp")
+add_executable(Carnival ${SOURCES} external/glad/src/glad.c "src/game/Shots.h" "src/game/Shots.cpp"
+    external/stb/stb_image.h)
 
 target_include_directories(Carnival PRIVATE
+    external
     external/glad/include
     external/glm
     src/core src/game src/characters src/world

@@ -36,8 +36,8 @@ int main() {
 
     glEnable(GL_BLEND);                            // transparency (sprites, glows, highlights)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
     initDraw();
+    unsigned int testTex = loadTexture(ASSET_DIR "characters/test_sprite.png");
     initInput(window);
     // TODO later: initText(ASSET_DIR "fonts/...", 48); initSound();
 
@@ -55,10 +55,25 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         drawCurrentState();
 
+        // ---- TEMP TEST (delete later) ----
+        drawRect(0.0f, 0.0f, 0.4f, 0.2f, 45.0f, glm::vec4(1, 0, 0, 1));
+        drawCircle(0.5f, 0.5f, 0.2f, glm::vec4(0, 1, 0, 1));
+        drawEllipse(-0.5f, 0.5f, 0.4f, 0.2f, 30.0f, glm::vec4(0, 0.5f, 1, 1));
+        drawTriangle(-0.5f, -0.4f, 0.3f, 0.4f, 0.0f, glm::vec4(1, 1, 0, 1));
+        drawLine(-0.8f, -0.8f, 0.8f, -0.5f, 0.02f, glm::vec4(1, 1, 1, 1));
+        int frame = (int)(now * 22.0f);   // 4 frames per second
+        glm::vec4 white(1, 1, 1, 1);
+        drawSprite(testTex, frame, 4, 0.40f, -0.1f, 0.2f, 0.356f, 0.0f, white);                     // normal
+        drawSprite(testTex, frame, 4, 0.65f, -0.1f, 0.2f, 0.356f, 0.0f, white, true);               // mirrored
+        drawSprite(testTex, frame, 4, 0.90f, -0.1f, 0.2f, 0.356f, 0.0f, damageTint(white, 0.25f));  // damaged
+
+        // ----------------------------------
+
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
+    shutdownDraw();
     glfwTerminate();
     return 0;
 }
