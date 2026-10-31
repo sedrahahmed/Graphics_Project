@@ -25,3 +25,5 @@ const glm::vec4 BLACK           (0.0f, 0.0f, 0.0f, 1.0f);
 const glm::vec4 PLACEHOLDER_GRAY(0.6f, 0.6f, 0.6f, 1.0f);
 const glm::vec4 HEALTH_GREEN    (0.2f, 0.9f, 0.3f, 1.0f);
 const glm::vec4 HIGHLIGHT       (1.0f, 1.0f, 1.0f, 0.15f);   // lane hover (transparent)
+const glm::vec4 DARK_BROWN      (0.28f, 0.18f, 0.11f, 1.0f);   // lane dividers
+const glm::vec4 SELECTED_LANE   (1.0f, 1.0f, 1.0f, 0.25f);   // lane selected (transparent)
