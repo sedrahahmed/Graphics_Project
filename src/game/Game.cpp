@@ -110,6 +110,15 @@ static void removeDead()      {
 
 
 }
+static AttackHeight heightOf(ShotType type) {
+    
+    switch(type) {
+        case LANTERN_ORB: return HIGH;
+        case CURSED_CARD: return LOW;
+        case JUGGLE_BALL: return MELEE_HIT;
+        default:          return HIGH;
+    }
+}
 
 
 
@@ -210,11 +219,7 @@ void fireShot(ShotType type, int lane, float x, bool fromPlayer) {
     p.lane = lane;
     p.x = x;
     p.fromPlayer = fromPlayer;
-    switch(type) {
-        case LANTERN_ORB: p.height = HIGH; break;
-        case CURSED_CARD: p.height = LOW; break;
-        case JUGGLE_BALL: p.height = MELEE_HIT; break;
-    }
+    p.height = heightOf(type);
     p.hitting = false;
     p.hitTimer = 0.0f;
     p.alive = true;
