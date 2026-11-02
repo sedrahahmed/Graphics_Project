@@ -1,0 +1,1 @@
+void drawGuards(const Player& p);

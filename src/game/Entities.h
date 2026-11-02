@@ -3,7 +3,7 @@
 // Logic changes these values; Characters reads them to draw.
 // Shared contract: don't change without telling the team.
 
-enum PlayerType   { MIRROR_GUARD, LANTERN_GUARD, SENTINEL_GUARD };   // melee, ranged, defense
+enum PlayerType   { MIRROR_GUARD, LANTERN_GUARD, DEFENSE_GUARD };   // melee, ranged, defense
 enum EnemyType    { MAGICIAN, CLOWN, JESTER };                        // easy, medium, hard
 enum AnimState    { IDLE, WALK, ATTACK, JUMP, DUCK };
 enum AttackHeight { HIGH, LOW, MELEE_HIT };   // HIGH: duck to dodge, LOW: jump to dodge

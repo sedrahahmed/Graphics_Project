@@ -7,6 +7,8 @@
 #include "Economy.h"
 #include "Waves.h"
 #include "HomeBase.h"
+#include "Economy.h"
+#include "Players.h"
 
 std::vector<Player>     players;
 std::vector<Enemy>      enemies;
@@ -32,6 +34,7 @@ void drawGame() {
     // guards, villains, shots, health bars, drawHUD, drawPlayerCards
     drawHomeBase(gameTime);
     drawLanes();
+    drawGuards();
     drawHUD(getCoins(), getCurrentWave());
     //drawHealthBar(400, 650, 3, 5);
     //drawHealthBar(600, 650, 7, 7);
@@ -41,7 +44,30 @@ void drawGame() {
 float laneCenterY(int lane) { return LANE_BOTTOM + LANE_HEIGHT * lane + LANE_HEIGHT / 2.0f; }
 float laneFloorY(int lane)  { return LANE_BOTTOM + LANE_HEIGHT * lane + 20.0f; }
 
-bool placeGuard(PlayerType type, int lane) { return false; }
+bool placeGuard(PlayerType type, int lane) { 
+    if(!spend(type)) 
+        return false; //If the player can't afford the guard, return false.
+    Player newPlayer;
+    newPlayer.type = type;
+    newPlayer.lane = lane;
+    newPlayer.x = LANE_LEFT + 40.0f; //Place the guard at the left edge of the lane. 
+    newPlayer.health = maxHealthOf(type);
+    newPlayer.state = (newPlayer.type == DEFENSE_GUARD) ? IDLE : WALK; //Defense guards start idle, others start walking.
+    newPlayer.stateTimer = 0.0f;
+    newPlayer.attackTimer = ATTACK_COOLDOWN; //Set the attack timer to the cooldown value.
+    newPlayer.alive = true;
+    players.push_back(newPlayer);
+    return true;
+}
+static int maxHealthOf(PlayerType type) {
+    switch(type) {
+        case MIRROR_GUARD:    return HP_MELEE;
+        case LANTERN_GUARD:   return HP_RANGED;
+        case DEFENSE_GUARD:  return HP_DEFENSE;
+        default:              return 0;
+    }
+}
+    
 void spawnEnemy(EnemyType type, int lane) { }
 void fireShot(ShotType type, int lane, float x, bool fromPlayer) { }
 void dropToken(int lane, float x) { }
