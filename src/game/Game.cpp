@@ -110,6 +110,15 @@ static void removeDead()      {
 
 
 }
+static AttackHeight heightOf(ShotType type) {
+    
+    switch(type) {
+        case LANTERN_ORB: return HIGH;
+        case CURSED_CARD: return LOW;
+        case JUGGLE_BALL: return MELEE_HIT;
+        default:          return MELEE_HIT;
+    }
+}
 
 
 
@@ -128,20 +137,28 @@ void resetGame() {
 void updateGame(float dt) {
     // TODO, in this order:
     gameTime += dt;
+    updateLanes();
     if (keyPressed(GLFW_KEY_1) && getHoveredLane() != -1) placeGuard(MIRROR_GUARD, getHoveredLane());
     if (keyPressed(GLFW_KEY_2) && getHoveredLane() != -1) placeGuard(LANTERN_GUARD, getHoveredLane());
     if (keyPressed(GLFW_KEY_3) && getHoveredLane() != -1) placeGuard(DEFENSE_GUARD, getHoveredLane());
     if (keyPressed(GLFW_KEY_4) && getHoveredLane() != -1) spawnEnemy(MAGICIAN, getHoveredLane());
     if (keyPressed(GLFW_KEY_5) && getHoveredLane() != -1) spawnEnemy(CLOWN, getHoveredLane());
     if (keyPressed(GLFW_KEY_6) && getHoveredLane() != -1) spawnEnemy(JESTER, getHoveredLane());
+    if (keyPressed(GLFW_KEY_7)) {
+    for (Enemy& e : enemies) {
+        e.alive = false;
+    }}
+    updateWaves(dt);
     moveEveryone(dt);
+    //updateCombat(dt);
+    //updateShots(dt);
+    //updateEconomy(dt);
     checkWinLose();
     removeDead();
-    //updateLanes(); updateWaves(dt);; updateCombat(dt);
+    // updateCombat(dt);
     // updateShots(dt); updateEconomy(dt); updatePlayerCards();
-    // check win/lose -> changeState(WON / LOST);
-    // remove everything with alive == false
-    updateLanes();
+   
+    
 }
 
 void drawGame() {
@@ -202,5 +219,22 @@ Enemy e;
 
 
 }
-void fireShot(ShotType type, int lane, float x, bool fromPlayer) { }
-void dropToken(int lane, float x) { }
+void fireShot(ShotType type, int lane, float x, bool fromPlayer) { 
+    Projectile p;
+    p.type = type;
+    p.lane = lane;
+    p.x = x;
+    p.fromPlayer = fromPlayer;
+    p.height = heightOf(type);
+    p.hitting = false;
+    p.hitTimer = 0.0f;
+    p.alive = true;
+    shots.push_back(p);
+}
+void dropToken(int lane, float x) { 
+    Drop d;
+    d.lane=lane;
+    d.x=x;
+    d.alive=true;
+    drops.push_back(d);
+}
