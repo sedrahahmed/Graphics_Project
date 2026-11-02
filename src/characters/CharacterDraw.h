@@ -26,3 +26,5 @@ void drawJuggleBall(float x, float y, float hitProgress);   // Clown, along the 
 // ---- Misc ----
 void drawToken(float x, float y, float time);
 void drawHealthBar(float x, float y, int current, int max);
+
+void initCharacterTexture();

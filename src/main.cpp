@@ -2,7 +2,7 @@
 #include <glad/glad.h>        // lazem before GLFW and its used to find opengl functions from our computer so we can call them
 #include <GLFW/glfw3.h>//helper library to opengl and its used to read keyboard masalam
 #include <iostream>
-
+#include "CharacterDraw.h"
 #include "Config.h"
 #include "Draw.h"
 #include "Input.h"
@@ -46,6 +46,7 @@ int main() {
     glEnable(GL_BLEND);                            // to make png with transparent bg appear actually transparent mesh filled in
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     initDraw(); 
+    initCharacterTexture();
     initText(ASSET_DIR "fonts/carnival.ttf",48);
     unsigned int testTex = loadTexture(ASSET_DIR "characters/test_sprite.png"); //load the pic 3ashan n paste it onto the shape (da hena the texture part)
     initInput(window);// waiting for input 

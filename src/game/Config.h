@@ -42,7 +42,7 @@ const float SPEED_PROJECTILE = 250.0f;
 const float ATTACK_COOLDOWN = 1.0f;    
 const float JUMP_DURATION = 0.6f;
 const float DUCK_DURATION = 0.6f;
-
+const float Walk_ANIMATION_SPEED = 0.8f;   // time per frame for walk animation
 
 const int WAVE_SIZES[3] = { 3, 5, 10 };
 const float SPAWN_INTERVAL = 4.0f;    // time between the enemies lama yetla3o
