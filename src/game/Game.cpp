@@ -116,7 +116,7 @@ static AttackHeight heightOf(ShotType type) {
         case LANTERN_ORB: return HIGH;
         case CURSED_CARD: return LOW;
         case JUGGLE_BALL: return MELEE_HIT;
-        default:          return HIGH;
+        default:          return MELEE_HIT;
     }
 }
 
