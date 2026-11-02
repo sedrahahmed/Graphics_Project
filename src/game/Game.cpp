@@ -194,7 +194,7 @@ bool placeGuard(PlayerType type, int lane) {
     newPlayer.health = newPlayer.maxHealth;
     newPlayer.state = (newPlayer.type == DEFENSE_GUARD) ? IDLE : WALK; //Defense guards start idle, others start walking.
     newPlayer.stateTimer = 0.0f;
-    newPlayer.attackTimer = ATTACK_COOLDOWN; //Set the attack timer to the cooldown value.
+    newPlayer.attackTimer = 0.0f; //Set the attack timer to the cooldown value.
     newPlayer.alive = true;
     players.push_back(newPlayer);
     return true;
@@ -211,7 +211,7 @@ Enemy e;
     e.health = e.maxHealth;
     e.state = WALK; //Enemies start walking.
     e.stateTimer = 0.0f;
-    e.attackTimer = ATTACK_COOLDOWN; //Set the attack timer to the cooldown value.
+    e.attackTimer = 0.0f; //Set the attack timer to the cooldown value.
     e.alive = true;
     enemies.push_back(e);
 
