@@ -128,20 +128,25 @@ void resetGame() {
 void updateGame(float dt) {
     // TODO, in this order:
     gameTime += dt;
+    updateLanes();
     if (keyPressed(GLFW_KEY_1) && getHoveredLane() != -1) placeGuard(MIRROR_GUARD, getHoveredLane());
     if (keyPressed(GLFW_KEY_2) && getHoveredLane() != -1) placeGuard(LANTERN_GUARD, getHoveredLane());
     if (keyPressed(GLFW_KEY_3) && getHoveredLane() != -1) placeGuard(DEFENSE_GUARD, getHoveredLane());
     if (keyPressed(GLFW_KEY_4) && getHoveredLane() != -1) spawnEnemy(MAGICIAN, getHoveredLane());
     if (keyPressed(GLFW_KEY_5) && getHoveredLane() != -1) spawnEnemy(CLOWN, getHoveredLane());
     if (keyPressed(GLFW_KEY_6) && getHoveredLane() != -1) spawnEnemy(JESTER, getHoveredLane());
+    if (keyPressed(GLFW_KEY_7)) {
+    for (Enemy& e : enemies) {
+        e.alive = false;
+    }}
+    updateWaves(dt);
     moveEveryone(dt);
     checkWinLose();
     removeDead();
-    //updateLanes(); updateWaves(dt);; updateCombat(dt);
+    // updateCombat(dt);
     // updateShots(dt); updateEconomy(dt); updatePlayerCards();
-    // check win/lose -> changeState(WON / LOST);
-    // remove everything with alive == false
-    updateLanes();
+   
+    
 }
 
 void drawGame() {
@@ -202,5 +207,5 @@ Enemy e;
 
 
 }
-void fireShot(ShotType type, int lane, float x, bool fromPlayer) { }
+void fireShot(ShotType type, int lane, float x, bool fromPlayer) {}
 void dropToken(int lane, float x) { }
