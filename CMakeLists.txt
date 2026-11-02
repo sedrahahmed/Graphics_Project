@@ -18,7 +18,8 @@ add_subdirectory(external/freetype) #add_subdirectory builds FreeType from sourc
 # Every .cpp in src/ is included automatically
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS src/*.cpp)
 add_executable(Carnival ${SOURCES} external/glad/src/glad.c "src/game/Shots.h" "src/game/Shots.cpp"
-    external/stb/stb_image.h)
+    external/stb/stb_image.h
+    src/characters/CharacterDraw.cpp)
 
 target_include_directories(Carnival PRIVATE
     external

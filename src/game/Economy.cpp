@@ -16,7 +16,7 @@ int  costOf(PlayerType type) {
      switch (type) {
         case MIRROR_GUARD:   return COST_MELEE;
         case LANTERN_GUARD:  return COST_RANGED;
-        case SENTINEL_GUARD: return COST_DEFENSE;
+        case DEFENSE_GUARD:  return COST_DEFENSE;
         default:             return 0;
     }
 }
