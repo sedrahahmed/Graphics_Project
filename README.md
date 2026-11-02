@@ -19,3 +19,4 @@ Shared contracts (change only with the whole team): Config.h, Entities.h, Game.h
 
 ## Credits
 - (add every downloaded or AI-assisted asset here: source, license, what you changed)
+font : Rubik Wet Paint by NaN,Luke Prowse, from Google Fonts (https://fonts.google.com/share?selection.family=Rubik+Wet+Paint).

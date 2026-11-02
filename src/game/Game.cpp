@@ -3,6 +3,10 @@
 #include "CharacterDraw.h"
 #include "Draw.h"
 #include "Lanes.h"
+#include "HUD.h"
+#include "Economy.h"
+#include "Waves.h"
+#include "HomeBase.h"
 
 std::vector<Player>     players;
 std::vector<Enemy>      enemies;
@@ -14,7 +18,7 @@ void resetGame() { }
 
 void updateGame(float dt) {
     // TODO, in this order:
-    // gameTime += dt;
+    gameTime += dt;
     // updateLanes(); updateWaves(dt); move everyone; updateCombat(dt);
     // updateShots(dt); updateEconomy(dt); updatePlayerCards();
     // check win/lose -> changeState(WON / LOST);
@@ -26,7 +30,9 @@ void drawGame() {
     // TODO, back to front:
     // drawBackground, drawEnvironment, drawHomeBase, drawLanes, tokens,
     // guards, villains, shots, health bars, drawHUD, drawPlayerCards
+    drawHomeBase(gameTime);
     drawLanes();
+    drawHUD(getCoins(), getCurrentWave());
     //drawHealthBar(400, 650, 3, 5);
     //drawHealthBar(600, 650, 7, 7);
     //drawHealthBar(800, 650, 1, 5);
