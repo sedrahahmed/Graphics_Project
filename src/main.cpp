@@ -8,6 +8,8 @@
 #include "Input.h"
 #include "StateManager.h"
 #include "Button.h"
+#include "Text.h"
+
 //GUYS 3AYZEEN N CHANGE VARIABLE NAMES WE NESHEEL EXTRA COMMENTS WHEN WERE DONE
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
@@ -44,6 +46,7 @@ int main() {
     glEnable(GL_BLEND);                            // to make png with transparent bg appear actually transparent mesh filled in
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     initDraw(); 
+    initText(ASSET_DIR "fonts/carnival.ttf",48);
     unsigned int testTex = loadTexture(ASSET_DIR "characters/test_sprite.png"); //load the pic 3ashan n paste it onto the shape (da hena the texture part)
     initInput(window);// waiting for input 
 
