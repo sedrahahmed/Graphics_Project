@@ -110,6 +110,15 @@ static void removeDead()      {
 
 
 }
+static AttackHeight heightOf(ShotType type) {
+    
+    switch(type) {
+        case LANTERN_ORB: return HIGH;
+        case CURSED_CARD: return LOW;
+        case JUGGLE_BALL: return MELEE_HIT;
+        default:          return MELEE_HIT;
+    }
+}
 
 
 
@@ -141,6 +150,9 @@ void updateGame(float dt) {
     }}
     updateWaves(dt);
     moveEveryone(dt);
+    //updateCombat(dt);
+    //updateShots(dt);
+    //updateEconomy(dt);
     checkWinLose();
     removeDead();
     // updateCombat(dt);
@@ -207,5 +219,22 @@ Enemy e;
 
 
 }
-void fireShot(ShotType type, int lane, float x, bool fromPlayer) {}
-void dropToken(int lane, float x) { }
+void fireShot(ShotType type, int lane, float x, bool fromPlayer) { 
+    Projectile p;
+    p.type = type;
+    p.lane = lane;
+    p.x = x;
+    p.fromPlayer = fromPlayer;
+    p.height = heightOf(type);
+    p.hitting = false;
+    p.hitTimer = 0.0f;
+    p.alive = true;
+    shots.push_back(p);
+}
+void dropToken(int lane, float x) { 
+    Drop d;
+    d.lane=lane;
+    d.x=x;
+    d.alive=true;
+    drops.push_back(d);
+}
