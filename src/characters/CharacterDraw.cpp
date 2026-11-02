@@ -22,6 +22,13 @@ void drawGuard(float x, float y, PlayerType type, float time, AnimState state, f
     }
 }
 
+void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, float stateTime, float healthFrac) {
+    switch (type) {
+        case MAGICIAN: drawMagician(x, y, time, state, stateTime, healthFrac); break;
+        case CLOWN:    drawClown(x, y, time, state, stateTime, healthFrac);    break;
+        case JESTER:   drawJester(x, y, time, state, stateTime, healthFrac);   break;
+    }
+}
 
 //Projectiles
 

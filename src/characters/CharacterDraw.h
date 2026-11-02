@@ -12,7 +12,7 @@ void drawMirrorGuard(float x, float y, float time, AnimState state, float stateT
 void drawLanternGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac);
 void drawDefenseGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac);
 void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac);
-
+void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, float stateTime, float healthFrac);
 // ---- Cursed performers ----
 void drawMagician(float x, float y, float time, AnimState state, float stateTime, float healthFrac);
 void drawClown(float x, float y, float time, AnimState state, float stateTime, float healthFrac);
