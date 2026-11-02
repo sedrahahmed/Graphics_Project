@@ -10,6 +10,7 @@
 #include "Input.h"
 #include <GLFW/glfw3.h>
 #include "StateManager.h"
+#include "Combat.h"
 
 std::vector<Player>     players;
 std::vector<Enemy>      enemies;
@@ -148,15 +149,13 @@ void updateGame(float dt) {
     for (Enemy& e : enemies) {
         e.alive = false;
     }}
-    updateWaves(dt);
+    //updateWaves(dt);
     moveEveryone(dt);
-    //updateCombat(dt);
+    updateCombat(dt);
     //updateShots(dt);
-    //updateEconomy(dt);
+    updateEconomy(dt);
     checkWinLose();
     removeDead();
-    // updateCombat(dt);
-    // updateShots(dt); updateEconomy(dt); updatePlayerCards();
    
     
 }
@@ -167,6 +166,9 @@ void drawGame() {
     // guards, villains, shots, health bars, drawHUD, drawPlayerCards
     drawHomeBase(gameTime);
     drawLanes();
+    for(const Drop& d : drops) {
+        drawToken(d.x, laneFloorY(d.lane), gameTime);
+    }
     for (const Player& p : players) {
         drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, p.stateTimer, (float)p.health / p.maxHealth);
         drawHealthBar(p.x, laneFloorY(p.lane) + 115, p.health, p.maxHealth); 
@@ -176,9 +178,6 @@ void drawGame() {
         drawHealthBar(e.x, laneFloorY(e.lane) + 115, e.health, e.maxHealth); 
     }
     drawHUD(getCoins(), getCurrentWave());
-    //drawHealthBar(400, 650, 3, 5);
-    //drawHealthBar(600, 650, 7, 7);
-    //drawHealthBar(800, 650, 1, 5);
 }
 
 float laneCenterY(int lane) { return LANE_BOTTOM + LANE_HEIGHT * lane + LANE_HEIGHT / 2.0f; }
