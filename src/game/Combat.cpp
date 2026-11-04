@@ -54,12 +54,15 @@ void updateCombat(float dt) {
     for(Player &p: players){
         if(p.alive) {
             int enemyIndex = enemyInFront(p);
-            if(enemyIndex != -1 && p.state == WALK && p.type != DEFENSE_GUARD) {   //theres an enemy infront and the player is walking and not a defense guard
+            if(enemyIndex != -1 && (p.state == WALK || p.state == IDLE)) {   //theres an enemy infront and the player is walking and not a defense guard
                 p.state = ATTACK;
                 p.stateTimer = 0.0f;
             }
             if(enemyIndex == -1 && p.state == ATTACK) {  //theres no enemy infront and i was attacking but now theres no enemy infront so go back to walking
-                p.state = WALK;
+                if(p.type==DEFENSE_GUARD)
+                    p.state=IDLE;
+                else
+                    p.state=WALK;
                 p.stateTimer = 0.0f;
             }
             p.attackTimer -= dt;            

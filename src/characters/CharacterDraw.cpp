@@ -11,42 +11,102 @@ static unsigned int enemyAttackTexture [3]= {0};
 
 static unsigned int playerWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it
 static unsigned int playerAttackTexture[3] = { 0 };
+static unsigned int playerJumpTexture[2]={};
+static unsigned int playerDuckTexture[2]={};
+
+static unsigned int sparkTexture = 0;
+static unsigned int clownBallTexture = 0;
 
 void drawMirrorGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
-   
-    unsigned int tex = (state == ATTACK) ? playerAttackTexture[MIRROR_GUARD] : playerWalkTexture[MIRROR_GUARD];
-    float t=(state==ATTACK)?stateTime:time;//time da 3ady
- if(tex==0){
-        drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
-        return;}
-        int frameCount = (int) (t*Walk_ANIMATION_SPEED) % 4; //i did el seconds le how many frmaes passed then make it int bas
-        float size=80.0f;
-        drawSprite(tex, frameCount, 4, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac),true);
+    unsigned int tex;
+    int frames;
+    int frame;
+    switch(state){
+        case ATTACK :{
+            tex = playerAttackTexture[MIRROR_GUARD];
+            frames = 8;
+            frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
+            break;
+        }
+        case JUMP :{
+            tex = playerJumpTexture[MIRROR_GUARD];
+            frames = 4;
+            frame = (int)(stateTime / JUMP_DURATION * 4);              // plays once over the jump
+            if (frame > 3) frame = 3;
+            break;
+        }
+        case DUCK :{
+            tex = playerDuckTexture[MIRROR_GUARD];
+            frames = 4;
+            frame = (int)(stateTime / DUCK_DURATION * 4);
+            if (frame > 3) frame = 3;
+            break;
+        }
 
-}
+        default :{
+            tex = playerWalkTexture[MIRROR_GUARD];
+            frames = 8;
+            frame = (int)(time * 8) % 8;
+            break;
+        }
+
+    }
+        float size = 140;
+        drawSprite(tex, frame, frames, x, y + size / 2, size, size, 0.0f,
+        damageTint(WHITE, healthFrac)); 
+    }
+
+
+
 void drawLanternGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
-   
-    unsigned int tex = (state == ATTACK) ? playerAttackTexture[LANTERN_GUARD] : playerWalkTexture[LANTERN_GUARD];
-    float t=(state==ATTACK)?stateTime:time;//time da 3ady
- if(tex==0){
-        drawRect(x, y + 35, 40, 70, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // TODO
-        return;}
-        int frameCount = (int) (t*Walk_ANIMATION_SPEED) % 4; //i did el seconds le how many frmaes passed then make it int bas
-        float size=110.0f;
-        drawSprite(tex, frameCount, 4, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac),true);
+    unsigned int tex;
+    int frames;
+    int frame;
+    switch(state){
+        case ATTACK: {
+            tex = playerAttackTexture[LANTERN_GUARD];
+            frames = 8;
+            frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
+            break;
+        }
+        case JUMP: {
+            tex = playerJumpTexture[LANTERN_GUARD];
+            frames = 4;
+            frame = (int)(stateTime / JUMP_DURATION * 4);              // plays once over the jump
+            if (frame > 3) frame = 3;
+            break;
+        }
+        case DUCK: {
+            tex = playerDuckTexture[LANTERN_GUARD];
+            frames = 4;
+            frame = (int)(stateTime / DUCK_DURATION * 4);
+            if (frame > 3) frame = 3;
+            break;
+        }
+        default: {
+            tex = playerWalkTexture[LANTERN_GUARD];
+            frames = 8;
+            frame = (int)(time * 8) % 8;
+            break;
+        }
+    }
+    float size = 140;
+    drawSprite(tex, frame, frames, x, y + size / 2, size, size, 0.0f,
+               damageTint(WHITE, healthFrac));
 }
 void drawDefenseGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
-   
-    unsigned int tex = (state == ATTACK) ? playerAttackTexture[DEFENSE_GUARD] : playerWalkTexture[DEFENSE_GUARD];
-    float t=(state==ATTACK)?stateTime:time;//time da 3ady
- if(tex==0){
-        drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
-        return;}
-        int frameCount = (int) (t*Walk_ANIMATION_SPEED) % 4;
-        if(state == IDLE) frameCount = 0;//bec starts idle we stays
-        float size=110.0f;
-        drawSprite(tex, frameCount, 4, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac),true);
-
+    unsigned int tex;
+    int frame;
+    if (state == ATTACK) {
+        tex = playerAttackTexture[DEFENSE_GUARD];                     // jana_defend: bracing
+        frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
+    } else {
+        tex = playerWalkTexture[DEFENSE_GUARD];                       // standing, animated
+        frame = (int)(time * 8) % 8;                                  // loops forever
+    }
+    float size = 140;
+    drawSprite(tex, frame, 8, x, y + size / 2 , size, size, 0.0f,
+    damageTint(WHITE, healthFrac));
 }
 
 void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac) {
@@ -68,8 +128,18 @@ void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, fl
 //Projectiles
 
 void drawLanternOrb(float x, float y, float hitProgress) { drawCircle(x, y, 8, GHOST_LIGHT); }   // TODO
-void drawCursedCard(float x, float y, float hitProgress) { drawRect(x, y, 12, 16, 0, WHITE); }   // TODO
-void drawJuggleBall(float x, float y, float hitProgress) { drawCircle(x, y, 8, CURSE_RED); }     // TODO
+void drawSpark(float x, float y, float time, float hitProgress){
+    int frame = (int)(time * 10) % 4;                     // twinkles, 10 frames per second
+    float size = 80.0f * (1.0f - hitProgress);           // shrinks to nothing on impact
+    glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress); // and fades out
+    drawSprite(sparkTexture, frame, 4, x, y, size, size, 0.0f, tint);
+}
+void drawJuggleBall(float x, float y, float time, float hitProgress){
+    int frame = (int)(time * 12) % 4;                     // star turns as it rolls
+    float size = 64.0f * (1.0f - hitProgress);
+    glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress);
+    drawSprite(clownBallTexture, frame, 4, x, y, size, size, 0.0f, tint);
+}
 
 
 //Collectibles
@@ -80,18 +150,24 @@ void drawToken(float x, float y, float time) { drawCircle(x, y, 10, TICKET_GOLD)
 //Enemies
 
 void initCharacterTexture() {
-    enemyWalkTexture[MAGICIAN] = loadTexture(ASSET_DIR "characters/magician_walk.png");
-    enemyWalkTexture[CLOWN] = loadTexture(ASSET_DIR "characters/clown_walk.png");//asset dir da 3ashan el path y work mesh 3andy bas
-    enemyWalkTexture[JESTER] = loadTexture(ASSET_DIR "characters/jester_walk.png");
-    enemyAttackTexture[MAGICIAN] = loadTexture(ASSET_DIR "characters/magician_attack.png");
-    enemyAttackTexture[CLOWN] = loadTexture(ASSET_DIR "characters/clown_attack.png");
-    enemyAttackTexture[JESTER] = loadTexture(ASSET_DIR "characters/jester_attack.png");
-    playerWalkTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/mirror_walk.png");
-    playerWalkTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lantern_walk.png");
-    playerWalkTexture[DEFENSE_GUARD] = loadTexture(ASSET_DIR "characters/defense_walk.png");
-    playerAttackTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/mirror_attack.png");
-    playerAttackTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lantern_attack.png");  
-    playerAttackTexture[DEFENSE_GUARD] = loadTexture(ASSET_DIR "characters/defense_defend.png");  
+    enemyWalkTexture[MAGICIAN] = loadTexture(ASSET_DIR "characters/magician_walking.png");
+    enemyWalkTexture[CLOWN] = loadTexture(ASSET_DIR "characters/clown_walking.png");//asset dir da 3ashan el path y work mesh 3andy bas
+    enemyWalkTexture[JESTER] = loadTexture(ASSET_DIR "characters/jester_walking.png");
+    enemyAttackTexture[MAGICIAN] = loadTexture(ASSET_DIR "characters/magician_standing.png");
+    enemyAttackTexture[CLOWN] = loadTexture(ASSET_DIR "characters/clown_standing.png");
+    enemyAttackTexture[JESTER] = loadTexture(ASSET_DIR "characters/jester_standing.png");
+    playerWalkTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_walk.png");
+    playerWalkTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_walk.png");
+    playerWalkTexture[DEFENSE_GUARD] = loadTexture(ASSET_DIR "characters/jana_walk.png");
+    playerAttackTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_attack.png");
+    playerAttackTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_attack.png");  
+    playerAttackTexture[DEFENSE_GUARD] = loadTexture(ASSET_DIR "characters/jana_defend.png");
+    playerJumpTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_jump.png"); 
+    playerJumpTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_jump.png"); 
+    playerDuckTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_duck.png"); 
+    playerDuckTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_duck.png"); 
+    sparkTexture = loadTexture(ASSET_DIR "characters/magician_spell.png");
+    clownBallTexture  = loadTexture(ASSET_DIR "characters/clown_ball.png");
 }
 
 void drawMagician(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
@@ -102,8 +178,8 @@ void drawMagician(float x, float y, float time, AnimState state, float stateTime
  if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
-        int frameCount = (int) (t*Walk_ANIMATION_SPEED) % 8; //i did el seconds le how many frmaes passed then make it int bas
-        float size=110.0f;
+        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //i did el seconds le how many frmaes passed then make it int bas
+        float size=140.0f;
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 
 
@@ -117,8 +193,8 @@ void drawClown(float x, float y, float time, AnimState state, float stateTime, f
     if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
-        int frameCount = (int) (t*Walk_ANIMATION_SPEED) % 8; //i did el seconds le how many frmaes passed then make it int bas
-        float size=110.0f;
+        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //i did el seconds le how many frmaes passed then make it int bas
+        float size=140.0f;
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 }
 void drawJester(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
@@ -127,8 +203,8 @@ void drawJester(float x, float y, float time, AnimState state, float stateTime, 
     if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
-        int frameCount = (int) (t*Walk_ANIMATION_SPEED*1.5) % 8; //i did el seconds le how many frmaes passed then make it int bas
-        float size=110.0f;
+        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //i did el seconds le how many frmaes passed then make it int bas
+        float size=140.0f;
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 }
 

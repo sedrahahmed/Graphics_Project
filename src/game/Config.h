@@ -23,6 +23,7 @@ const int COST_MELEE = 10;  // Mirror Guard
 const int COST_RANGED = 20;    // Lantern Guard 
 const int COST_DEFENSE = 30;   // Sentinel Guard
 const int COINS_PER_KILL = 10;
+const float HIT_DURATION = 0.2f;
 
 const int HP_MELEE = 5, HP_RANGED = 5, HP_DEFENSE = 7;
 const int HP_MAGICIAN = 5, HP_CLOWN = 5, HP_JESTER = 7;
@@ -43,6 +44,8 @@ const float ATTACK_COOLDOWN = 1.0f;
 const float JUMP_DURATION = 0.6f;
 const float DUCK_DURATION = 0.6f;
 const float Walk_ANIMATION_SPEED = 0.8f;   // time per frame for walk animation
+const float ENEMY_FRAMES_PER_SECOND = 5.0f; 
+const float ATTACK_FRAMES_PER_SECOND = 5.0f;
 
 const int WAVE_SIZES[3] = { 3, 5, 10 };
 const float SPAWN_INTERVAL = 4.0f;    // time between the enemies lama yetla3o

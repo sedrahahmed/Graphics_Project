@@ -10,7 +10,7 @@ static unsigned int backgroundTex4 = 0;
 static unsigned int backgroundTex5 = 0;
 
 void initEnvironment() {
-    backgroundTex1 = loadTexture(ASSET_DIR "background/balloon_booth.jpeg");
+    backgroundTex1 = loadTexture(ASSET_DIR "background/balloon_booth.png");
     backgroundTex2 = loadTexture(ASSET_DIR "background/circus_tent.png");
     backgroundTex3 = loadTexture(ASSET_DIR "background/Moon.png");
     backgroundTex4 = loadTexture(ASSET_DIR "background/popcorn_cart_with_flag.png");
