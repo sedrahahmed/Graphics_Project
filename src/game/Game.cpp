@@ -12,6 +12,8 @@
 #include "StateManager.h"
 #include "Combat.h"
 #include "Sound.h"
+#include "Background.h"
+#include "Environment.h"
 
 std::vector<Player>     players;
 std::vector<Enemy>      enemies;
@@ -165,24 +167,25 @@ void drawGame() {
     // TODO, back to front:
     // drawBackground, drawEnvironment, drawHomeBase, drawLanes, tokens,
     // guards, villains, shots, health bars, drawHUD, drawPlayerCards
-    drawHomeBase(gameTime);
+    drawBackground(gameTime);
+    drawEnvironment(gameTime);
     drawLanes();
     for(const Drop& d : drops) {
         drawToken(d.x, laneFloorY(d.lane), gameTime);
     }
     for (const Player& p : players) {
         drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, p.stateTimer, (float)p.health / p.maxHealth);
-        drawHealthBar(p.x, laneFloorY(p.lane) + 115, p.health, p.maxHealth); 
+        drawHealthBar(p.x, laneFloorY(p.lane) + 85, p.health, p.maxHealth); 
     }
     for (const Enemy& e : enemies) {
         drawEnemy(e.x, laneFloorY(e.lane), e.type, gameTime, e.state, e.stateTimer, (float)e.health / e.maxHealth);
-        drawHealthBar(e.x, laneFloorY(e.lane) + 115, e.health, e.maxHealth); 
+        drawHealthBar(e.x, laneFloorY(e.lane) + 85, e.health, e.maxHealth); 
     }
     drawHUD(getCoins(), getCurrentWave());
 }
 
 float laneCenterY(int lane) { return LANE_BOTTOM + LANE_HEIGHT * lane + LANE_HEIGHT / 2.0f; }
-float laneFloorY(int lane)  { return LANE_BOTTOM + LANE_HEIGHT * lane + 20.0f; }
+float laneFloorY(int lane)  { return LANE_BOTTOM + LANE_HEIGHT * lane + 10.0f; }
 
 bool placeGuard(PlayerType type, int lane) { 
     if(!spend(type)) 

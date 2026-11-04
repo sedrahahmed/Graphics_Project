@@ -20,7 +20,7 @@ void drawMirrorGuard(float x, float y, float time, AnimState state, float stateT
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
         int frameCount = (int) (t*Walk_ANIMATION_SPEED) % 4; //i did el seconds le how many frmaes passed then make it int bas
-        float size=110.0f;
+        float size=80.0f;
         drawSprite(tex, frameCount, 4, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac),true);
 
 }
@@ -102,9 +102,9 @@ void drawMagician(float x, float y, float time, AnimState state, float stateTime
  if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
-        int frameCount = (int) (t*Walk_ANIMATION_SPEED) % 4; //i did el seconds le how many frmaes passed then make it int bas
+        int frameCount = (int) (t*Walk_ANIMATION_SPEED) % 8; //i did el seconds le how many frmaes passed then make it int bas
         float size=110.0f;
-        drawSprite(tex, frameCount, 4, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
+        drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 
 
 
@@ -117,9 +117,9 @@ void drawClown(float x, float y, float time, AnimState state, float stateTime, f
     if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
-        int frameCount = (int) (t*Walk_ANIMATION_SPEED) % 4; //i did el seconds le how many frmaes passed then make it int bas
+        int frameCount = (int) (t*Walk_ANIMATION_SPEED) % 8; //i did el seconds le how many frmaes passed then make it int bas
         float size=110.0f;
-        drawSprite(tex, frameCount, 4, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
+        drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 }
 void drawJester(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
     unsigned int tex = (state == ATTACK) ? enemyAttackTexture[JESTER] : enemyWalkTexture[JESTER];
@@ -127,9 +127,9 @@ void drawJester(float x, float y, float time, AnimState state, float stateTime, 
     if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
-        int frameCount = (int) (t*Walk_ANIMATION_SPEED*1.5) % 4; //i did el seconds le how many frmaes passed then make it int bas
+        int frameCount = (int) (t*Walk_ANIMATION_SPEED*1.5) % 8; //i did el seconds le how many frmaes passed then make it int bas
         float size=110.0f;
-        drawSprite(tex, frameCount, 4, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
+        drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 }
 
 

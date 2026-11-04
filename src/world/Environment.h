@@ -4,3 +4,4 @@
 // Owner: Person D
 
 void drawEnvironment(float time);
+void initEnvironment();

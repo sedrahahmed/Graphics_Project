@@ -59,11 +59,8 @@ void drawLanes() {//Draws 4 wooden boardwalk lanes. A lane the mouse is over get
     float height = LANE_HEIGHT - 6;
     for (int i=0; i<LANE_COUNT ; i++){
         float centerY = laneCenterY(i);
-        drawRect(centerX, centerY, width, height, 0, BOARDWALK);
     
-        for (float j=LANE_LEFT; j<LANE_RIGHT; j+= 40){
-            drawLine(j, centerY - height / 2, j, centerY + height / 2, 2, DARK_BROWN);
-    }
+      
         if (laneSelected[i])
             drawRect(centerX, centerY, width, height, 0, SELECTED_LANE);
         else if (hoveredLane == i)

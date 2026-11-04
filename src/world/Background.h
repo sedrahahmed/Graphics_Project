@@ -3,3 +3,5 @@
 // Owner: Person D
 
 void drawBackground(float time);
+
+void initBackground();

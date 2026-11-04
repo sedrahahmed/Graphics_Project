@@ -5,17 +5,17 @@ const int   SCREEN_W = 1280;//screen width of height the origin  bottom left top
 const int   SCREEN_H = 720;
 
 const int   LANE_COUNT = 4;
-const float LANE_BOTTOM = 40.0f;      // y where the lowest lane starts
-const float LANE_HEIGHT = 130.0f;     // each lane is 130 px tall
-const float LANE_LEFT = 160.0f;     // lanes start right of the home base be shwaya
+const float LANE_BOTTOM = 26.0f;      // y where the lowest lane starts
+const float LANE_HEIGHT = 93.7f;     // each lane is 130 px tall
+const float LANE_LEFT = 209.0f;     // lanes start right of the home base be shwaya
 const float LANE_RIGHT = 1280.0f;    // enemies enter men hena
 
 //ASK ABOUT THIS
 // Lane 0 is the bottom lane. Center of lane i:
 //   LANE_BOTTOM + LANE_HEIGHT * i + LANE_HEIGHT / 2
 
-const float HOME_BASE_X = 80.0f;      // center of the  booth(homebase)
-const float HUD_Y = 600.0f;     // cards + coin count are fo2 da 
+const float HOME_BASE_X = 105.0f;      // center of the  booth(homebase)
+const float HUD_Y = 640.0f;     // cards + coin count are fo2 da 
 
 
 const int START_COINS = 30;
