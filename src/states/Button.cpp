@@ -13,6 +13,7 @@
 #include "Input.h"
 #include "Text.h"
 #include "Colors.h"
+#include "Sound.h"
 
 // ---------- Look of every button (change these to restyle all menus at once) ----------
 static const float BORDER = 4.0f;              // gold border thickness in pixels
@@ -28,7 +29,11 @@ bool isHovered(const Button& b) {
 bool isClicked(const Button& b) {
     // mouseClicked() is only true on the ONE frame the button goes down,
     // so holding the mouse doesn't click the button over and over
-    return isHovered(b) && mouseClicked();
+    if(isHovered(b) && mouseClicked()){
+        playSoundEffect(SOUND_CLICK);
+        return true;
+    }
+    return false;
 }
 
 void drawButton(const Button& b) {

@@ -9,6 +9,7 @@
 #include "StateManager.h"
 #include "Button.h"
 #include "Text.h"
+#include "Sound.h"
 
 //GUYS 3AYZEEN N CHANGE VARIABLE NAMES WE NESHEEL EXTRA COMMENTS WHEN WERE DONE
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
@@ -51,7 +52,8 @@ int main() {
     unsigned int testTex = loadTexture(ASSET_DIR "characters/test_sprite.png"); //load the pic 3ashan n paste it onto the shape (da hena the texture part)
     initInput(window);// waiting for input 
 
-    // TODO later: initText(ASSET_DIR "fonts/...", 48); initSound();
+    initSound();
+    playMusic();
 
     float lastTime = (float)glfwGetTime();
 

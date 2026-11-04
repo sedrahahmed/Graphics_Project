@@ -11,6 +11,7 @@
 #include <GLFW/glfw3.h>
 #include "StateManager.h"
 #include "Combat.h"
+#include "Sound.h"
 
 std::vector<Player>     players;
 std::vector<Enemy>      enemies;
@@ -197,6 +198,7 @@ bool placeGuard(PlayerType type, int lane) {
     newPlayer.attackTimer = 0.0f; //Set the attack timer to the cooldown value.
     newPlayer.alive = true;
     players.push_back(newPlayer);
+    playSoundEffect(SOUND_PLACEMENT);
     return true;
 }
 

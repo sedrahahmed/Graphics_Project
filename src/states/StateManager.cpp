@@ -14,6 +14,7 @@
 #include "PauseMenu.h"
 #include "EndMenu.h"
 #include "SoundMenu.h"
+#include "Sound.h"
 
 static GameState current = MAIN_MENU;
 
@@ -38,6 +39,12 @@ void changeState(GameState next) {
     case PLAYING:
         // Coming back from pause continues the same round. Anything else starts a new one.
         if (previous != PAUSED) resetGame();
+        break;
+    case WON:
+        playSoundEffect(SOUND_WIN);
+        break;
+    case LOST:
+        playSoundEffect(SOUND_LOSE);
         break;
     default:
         break;   // menus, PAUSED, WON, LOST need no setup

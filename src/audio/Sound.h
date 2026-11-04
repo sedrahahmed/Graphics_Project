@@ -2,17 +2,21 @@
 // Sound.h: music and sound effects (bonus).
 // Owner: Person A
 
-enum SoundID { SFX_CLICK, SFX_LANE, SFX_PLACE, SFX_HIT, SFX_DEATH, SFX_COIN, SFX_WIN, SFX_LOSE };
+enum SoundID { SOUND_CLICK, SOUND_LANE, SOUND_PLACEMENT, SOUND_MELEE_ATTACK, SOUND_RANGED_ATTACK, SOUND_ROLLING_BALL, SOUND_DEATH, SOUND_COIN, SOUND_WIN, SOUND_LOSE };
+
 
 void initSound();
 void shutdownSound();
 
 void playMusic();
 void stopMusic();
-void playSFX(SoundID id);   // safe to call from anywhere, even before sound works
+void playSoundEffect(SoundID id);   // safe to call from anywhere, even before sound works
 
 void volumeUp();
 void volumeDown();
-void toggleMute();
+void toggleMusicMute();
+void toggleSoundEffectsMute();
 float getVolume();          // 0..1
-bool isMuted();
+bool isMusicMuted();
+bool isSoundEffectsMuted();
+

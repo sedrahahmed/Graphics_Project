@@ -2,6 +2,7 @@
 #include "Economy.h"
 #include "Config.h"
 #include "Game.h"
+#include "Sound.h"
 #include <cmath>
 
 static int coins = START_COINS;
@@ -14,6 +15,7 @@ void updateEconomy(float dt) {
             for(Player& p:players){
                 if(p.alive && std::abs(p.x - d.x) < PICKUP_RANGE && p.lane == d.lane) {
                     addCoins(COINS_PER_KILL);
+                    playSoundEffect(SOUND_COIN);
                     d.alive = false;
                     break;
                 }

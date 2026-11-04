@@ -2,6 +2,7 @@
 #include "Combat.h"
 #include "Game.h"
 #include "Config.h"
+#include "Sound.h"
 
 static const float MELEE_RANGE = 50.0f; //fix later if not alligned with the art
 
@@ -39,12 +40,15 @@ void updateCombat(float dt) {
     for(Player &p: players){   
         if(p.alive && p.health <= 0) {
             p.alive = false;
+            playSoundEffect(SOUND_DEATH);
         }
     }
     for(Enemy &e: enemies){
         if(e.alive && e.health <= 0) {
             e.alive = false;
+            playSoundEffect(SOUND_DEATH);
             dropToken(e.lane, e.x); //Drop a token when an enemy dies
+            
         }
     }
     for(Player &p: players){
@@ -66,11 +70,13 @@ void updateCombat(float dt) {
                         if(enemyIndex != -1) {
                             Enemy& e = enemies[enemyIndex];
                             e.health -= DMG_PLAYER;
+                            playSoundEffect(SOUND_MELEE_ATTACK);
                         }
                         break;
                     }
                     case LANTERN_GUARD:{
                         fireShot(LANTERN_ORB, p.lane, p.x + 40.0f, true); //fire a lantern orb from the guard's position
+                        playSoundEffect(SOUND_RANGED_ATTACK);
                         break;
                     }
                     case DEFENSE_GUARD:{
@@ -98,16 +104,19 @@ void updateCombat(float dt) {
                 switch(e.type){
                     case MAGICIAN:{
                         fireShot(CURSED_CARD, e.lane, e.x - 40.0f, false); //fire a cursed card from the enemy's position
+                        playSoundEffect(SOUND_RANGED_ATTACK);
                         break;
                     }
                     case CLOWN:{
                         fireShot(JUGGLE_BALL, e.lane, e.x - 40.0f, false); //fire a juggle ball from the enemy's position
+                        playSoundEffect(SOUND_ROLLING_BALL);
                         break;
                     } 
                     case JESTER:{
                         if(playerIndex != -1) {
                             Player& p = players[playerIndex];
                             p.health -= DMG_JESTER;
+                            playSoundEffect(SOUND_MELEE_ATTACK);
                         }
                         break;
                     }
