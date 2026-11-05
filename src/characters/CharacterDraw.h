@@ -1,5 +1,6 @@
 #pragma once
 #include "Entities.h"
+#include <glm/glm.hpp>
 
 // x, y      = position of the character's FEET, centered horizontally
 // time      = seconds since the game started (for idle wiggles, blinking)
@@ -27,3 +28,5 @@ void drawToken(float x, float y, float time);
 void drawHealthBar(float x, float y, int current, int max);
 
 void initCharacterTexture();
+
+void drawGuardIcon(PlayerType type, float x, float y, float w,float h, glm::vec4 tint);

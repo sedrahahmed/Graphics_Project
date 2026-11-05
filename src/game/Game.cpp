@@ -15,6 +15,7 @@
 #include "Background.h"
 #include "Environment.h"
 #include "Shots.h"
+#include "PlayerCards.h"
 
 
 std::vector<Player>     players;
@@ -141,8 +142,8 @@ void resetGame() {
 }
 
 void updateGame(float dt) {
-    // TODO, in this order:
     gameTime += dt;
+    updatePlayerCards();
     updateLanes();
     if (keyPressed(GLFW_KEY_1) && getHoveredLane() != -1) placeGuard(MIRROR_GUARD, getHoveredLane());
     if (keyPressed(GLFW_KEY_2) && getHoveredLane() != -1) placeGuard(LANTERN_GUARD, getHoveredLane());
@@ -199,6 +200,7 @@ void drawGame() {
     }
     }
     drawHUD(getCoins(), getCurrentWave());
+    drawPlayerCards();
 }
 
 float laneCenterY(int lane) { return LANE_BOTTOM + LANE_HEIGHT * lane + LANE_HEIGHT / 2.0f; }
