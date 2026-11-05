@@ -100,7 +100,7 @@ void drawLanternGuard(float x, float y, float time, AnimState state, float state
         }
     }
     float size = 160;
-    drawSprite(tex, frame, frames, x, y + size / 2, size, size, 0.0f,
+    drawSprite(tex, frame, frames, x, y + size / 2-4, size, size, 0.0f,
     damageTint(WHITE, healthFrac));
 }
 void drawDefenseGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
@@ -119,7 +119,7 @@ void drawDefenseGuard(float x, float y, float time, AnimState state, float state
             frame = 0;                                        // first frame, standing still
     }
     float size = 140;
-    drawSprite(tex, frame, 8, x, y + size / 2, size, size, 0.0f,
+    drawSprite(tex, frame, 8, x, y + size / 2-4, size, size, 0.0f,
     damageTint(WHITE, healthFrac));
 }
 
