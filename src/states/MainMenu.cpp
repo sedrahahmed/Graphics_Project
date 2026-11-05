@@ -18,6 +18,12 @@ static const float CENTER_X = SCREEN_W / 2.0f;
 static Button startButton = { CENTER_X, 380, 280, 70, "START" };
 static Button soundButton = { CENTER_X, 290, 280, 70, "SOUND" };
 static Button exitButton  = { CENTER_X, 200, 280, 70, "EXIT" };
+static unsigned int menuTexture=0;
+
+void initMainMenu(){
+    
+    menuTexture=loadTexture(ASSET_DIR"background/Main_menu_image.png");
+}
 
 void updateMainMenu() {
     if (isClicked(startButton)) changeState(CUTSCENE);        // cutscene, then the game
@@ -28,11 +34,11 @@ void updateMainMenu() {
 void drawMainMenu() {
     // Background: fill the whole screen with the night sky
     drawRect(CENTER_X, SCREEN_H / 2.0f, SCREEN_W, SCREEN_H, 0.0f, NIGHT_SKY);
-
+    drawSprite(menuTexture, 0, 1, CENTER_X, SCREEN_H / 2.0f, SCREEN_W, SCREEN_H, 0.0f, WHITE);
     // Title, centered: start half its width to the left of the center
-    const char* title = "CARNIVAL OF THE CURSED";
-    float scale = 1.2f;
-    drawText(title, CENTER_X - textWidth(title, scale) / 2.0f, 540, scale, TICKET_GOLD);
+    //const char* title = "CARNIVAL OF THE CURSED";
+    //float scale = 1.2f;
+    //drawText(title, CENTER_X - textWidth(title, scale) / 2.0f, 540, scale, TICKET_GOLD);
 
     drawButton(startButton);
     drawButton(soundButton);

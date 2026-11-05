@@ -144,9 +144,14 @@ void updateGame(float dt) {
     // TODO, in this order:
     gameTime += dt;
     updateLanes();
-    if (keyPressed(GLFW_KEY_1) && getHoveredLane() != -1) placeGuard(MIRROR_GUARD, getHoveredLane());
-    if (keyPressed(GLFW_KEY_2) && getHoveredLane() != -1) placeGuard(LANTERN_GUARD, getHoveredLane());
-    if (keyPressed(GLFW_KEY_3) && getHoveredLane() != -1) placeGuard(DEFENSE_GUARD, getHoveredLane());
+    for (int lane = 0; lane < LANE_COUNT; lane++) {   // go through every lane
+        if (isLaneSelected(lane)){
+            if (keyPressed(GLFW_KEY_1)) placeGuard(MIRROR_GUARD, lane);
+            if (keyPressed(GLFW_KEY_2)) placeGuard(LANTERN_GUARD, lane);
+            if (keyPressed(GLFW_KEY_3)) placeGuard(DEFENSE_GUARD, lane);
+        }
+    }          // skip lanes that aren't selected
+        
     if (keyPressed(GLFW_KEY_4) && getHoveredLane() != -1) spawnEnemy(MAGICIAN, getHoveredLane());
     if (keyPressed(GLFW_KEY_5) && getHoveredLane() != -1) spawnEnemy(CLOWN, getHoveredLane());
     if (keyPressed(GLFW_KEY_6) && getHoveredLane() != -1) spawnEnemy(JESTER, getHoveredLane());
