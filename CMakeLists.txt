@@ -25,6 +25,7 @@ target_include_directories(Carnival PRIVATE
     external
     external/glad/include
     external/glm
+        external/miniaudio
     src/core src/game src/characters src/world
     src/ui src/states src/cutscene src/audio
 )
@@ -37,4 +38,7 @@ target_compile_definitions(Carnival PRIVATE ASSET_DIR="${CMAKE_SOURCE_DIR}/asset
 
 if (APPLE)
     target_compile_definitions(Carnival PRIVATE GL_SILENCE_DEPRECATION)
+endif()
+if (APPLE)
+    target_link_libraries(Carnival PRIVATE "-framework CoreFoundation" "-framework CoreAudio" "-framework AudioToolbox")
 endif()

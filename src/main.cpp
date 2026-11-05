@@ -9,6 +9,9 @@
 #include "StateManager.h"
 #include "Button.h"
 #include "Text.h"
+#include "Sound.h"
+#include "Background.h"
+#include "Environment.h"
 
 //GUYS 3AYZEEN N CHANGE VARIABLE NAMES WE NESHEEL EXTRA COMMENTS WHEN WERE DONE
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
@@ -47,11 +50,14 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     initDraw(); 
     initCharacterTexture();
+    initBackground();
+    initEnvironment();
     initText(ASSET_DIR "fonts/carnival.ttf",48);
     unsigned int testTex = loadTexture(ASSET_DIR "characters/test_sprite.png"); //load the pic 3ashan n paste it onto the shape (da hena the texture part)
     initInput(window);// waiting for input 
 
-    // TODO later: initText(ASSET_DIR "fonts/...", 48); initSound();
+    initSound();
+    playMusic();
 
     float lastTime = (float)glfwGetTime();
 

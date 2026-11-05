@@ -20,9 +20,8 @@ void drawJester(float x, float y, float time, AnimState state, float stateTime, 
 
 // ---- Projectiles (hitProgress: 0 = flying, 0..1 = impact animation) ----
 void drawLanternOrb(float x, float y, float hitProgress);
-void drawCursedCard(float x, float y, float hitProgress);   // Magician, from above
-void drawJuggleBall(float x, float y, float hitProgress);   // Clown, along the ground
-
+void drawSpark(float x, float y, float time, float hitProgress);
+void drawJuggleBall(float x, float y, float time, float hitProgress);
 // ---- Misc ----
 void drawToken(float x, float y, float time);
 void drawHealthBar(float x, float y, int current, int max);

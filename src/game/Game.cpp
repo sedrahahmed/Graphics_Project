@@ -10,6 +10,12 @@
 #include "Input.h"
 #include <GLFW/glfw3.h>
 #include "StateManager.h"
+#include "Combat.h"
+#include "Sound.h"
+#include "Background.h"
+#include "Environment.h"
+#include "Shots.h"
+
 
 std::vector<Player>     players;
 std::vector<Enemy>      enemies;
@@ -148,15 +154,13 @@ void updateGame(float dt) {
     for (Enemy& e : enemies) {
         e.alive = false;
     }}
-    updateWaves(dt);
+    //updateWaves(dt);
     moveEveryone(dt);
-    //updateCombat(dt);
-    //updateShots(dt);
-    //updateEconomy(dt);
+    updateCombat(dt);
+    updateShots(dt);
+    updateEconomy(dt);
     checkWinLose();
     removeDead();
-    // updateCombat(dt);
-    // updateShots(dt); updateEconomy(dt); updatePlayerCards();
    
     
 }
@@ -165,24 +169,40 @@ void drawGame() {
     // TODO, back to front:
     // drawBackground, drawEnvironment, drawHomeBase, drawLanes, tokens,
     // guards, villains, shots, health bars, drawHUD, drawPlayerCards
-    drawHomeBase(gameTime);
+    drawBackground(gameTime);
+    drawEnvironment(gameTime);
     drawLanes();
+    for(const Drop& d : drops) {
+        drawToken(d.x, laneFloorY(d.lane), gameTime);
+    }
     for (const Player& p : players) {
         drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, p.stateTimer, (float)p.health / p.maxHealth);
-        drawHealthBar(p.x, laneFloorY(p.lane) + 115, p.health, p.maxHealth); 
+        drawHealthBar(p.x, laneFloorY(p.lane) + 140, p.health, p.maxHealth); 
     }
     for (const Enemy& e : enemies) {
         drawEnemy(e.x, laneFloorY(e.lane), e.type, gameTime, e.state, e.stateTimer, (float)e.health / e.maxHealth);
-        drawHealthBar(e.x, laneFloorY(e.lane) + 115, e.health, e.maxHealth); 
+        drawHealthBar(e.x, laneFloorY(e.lane) + 140, e.health, e.maxHealth); 
+    }
+    for (const Projectile& s : shots) {
+    float floorY = laneFloorY(s.lane);   // the floor of the shot's lane
+        float progress = s.hitting ? s.hitTimer / HIT_DURATION : 0.0f;   // 0 = flying, 1 = finished
+    switch (s.type) {
+        case CURSED_CARD:   // Magician's spark: head height, so ducking dodges it
+            drawSpark(s.x, floorY + 140 * 0.6f, gameTime, progress);
+            break;
+        case JUGGLE_BALL:   // Clown's ball: on the floor, so jumping dodges it
+            drawJuggleBall(s.x, floorY + 12.0f, gameTime, progress);
+            break;
+        /*case LANTERN_ORB:   // Lama's stone: chest height
+            drawLanternOrb(s.x, floorY + 140 * 0.4f, progress);
+            break;*/
+    }
     }
     drawHUD(getCoins(), getCurrentWave());
-    //drawHealthBar(400, 650, 3, 5);
-    //drawHealthBar(600, 650, 7, 7);
-    //drawHealthBar(800, 650, 1, 5);
 }
 
 float laneCenterY(int lane) { return LANE_BOTTOM + LANE_HEIGHT * lane + LANE_HEIGHT / 2.0f; }
-float laneFloorY(int lane)  { return LANE_BOTTOM + LANE_HEIGHT * lane + 20.0f; }
+float laneFloorY(int lane)  { return LANE_BOTTOM + LANE_HEIGHT * lane + 10.0f; }
 
 bool placeGuard(PlayerType type, int lane) { 
     if(!spend(type)) 
@@ -195,9 +215,10 @@ bool placeGuard(PlayerType type, int lane) {
     newPlayer.health = newPlayer.maxHealth;
     newPlayer.state = (newPlayer.type == DEFENSE_GUARD) ? IDLE : WALK; //Defense guards start idle, others start walking.
     newPlayer.stateTimer = 0.0f;
-    newPlayer.attackTimer = ATTACK_COOLDOWN; //Set the attack timer to the cooldown value.
+    newPlayer.attackTimer = 0.0f; //Set the attack timer to the cooldown value.
     newPlayer.alive = true;
     players.push_back(newPlayer);
+    playSoundEffect(SOUND_PLACEMENT);
     return true;
 }
 
@@ -212,7 +233,7 @@ Enemy e;
     e.health = e.maxHealth;
     e.state = WALK; //Enemies start walking.
     e.stateTimer = 0.0f;
-    e.attackTimer = ATTACK_COOLDOWN; //Set the attack timer to the cooldown value.
+    e.attackTimer = 0.0f; //Set the attack timer to the cooldown value.
     e.alive = true;
     enemies.push_back(e);
 

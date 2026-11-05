@@ -6,6 +6,7 @@
 #include "Colors.h"
 #include "Input.h"
 #include "PlayerCards.h"
+#include "Sound.h"
 #include <GLFW/glfw3.h>
 
 static bool laneSelected[LANE_COUNT] = { false };
@@ -17,6 +18,7 @@ void resetLanes() {
 }
 void updateLanes() { 
    glm::vec2 m = mousePos(); //Get the mouse position and store it in a variable called m.
+
    if(m.x>=LANE_LEFT && m.x<LANE_RIGHT) //If the mouse is between the left and right edges of the lanes, we check which lane it is over. If it is not over any lane, we set hoveredLane to -1.
         hoveredLane = laneAtY(m.y);
     else
@@ -28,6 +30,7 @@ void updateLanes() {
             }
         } else {
             laneSelected[hoveredLane] = !laneSelected[hoveredLane];
+            playSoundEffect(SOUND_LANE);
         }
     }
     if (keyPressed(GLFW_KEY_W) || keyPressed(GLFW_KEY_UP)) { //If the W or Up key is pressed, we jump all selected lanes.
@@ -56,11 +59,8 @@ void drawLanes() {//Draws 4 wooden boardwalk lanes. A lane the mouse is over get
     float height = LANE_HEIGHT - 6;
     for (int i=0; i<LANE_COUNT ; i++){
         float centerY = laneCenterY(i);
-        drawRect(centerX, centerY, width, height, 0, BOARDWALK);
     
-        for (float j=LANE_LEFT; j<LANE_RIGHT; j+= 40){
-            drawLine(j, centerY - height / 2, j, centerY + height / 2, 2, DARK_BROWN);
-    }
+      
         if (laneSelected[i])
             drawRect(centerX, centerY, width, height, 0, SELECTED_LANE);
         else if (hoveredLane == i)
