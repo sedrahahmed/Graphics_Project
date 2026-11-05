@@ -19,7 +19,7 @@ void drawClown(float x, float y, float time, AnimState state, float stateTime, f
 void drawJester(float x, float y, float time, AnimState state, float stateTime, float healthFrac);
 
 // ---- Projectiles (hitProgress: 0 = flying, 0..1 = impact animation) ----
-void drawLanternOrb(float x, float y, float hitProgress);
+void drawDart(float x, float y, float time, float hitProgress);
 void drawSpark(float x, float y, float time, float hitProgress);
 void drawJuggleBall(float x, float y, float time, float hitProgress);
 // ---- Misc ----

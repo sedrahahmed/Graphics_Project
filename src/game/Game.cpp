@@ -176,7 +176,10 @@ void drawGame() {
         drawToken(d.x, laneFloorY(d.lane), gameTime);
     }
     for (const Player& p : players) {
-        drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, p.stateTimer, (float)p.health / p.maxHealth);
+                float cooldown = (p.type == LANTERN_GUARD) ? LANTERN_COOLDOWN : ATTACK_COOLDOWN;
+        float animTime = (p.state == ATTACK) ? (cooldown - p.attackTimer) : p.stateTimer;
+
+        drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, animTime, (float)p.health / p.maxHealth);
         drawHealthBar(p.x, laneFloorY(p.lane) + 140, p.health, p.maxHealth); 
     }
     for (const Enemy& e : enemies) {
@@ -193,9 +196,9 @@ void drawGame() {
         case JUGGLE_BALL:   // Clown's ball: on the floor, so jumping dodges it
             drawJuggleBall(s.x, floorY + 12.0f, gameTime, progress);
             break;
-        /*case LANTERN_ORB:   // Lama's stone: chest height
-            drawLanternOrb(s.x, floorY + 140 * 0.4f, progress);
-            break;*/
+        case LANTERN_ORB:   // Lama's dart: chest height
+            drawDart(s.x, floorY + 140 * 0.4f, gameTime, progress);
+            break;
     }
     }
     drawHUD(getCoins(), getCurrentWave());

@@ -8,15 +8,22 @@ static const float HIT_RANGE = 35;
 void updateShots(float dt) {
     for(Projectile& p:shots){
         if(p.alive){
+            float speed;
+            switch (p.type) {
+                case LANTERN_ORB: speed = SPEED_DART;  break;
+                case CURSED_CARD: speed = SPEED_SPARK; break;
+                case JUGGLE_BALL: speed = SPEED_BALL;  break;
+                default:          speed = SPEED_PROJECTILE; break;
+            }
             if (p.hitting) {
                 p.hitTimer += dt;
                 if (p.hitTimer >= HIT_DURATION) p.alive = false;   // animation finished: remove it
                 continue;                                           // a hitting shot doesn't move or hit again
             }
             if(p.fromPlayer)
-                p.x = p.x +SPEED_PROJECTILE * dt;
+                p.x = p.x +speed * dt;
             else
-                p.x = p.x -SPEED_PROJECTILE * dt;
+                p.x = p.x -speed * dt;
 
             if(p.x<LANE_LEFT || p.x>SCREEN_W){
                 p.alive=false;

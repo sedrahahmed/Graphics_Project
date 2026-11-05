@@ -86,7 +86,7 @@ void updateCombat(float dt) {
                         break;
                     }
                 }
-                p.attackTimer = ATTACK_COOLDOWN;
+                p.attackTimer = (p.type == LANTERN_GUARD) ? LANTERN_COOLDOWN : ATTACK_COOLDOWN;
             }
         }
     }
