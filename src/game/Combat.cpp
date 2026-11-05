@@ -86,7 +86,7 @@ void updateCombat(float dt) {
                         break;
                     }
                 }
-                p.attackTimer = (p.type == LANTERN_GUARD) ? LANTERN_COOLDOWN : ATTACK_COOLDOWN;
+                p.attackTimer = HERO_ATTACK_COOLDOWN;
             }
         }
     }
@@ -124,7 +124,7 @@ void updateCombat(float dt) {
                         break;
                     }
                 }
-                e.attackTimer = ATTACK_COOLDOWN;
+                e.attackTimer = ENEMY_ATTACK_COOLDOWN;
             }
 
         }

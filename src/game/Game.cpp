@@ -182,7 +182,7 @@ void drawGame() {
         drawToken(d.x, laneFloorY(d.lane), gameTime);
     }
     for (const Player& p : players) {
-                float cooldown = (p.type == LANTERN_GUARD) ? LANTERN_COOLDOWN : ATTACK_COOLDOWN;
+                float cooldown = HERO_ATTACK_COOLDOWN;
         float animTime = (p.state == ATTACK) ? (cooldown - p.attackTimer) : p.stateTimer;
 
         drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, animTime, (float)p.health / p.maxHealth);

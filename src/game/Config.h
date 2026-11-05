@@ -43,12 +43,13 @@ const float SPEED_BALL  = 250.0f;
 const float SPEED_SPARK = 220.0f;
 
 
-const float ATTACK_COOLDOWN = 2.0f;     
+const float ENEMY_ATTACK_COOLDOWN = 4.0f; 
+const float HERO_ATTACK_COOLDOWN = 2.0f;   // time between attacks for guards and enemies    
 const float JUMP_DURATION = 0.6f;
 const float DUCK_DURATION = 0.6f;
 const float Walk_ANIMATION_SPEED = 0.8f;   // time per frame for walk animation
-const float ATTACK_FRAMES_PER_SECOND = 8.0f / ATTACK_COOLDOWN;
-const float ENEMY_FRAMES_PER_SECOND  = 8.0f / ATTACK_COOLDOWN;
+const float ATTACK_FRAMES_PER_SECOND = 8.0f / HERO_ATTACK_COOLDOWN;
+const float ENEMY_FRAMES_PER_SECOND  = 8.0f / ENEMY_ATTACK_COOLDOWN;
 const float LANTERN_COOLDOWN=2.0;
 const int WAVE_SIZES[3] = { 3, 5, 10 };
-const float SPAWN_INTERVAL = 4.0f;    // time between the enemies lama yetla3o
+const float SPAWN_INTERVAL = 10.0f;    // time between the enemies lama yetla3o
