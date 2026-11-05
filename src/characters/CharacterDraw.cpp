@@ -199,7 +199,7 @@ void initCharacterTexture() {
     PlayerFrontTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_front.png");
     PlayerFrontTexture[DEFENSE_GUARD] = loadTexture(ASSET_DIR "characters/jana_front.png");
     dartTexture = loadTexture(ASSET_DIR "characters/lama_dart.png");
-  tokenTexture = loadTexture(ASSET_DIR "background/Token.png");
+    tokenTexture = loadTexture(ASSET_DIR "background/Token.png");
 
 }
 

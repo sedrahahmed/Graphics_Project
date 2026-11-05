@@ -26,6 +26,9 @@
 
 static float cutsceneTime = 0.0f;
 static float previousCutsceneTime = 0.0f;   // for "play sound once at moment T" checks
+static unsigned int boothTexture = 0;   // Ticket_booth.png, loaded the first time it's drawn
+static unsigned int ownerTexture = 0, shadowArmTexture = 0, ticketTexture = 0,
+                    posterTexture = 0, wheelTexture = 0, visitorTexture = 0, cassetteTexture = 0;
 
 // ---------------- timeline (seconds) ----------------
 static const float BEAT1_START = 0.0f;
@@ -96,15 +99,13 @@ static void subtitleTwoLines(const std::string& a, const std::string& b) {
 static void drawTicket(float x, float y, float t) {
     float r = 20.0f + 6.0f * sinf(t * 6.0f);                        // pulsing glow
     drawCircle(x, y, r, glm::vec4(0.98f, 0.80f, 0.20f, 0.30f));
-    drawRect(x, y, 18.0f, 24.0f, 0, TICKET_GOLD);
-    drawCircle(x - 7.0f, y, 2.5f, BLACK);                           // the perforated
-    drawCircle(x + 7.0f, y, 2.5f, BLACK);                           //   side notches
+    drawSprite(ticketTexture, 0, 1, x, y, 48.0f, 36.0f, 0, glm::vec4(1.0f), false);
 }
 
 // ================= props built from shapes =================
 
 // height of the handshake (where the owner's arm and the shadow arm meet)
-static float handshakeY() { return 320.0f; }   // owner arm height above the ground
+static float handshakeY() { return 280.0f; }   // owner arm height above the ground
 
 // The owner: black silhouette (rect body, circle head, two rects top hat, one rect arm).
 // armP: 0..1 how far his arm has reached toward the meeting point.
@@ -195,11 +196,7 @@ static void drawJobPoster(float cx, float cy) {
 
 // cassette recorder: dark grey rectangle + two reels; the PLAY triangle lights up
 static void drawCassette(float x, float y, bool playing) {
-    drawRect(x, y, 30.0f, 18.0f, 0, glm::vec4(0.25f, 0.25f, 0.28f, 1.0f));
-    drawCircle(x - 7.0f, y, 3.0f, GUARD_SILVER);
-    drawCircle(x + 7.0f, y, 3.0f, GUARD_SILVER);
-    glm::vec4 playColor = playing ? TICKET_GOLD : glm::vec4(0.55f, 0.45f, 0.30f, 1.0f);
-    drawTriangle(x + 12.5f, y + 12.0f, 9.0f, 6.0f, -90.0f, playColor);
+    drawSprite(cassetteTexture, playing ? 1 : 0, 2, x, y, 40.0f, 26.0f, 0, glm::vec4(1.0f), false);
 }
 
 // pairs of small red circles, 8 px apart, at the cursed performers' face height
@@ -231,15 +228,21 @@ static void drawStageBase(float t, bool withBooth, bool lights, bool lightsFlick
     drawBackground(t);
     drawNightOverlay();
     drawEnvironment(t);
-    if (withBooth) drawHomeBase(t);
+    if (withBooth) {
+        if (boothTexture == 0) boothTexture = loadTexture(ASSET_DIR "background/Ticket_booth.png");
+        drawSprite(boothTexture, 0, 1, 105.0f, 183.5f, 210.0f, 315.0f, 0.0f, glm::vec4(1.0f), false);
+
+        // the Golden Ticket in the picture glows
+        drawCircle(108.0f, 128.0f, 26.0f + 6.0f * sinf(t * 6.0f), glm::vec4(0.98f, 0.80f, 0.20f, 0.25f));
+    }
     if (lights) drawStringLights(lightsFlicker);
 }
 
 // the moon "rises": the environment already has Moon.png top-right; a glow behind it
 // brightens like a rise (beats 2 / 4 / 6)
 static void drawMoonRise(float t) {
-    float glow = 0.35f * progressBetween(3.2f, 4.5f);       // beat 2 only
-    drawCircle(1162.0f, 598.0f, 60.0f, glm::vec4(0.98f, 0.94f, 0.75f, glow));
+    //float glow = 0.35f * progressBetween(3.2f, 4.5f);       // beat 2 only
+    //drawCircle(1162.0f, 598.0f, 60.0f, glm::vec4(0.98f, 0.94f, 0.75f, glow));
 }
 
 // performers stand in place (frame 0 of their standing strip): ATTACK + stateTime 0
@@ -260,9 +263,11 @@ static void drawBeat1(float t) {
 
     // owner stands at x = 500; shadow arm reaches in from the right edge
     float armP = progressBetween(BEAT1_START, ARMS_MEET_T);
-    drawOwner(500.0f, handshakeY() - 120.0f, armP);
-    drawShadowArm(armP);
+    int ownerFrame = (int)(armP * 3.99f);                       // 0,1,2,3: frame 3 = hand out
+    drawSprite(ownerTexture, ownerFrame, 4, 584.0f, 286.0f, 180.0f, 240.0f, 0, glm::vec4(1.0f), false);
 
+    int armFrame = (int)(armP * 5.99f);                          // 0..5: the arm grows longer
+    drawSprite(shadowArmTexture, armFrame, 6, 967.0f, 280.0f, 665.0f, 133.0f, 0, glm::vec4(1.0f), false);
     // from the handshake: red flash (alpha 0.6 -> 0) and the ticket glows in his hand
     if (t >= ARMS_MEET_T) {
         float flash = 0.6f * (1.0f - progressBetween(ARMS_MEET_T, ARMS_MEET_T + 0.3f));
@@ -309,18 +314,26 @@ static void drawBeat3(float t) {
 
     // the poster grows slightly (1.0 -> 1.08) so the shot isn't frozen
     float zoom = 1.0f + 0.08f * progressBetween(BEAT3_START, BEAT4_START);
-    float w = 640.0f * zoom, h = 420.0f * zoom;
-    drawRect(640.0f, 370.0f, w + 24.0f, h + 24.0f, 0, CURSE_RED);              // red border
-    drawRect(640.0f, 370.0f, w, h, 0, glm::vec4(0.97f, 0.94f, 0.85f, 1.0f));  // cream paper
+        drawSprite(wheelTexture, 0, 1, 1080.0f, 470.0f, 300.0f, 286.0f, 0, glm::vec4(1.0f), false);
 
-    glm::vec4 ink(0.25f, 0.08f, 0.10f, 1.0f);
-    float s1 = 0.80f * zoom, s2 = 1.10f * zoom, s3 = 0.60f * zoom;
-    drawText("NIGHT SECURITY", 640.0f - textWidth("NIGHT SECURITY", s1) / 2.0f, 450.0f, s1, ink);
-    drawText("WANTED",         640.0f - textWidth("WANTED", s2) / 2.0f,         370.0f, s2, CURSE_RED);
-    drawText("GENEROUS PAY!",  640.0f - textWidth("GENEROUS PAY!", s3) / 2.0f,  300.0f, s3, ink);
-    drawText("12:00 AM - 6:00 AM", 640.0f - textWidth("12:00 AM - 6:00 AM", s3) / 2.0f, 245.0f, s3, ink);
-    // no drawBeatFades: a hard cut in, so the full 1.5 s is readable
+    // visitors walking left -> right, each with a different tint
+    glm::vec4 tints[4] = { glm::vec4(1.0f), glm::vec4(0.8f, 0.9f, 1.0f, 1.0f),
+                           glm::vec4(1.0f, 0.85f, 0.85f, 1.0f), glm::vec4(0.9f, 1.0f, 0.85f, 1.0f) };
+    for (int i = 0; i < 4; i++) {
+        float vx = fmodf(i * 330.0f + t * 60.0f, 1400.0f) - 60.0f;
+        drawSprite(visitorTexture, (int)(t * 6) % 2, 2, vx, laneFloorY(0) + 58.0f, 82.0f, 116.0f, 0, tints[i], false);
+    }
+
+    // the poster in front of everything
+    drawSprite(posterTexture, 0, 1, 640.0f, 410.0f, 368.0f * zoom, 440.0f * zoom, 0, glm::vec4(1.0f), false);
+
+    // a dark banner under it for the details
+    drawRect(640.0f, 130.0f, 520.0f, 110.0f, 0, glm::vec4(0.05f, 0.02f, 0.08f, 0.8f));
+    float s = 0.6f;
+    drawText("GENEROUS PAY!", 640.0f - textWidth("GENEROUS PAY!", s) / 2.0f, 140.0f, s, TICKET_GOLD);
+    drawText("12:00 AM - 6:00 AM", 640.0f - textWidth("12:00 AM - 6:00 AM", s) / 2.0f, 95.0f, s, WHITE);
 }
+
 
 // ================= BEAT 4: the first night (7.5 - 10.0) =================
 
@@ -347,7 +360,7 @@ static void drawBeat4(float t) {
         drawGuard(lamaX, laneFloorY(lane), LANTERN_GUARD, t, st, 0.0f, 1.0f);
     }
 
-    drawCassette(105.0f, 290.0f, t >= 9.6f);   // on the booth counter; PLAY pressed at 9.6s
+        drawCassette(150.0f, 157.0f, t >= 9.6f);  // on the booth counter; PLAY pressed at 9.6s
 
 
     drawBeatFades(local, BEAT5_START - BEAT4_START);
@@ -478,7 +491,19 @@ static void drawBeat7(float t) {
 
 // ================= the clock =================
 
-void startCutscene() { cutsceneTime = 0.0f; previousCutsceneTime = 0.0f; }
+void startCutscene() {
+    cutsceneTime = 0.0f;
+    previousCutsceneTime = 0.0f;
+    if (ownerTexture == 0) {   // only the first time the cutscene starts
+        ownerTexture     = loadTexture(ASSET_DIR "background/Owner.png");
+        shadowArmTexture = loadTexture(ASSET_DIR "background/shadow_arm_strip.png");
+        ticketTexture    = loadTexture(ASSET_DIR "background/golden_ticket.png");
+        posterTexture    = loadTexture(ASSET_DIR "background/job_poster.png");
+        wheelTexture     = loadTexture(ASSET_DIR "background/ferris_wheel.png");
+        visitorTexture   = loadTexture(ASSET_DIR "background/visitor.png");
+        cassetteTexture  = loadTexture(ASSET_DIR "background/cassette.png");
+    }
+}
 
 void updateCutscene(float dt) {
     if (dt > 0.1f) dt = 0.1f;                  // tab-out gaps shouldn't skip beats
