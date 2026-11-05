@@ -6,7 +6,7 @@
 
 //da for enemies
 static unsigned int enemyWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it 
-static unsigned int enemyAttackTexture [3]= {0};
+static unsigned int enemyAttackTexture [3]= {0};//load texture takes the pic and gives it to gpu and id
 //Players
 
 static unsigned int playerWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it
@@ -15,7 +15,7 @@ static unsigned int playerAttackTexture[3] = { 0 };
 void drawMirrorGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
    
     unsigned int tex = (state == ATTACK) ? playerAttackTexture[MIRROR_GUARD] : playerWalkTexture[MIRROR_GUARD];
-    float t=(state==ATTACK)?stateTime:time;//time da 3ady
+    float t=(state==ATTACK)?stateTime:time;//time da 3ady wel statetime is like the time since the attack started
  if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
