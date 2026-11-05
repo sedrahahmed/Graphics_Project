@@ -3,3 +3,7 @@
 // Owner: Person D
 
 void drawHUD(int coins, int wave);
+
+void drawPauseIcon();
+
+bool pauseIconClicked();

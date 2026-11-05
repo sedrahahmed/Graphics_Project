@@ -15,6 +15,7 @@
 #include "EndMenu.h"
 #include "SoundMenu.h"
 #include "Sound.h"
+#include "HUD.h"
 
 static GameState current = MAIN_MENU;
 
@@ -72,7 +73,7 @@ void updateCurrentState(float dt) {
         break;
 
     case PLAYING:
-        if (keyPressed(GLFW_KEY_ESCAPE)) changeState(PAUSED);
+        if (keyPressed(GLFW_KEY_ESCAPE) || pauseIconClicked()) changeState(PAUSED);
         else updateGame(dt);
         break;
 
@@ -96,6 +97,7 @@ void drawCurrentState() {
         break;
 
     case SOUND_SETTINGS:
+        drawMainMenu();
         drawSoundMenu();
         break;
 

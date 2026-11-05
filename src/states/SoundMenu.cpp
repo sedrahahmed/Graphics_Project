@@ -34,7 +34,7 @@ void updateSoundMenu() {
 }
 
 void drawSoundMenu() {
-    drawRect(CENTER_X, SCREEN_H / 2.0f, SCREEN_W, SCREEN_H, 0.0f, NIGHT_SKY);
+    drawRect(CENTER_X, SCREEN_H / 2.0f, SCREEN_W, SCREEN_H, 0.0f,NIGHT_SKY);
 
     const char* title = "SOUND";
     drawText(title, CENTER_X - textWidth(title, 1.2f) / 2.0f, 480, 1.2f, TICKET_GOLD);
