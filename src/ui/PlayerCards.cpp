@@ -19,7 +19,10 @@ static const float cardYstart=650;
 static const float cardXStart=190;
 
 static bool isUnlocked(PlayerType type){
-return canAfford(type)&&(type==MIRROR_GUARD || getCurrentWave() >1);}
+    return canAfford(type)&&(type==MIRROR_GUARD || getCurrentWave() >1);
+}
+
+
 void updatePlayerCards() {
     hoveredCard = -1;
     for(int i=0; i<3; i++) {

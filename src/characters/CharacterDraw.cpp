@@ -100,6 +100,7 @@ void drawLanternGuard(float x, float y, float time, AnimState state, float state
         }
     }
     float size = 160;
+    if (state == DUCK) size = 130;
     drawSprite(tex, frame, frames, x, y + size / 2-4, size, size, 0.0f,
     damageTint(WHITE, healthFrac));
 }
