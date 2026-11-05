@@ -19,6 +19,13 @@ static unsigned int sparkTexture = 0;
 static unsigned int clownBallTexture = 0;
 static unsigned int dartTexture = 0;
 
+static unsigned int PlayerFrontTexture[3] = { 0 };
+
+void drawGuardIcon(PlayerType type, float x, float y, float w,float h, glm::vec4 tint){
+    drawSprite(PlayerFrontTexture[type],0,1, x, y, w, h,0,tint);
+    
+}
+
 void drawMirrorGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
     unsigned int tex;
     int frames;
@@ -179,6 +186,9 @@ void initCharacterTexture() {
     playerDuckTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_duck.png"); 
     sparkTexture = loadTexture(ASSET_DIR "characters/magician_spell.png");
     clownBallTexture  = loadTexture(ASSET_DIR "characters/clown_ball.png");
+    PlayerFrontTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_front.png");
+    PlayerFrontTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_front.png");
+    PlayerFrontTexture[DEFENSE_GUARD] = loadTexture(ASSET_DIR "characters/jana_front.png");
     dartTexture = loadTexture(ASSET_DIR "characters/lama_dart.png");
   tokenTexture = loadTexture(ASSET_DIR "background/Token.png");
 

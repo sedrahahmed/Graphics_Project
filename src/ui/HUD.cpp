@@ -7,10 +7,10 @@
 #include <string>
 
 void drawHUD(int coins, int wave) {
-    drawCircle(1150,660,18, TICKET_GOLD);
-    drawCircle(1150,660,12, glm::vec4(0.75f, 0.55f, 0.10f, 1.0f));
+    drawCircle(45,660,18, TICKET_GOLD);
+    drawCircle(45,660,12, glm::vec4(0.75f, 0.55f, 0.10f, 1.0f));
     std::string coinText = std::to_string(coins);
-    drawText(coinText, 1180, 648, 0.7f, TICKET_GOLD);
+    drawText(coinText, 72, 648, 0.7f, TICKET_GOLD);
 
     std::string waveText = "Wave " + std::to_string(wave) + " / 3";
     float waveScale = 0.7f;
