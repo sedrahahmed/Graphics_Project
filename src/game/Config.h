@@ -44,7 +44,7 @@ const float SPEED_SPARK = 220.0f;
 
 
 const float ENEMY_ATTACK_COOLDOWN = 4.0f; 
-const float HERO_ATTACK_COOLDOWN = 2.0f;   // time between attacks for guards and enemies    
+const float HERO_ATTACK_COOLDOWN = 1.5f;   // time between attacks for guards and enemies    
 const float JUMP_DURATION = 0.6f;
 const float DUCK_DURATION = 0.6f;
 const float Walk_ANIMATION_SPEED = 0.8f;   // time per frame for walk animation
