@@ -106,15 +106,20 @@ void drawLanternGuard(float x, float y, float time, AnimState state, float state
 void drawDefenseGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
     unsigned int tex;
     int frame;
-    if (state == ATTACK) {
-        tex = playerAttackTexture[DEFENSE_GUARD];                     // jana_defend: bracing
-        frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
+    if (state == WALK && playerWalkTexture[DEFENSE_GUARD] != 0) {
+        // only the cutscene ever puts Jana in WALK (beat 3/4 walk-ins);
+        // gameplay never does, so nothing changes on the field
+        tex = playerWalkTexture[DEFENSE_GUARD];                   // jana_walk strip
+        frame = (int)(time * 8) % 8;
     } else {
-    tex = playerAttackTexture[DEFENSE_GUARD];    // jana_defend
-    frame = 0;                                   // first frame, standing still
-}
+        tex = playerAttackTexture[DEFENSE_GUARD];    // jana_defend: bracing / standing
+        if (state == ATTACK)                                  // bracing frames while blocked
+            frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
+        else
+            frame = 0;                                        // first frame, standing still
+    }
     float size = 140;
-    drawSprite(tex, frame, 8, x, y + size / 2 , size, size, 0.0f,
+    drawSprite(tex, frame, 8, x, y + size / 2, size, size, 0.0f,
     damageTint(WHITE, healthFrac));
 }
 

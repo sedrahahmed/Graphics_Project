@@ -21,7 +21,11 @@ static const char* soundFiles[] = {ASSET_DIR "sounds/click.mp3",
                                    ASSET_DIR "sounds/death.mp3",
                                    ASSET_DIR "sounds/coin.mp3",
                                    ASSET_DIR "sounds/win.mp3",
-                                   ASSET_DIR "sounds/lose.mp3"
+                                   ASSET_DIR "sounds/lose.mp3",
+                                   // cutscene cues (add these files to assets/sounds)
+                                   ASSET_DIR "sounds/cassette_click.mp3",
+                                   ASSET_DIR "sounds/owner_recording.mp3",
+                                   ASSET_DIR "sounds/clock_midnight.mp3"
                         };
 
 void initSound() {
