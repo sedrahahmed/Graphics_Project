@@ -6,7 +6,7 @@
 
 //da for enemies
 static unsigned int enemyWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it 
-static unsigned int enemyAttackTexture [3]= {0};
+static unsigned int enemyAttackTexture [3]= {0};//load texture takes the pic and gives it to gpu and id
 //Players
 
 static unsigned int playerWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it
