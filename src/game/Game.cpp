@@ -151,15 +151,7 @@ void updateGame(float dt) {
             if (keyPressed(GLFW_KEY_2)) placeGuard(LANTERN_GUARD, lane);
             if (keyPressed(GLFW_KEY_3)) placeGuard(DEFENSE_GUARD, lane);
         }
-    }          // skip lanes that aren't selected
-        
-    if (keyPressed(GLFW_KEY_4) && getHoveredLane() != -1) spawnEnemy(MAGICIAN, getHoveredLane());
-    if (keyPressed(GLFW_KEY_5) && getHoveredLane() != -1) spawnEnemy(CLOWN, getHoveredLane());
-    if (keyPressed(GLFW_KEY_6) && getHoveredLane() != -1) spawnEnemy(JESTER, getHoveredLane());
-    if (keyPressed(GLFW_KEY_7)) {
-    for (Enemy& e : enemies) {
-        e.alive = false;
-    }}
+    }         
     updateWaves(dt);
     moveEveryone(dt);
     updateCombat(dt);

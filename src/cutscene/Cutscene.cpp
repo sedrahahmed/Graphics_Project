@@ -464,8 +464,8 @@ static void drawBeat6Actors(float t) {
 
     AnimState magSt = chasing ? WALK : ATTACK;
     float magStateTime = (magSt == ATTACK) ? t - 16.0f : 0.0f;
-    drawEnemy(magX, laneY2, MAGICIAN, t, magSt, magStateTime, 1.0f);
-    drawRedEyes(magX, laneY2 + 85.0f, 1.0f);
+    drawEnemy(magX, laneY3, MAGICIAN, t, magSt, magStateTime, 1.0f);
+    drawRedEyes(magX, laneY3 + 85.0f, 1.0f);
 }
 
 static void drawBeat6(float t) {
