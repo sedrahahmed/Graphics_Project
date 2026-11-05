@@ -97,7 +97,7 @@ void drawCurrentState() {
         break;
 
     case SOUND_SETTINGS:
-        drawMainMenu();
+        //drawMainMenu();
         drawSoundMenu();
         break;
 

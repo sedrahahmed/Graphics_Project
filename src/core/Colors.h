@@ -23,20 +23,20 @@ const glm::vec4 WHITE           (1.0f, 1.0f, 1.0f, 1.0f);
 const glm::vec4 BLACK           (0.0f, 0.0f, 0.0f, 1.0f);
 const glm::vec4 PLACEHOLDER_GRAY(0.6f, 0.6f, 0.6f, 1.0f);
 const glm::vec4 HEALTH_GREEN    (0.2f, 0.9f, 0.3f, 1.0f);
-const glm::vec4 HIGHLIGHT       (1.0f, 1.0f, 1.0f, 0.15f);   // lane hover (transparent)
-const glm::vec4 DARK_BROWN      (0.28f, 0.18f, 0.11f, 1.0f);   // lane dividers
-const glm::vec4 SELECTED_LANE   (1.0f, 1.0f, 1.0f, 0.25f);   // lane selected (transparent)
-
+const glm::vec4 HIGHLIGHT       (1.0f, 1.0f, 1.0f, 0.15f);   //ay haga hovered
+const glm::vec4 DARK_BROWN      (0.28f, 0.18f, 0.11f, 1.0f);   
+const glm::vec4 SELECTED_LANE   (1.0f, 1.0f, 1.0f, 0.25f);   
 //healthbar
 const glm::vec4 HEALTHBAR_RED  (0.90f, 0.10f, 0.10f, 1.0f);
 const glm::vec4 HEALTHBAR_GREEN (0.45f, 0.85f, 0.15f, 1.0f); 
 const glm::vec4 HEALTHBAR_ORANGE  (1.00f, 0.55f, 0.05f, 1.0f);
 const glm::vec4 HEART_RED       (0.90f, 0.10f, 0.15f, 1.0f);
 
+//cards
 const glm::vec4 CARD_PURPLE = glm::vec4(0.16f, 0.06f, 0.22f, 1.0f);
 const glm::vec4 CARD_BORDER = glm::vec4(0.55f, 0.35f, 0.70f, 1.0f);
 
-
+//buttons
 const glm::vec4 BTN_FACE = glm::vec4(0.22f, 0.08f, 0.30f, 1.0f);
 const glm::vec4 BTN_SHADOW = glm::vec4(0.12f, 0.04f, 0.17f, 1.0f);
 const glm::vec4 BTN_LIGHT = glm::vec4(0.34f, 0.16f, 0.42f, 1.0f);

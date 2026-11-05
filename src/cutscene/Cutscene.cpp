@@ -22,7 +22,6 @@
 #include "CharacterDraw.h"
 #include "Background.h"
 #include "Environment.h"
-#include "HomeBase.h"
 #include <cmath>
 
 static float cutsceneTime = 0.0f;
