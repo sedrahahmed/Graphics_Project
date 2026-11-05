@@ -16,6 +16,7 @@ static unsigned int playerDuckTexture[2]={};
 
 static unsigned int sparkTexture = 0;
 static unsigned int clownBallTexture = 0;
+static unsigned int dartTexture = 0;
 
 static unsigned int PlayerFrontTexture[3] = { 0 };
 
@@ -37,16 +38,16 @@ void drawMirrorGuard(float x, float y, float time, AnimState state, float stateT
         }
         case JUMP :{
             tex = playerJumpTexture[MIRROR_GUARD];
-            frames = 4;
-            frame = (int)(stateTime / JUMP_DURATION * 4);              // plays once over the jump
-            if (frame > 3) frame = 3;
+            frames = 8;
+            frame = (int)(stateTime / JUMP_DURATION * 8);              // plays once over the jump
+            if (frame > 7) frame = 7;
             break;
         }
         case DUCK :{
             tex = playerDuckTexture[MIRROR_GUARD];
-            frames = 4;
-            frame = (int)(stateTime / DUCK_DURATION * 4);
-            if (frame > 3) frame = 3;
+            frames = 8;
+            frame = (int)(stateTime / DUCK_DURATION * 8);
+            if (frame > 7) frame = 7;
             break;
         }
 
@@ -58,13 +59,13 @@ void drawMirrorGuard(float x, float y, float time, AnimState state, float stateT
         }
 
     }
-        float size = 140;
-        drawSprite(tex, frame, frames, x, y + size / 2, size, size, 0.0f,
+        float size = 160;
+        drawSprite(tex, frame, frames, x, y + size / 2 - 4, size, size, 0.0f,
         damageTint(WHITE, healthFrac)); 
-    }
+        }
 
 
-
+        
 void drawLanternGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
     unsigned int tex;
     int frames;
@@ -73,21 +74,21 @@ void drawLanternGuard(float x, float y, float time, AnimState state, float state
         case ATTACK: {
             tex = playerAttackTexture[LANTERN_GUARD];
             frames = 8;
-            frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
+            frame = (int)(stateTime * (8.0f / LANTERN_COOLDOWN) + 4) % 8;
             break;
         }
         case JUMP: {
             tex = playerJumpTexture[LANTERN_GUARD];
-            frames = 4;
-            frame = (int)(stateTime / JUMP_DURATION * 4);              // plays once over the jump
-            if (frame > 3) frame = 3;
+            frames = 8;
+            frame = (int)(stateTime / DUCK_DURATION * 8);
+            if (frame > 7) frame = 7;
             break;
         }
         case DUCK: {
             tex = playerDuckTexture[LANTERN_GUARD];
-            frames = 4;
-            frame = (int)(stateTime / DUCK_DURATION * 4);
-            if (frame > 3) frame = 3;
+            frames = 8;
+            frame = (int)(stateTime / DUCK_DURATION * 8);
+            if (frame > 7) frame = 7;
             break;
         }
         default: {
@@ -97,9 +98,9 @@ void drawLanternGuard(float x, float y, float time, AnimState state, float state
             break;
         }
     }
-    float size = 140;
+    float size = 160;
     drawSprite(tex, frame, frames, x, y + size / 2, size, size, 0.0f,
-               damageTint(WHITE, healthFrac));
+    damageTint(WHITE, healthFrac));
 }
 void drawDefenseGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
     unsigned int tex;
@@ -108,9 +109,9 @@ void drawDefenseGuard(float x, float y, float time, AnimState state, float state
         tex = playerAttackTexture[DEFENSE_GUARD];                     // jana_defend: bracing
         frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
     } else {
-        tex = playerWalkTexture[DEFENSE_GUARD];                       // standing, animated
-        frame = (int)(time * 8) % 8;                                  // loops forever
-    }
+    tex = playerAttackTexture[DEFENSE_GUARD];    // jana_defend
+    frame = 0;                                   // first frame, standing still
+}
     float size = 140;
     drawSprite(tex, frame, 8, x, y + size / 2 , size, size, 0.0f,
     damageTint(WHITE, healthFrac));
@@ -134,18 +135,24 @@ void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, fl
 
 //Projectiles
 
-void drawLanternOrb(float x, float y, float hitProgress) { drawCircle(x, y, 8, GHOST_LIGHT); }   // TODO
+void drawDart(float x, float y, float time, float hitProgress) {
+    int frame = (int)(time * 12) % 8;                     // speed lines flicker as it flies
+    float w = 80.0f * (1.0f - hitProgress);               // shrinks on impact
+    float h = 40.0f * (1.0f - hitProgress);               // keeps the frame's 2:1 shape
+    glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress); // and fades
+    drawSprite(dartTexture, frame, 8, x, y+15, w, h, 0.0f, tint);
+}  
 void drawSpark(float x, float y, float time, float hitProgress){
     int frame = (int)(time * 10) % 4;                     // twinkles, 10 frames per second
-    float size = 80.0f * (1.0f - hitProgress);           // shrinks to nothing on impact
+    float size = 140.0f * (1.0f - hitProgress);           // shrinks to nothing on impact
     glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress); // and fades out
-    drawSprite(sparkTexture, frame, 4, x, y, size, size, 0.0f, tint);
+    drawSprite(sparkTexture, frame, 4, x, y - 4, size, size, 0.0f, tint);
 }
 void drawJuggleBall(float x, float y, float time, float hitProgress){
     int frame = (int)(time * 12) % 4;                     // star turns as it rolls
-    float size = 64.0f * (1.0f - hitProgress);
+    float size = 110.0f * (1.0f - hitProgress);
     glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress);
-    drawSprite(clownBallTexture, frame, 4, x, y, size, size, 0.0f, tint);
+    drawSprite(clownBallTexture, frame, 4, x, y+15, size, size, 0.0f, tint);
 }
 
 
@@ -178,6 +185,7 @@ void initCharacterTexture() {
     PlayerFrontTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_front.png");
     PlayerFrontTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_front.png");
     PlayerFrontTexture[DEFENSE_GUARD] = loadTexture(ASSET_DIR "characters/jana_front.png");
+    dartTexture = loadTexture(ASSET_DIR "characters/lama_dart.png");
 }
 
 void drawMagician(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {

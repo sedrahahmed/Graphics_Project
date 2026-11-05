@@ -16,7 +16,7 @@ void volumeUp();
 void volumeDown();
 void toggleMusicMute();
 void toggleSoundEffectsMute();
-float getVolume();          // 0..1
+float getVolume();
 bool isMusicMuted();
 bool isSoundEffectsMuted();
 

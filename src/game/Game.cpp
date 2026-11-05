@@ -121,8 +121,8 @@ static AttackHeight heightOf(ShotType type) {
     
     switch(type) {
         case LANTERN_ORB: return HIGH;
-        case CURSED_CARD: return LOW;
-        case JUGGLE_BALL: return MELEE_HIT;
+        case CURSED_CARD: return HIGH;
+        case JUGGLE_BALL: return LOW;
         default:          return MELEE_HIT;
     }
 }
@@ -145,9 +145,14 @@ void updateGame(float dt) {
     gameTime += dt;
     updatePlayerCards();
     updateLanes();
-    if (keyPressed(GLFW_KEY_1) && getHoveredLane() != -1) placeGuard(MIRROR_GUARD, getHoveredLane());
-    if (keyPressed(GLFW_KEY_2) && getHoveredLane() != -1) placeGuard(LANTERN_GUARD, getHoveredLane());
-    if (keyPressed(GLFW_KEY_3) && getHoveredLane() != -1) placeGuard(DEFENSE_GUARD, getHoveredLane());
+    for (int lane = 0; lane < LANE_COUNT; lane++) {   // go through every lane
+        if (isLaneSelected(lane)){
+            if (keyPressed(GLFW_KEY_1)) placeGuard(MIRROR_GUARD, lane);
+            if (keyPressed(GLFW_KEY_2)) placeGuard(LANTERN_GUARD, lane);
+            if (keyPressed(GLFW_KEY_3)) placeGuard(DEFENSE_GUARD, lane);
+        }
+    }          // skip lanes that aren't selected
+        
     if (keyPressed(GLFW_KEY_4) && getHoveredLane() != -1) spawnEnemy(MAGICIAN, getHoveredLane());
     if (keyPressed(GLFW_KEY_5) && getHoveredLane() != -1) spawnEnemy(CLOWN, getHoveredLane());
     if (keyPressed(GLFW_KEY_6) && getHoveredLane() != -1) spawnEnemy(JESTER, getHoveredLane());
@@ -155,7 +160,7 @@ void updateGame(float dt) {
     for (Enemy& e : enemies) {
         e.alive = false;
     }}
-    //updateWaves(dt);
+    updateWaves(dt);
     moveEveryone(dt);
     updateCombat(dt);
     updateShots(dt);
@@ -177,7 +182,10 @@ void drawGame() {
         drawToken(d.x, laneFloorY(d.lane), gameTime);
     }
     for (const Player& p : players) {
-        drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, p.stateTimer, (float)p.health / p.maxHealth);
+                float cooldown = (p.type == LANTERN_GUARD) ? LANTERN_COOLDOWN : ATTACK_COOLDOWN;
+        float animTime = (p.state == ATTACK) ? (cooldown - p.attackTimer) : p.stateTimer;
+
+        drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, animTime, (float)p.health / p.maxHealth);
         drawHealthBar(p.x, laneFloorY(p.lane) + 140, p.health, p.maxHealth); 
     }
     for (const Enemy& e : enemies) {
@@ -194,9 +202,9 @@ void drawGame() {
         case JUGGLE_BALL:   // Clown's ball: on the floor, so jumping dodges it
             drawJuggleBall(s.x, floorY + 12.0f, gameTime, progress);
             break;
-        /*case LANTERN_ORB:   // Lama's stone: chest height
-            drawLanternOrb(s.x, floorY + 140 * 0.4f, progress);
-            break;*/
+        case LANTERN_ORB:   // Lama's dart: chest height
+            drawDart(s.x, floorY + 140 * 0.4f, gameTime, progress);
+            break;
     }
     }
     drawHUD(getCoins(), getCurrentWave());
