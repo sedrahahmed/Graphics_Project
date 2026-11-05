@@ -35,3 +35,10 @@ const glm::vec4 HEART_RED       (0.90f, 0.10f, 0.15f, 1.0f);
 
 const glm::vec4 CARD_PURPLE = glm::vec4(0.16f, 0.06f, 0.22f, 1.0f);
 const glm::vec4 CARD_BORDER = glm::vec4(0.55f, 0.35f, 0.70f, 1.0f);
+
+
+const glm::vec4 BTN_FACE = glm::vec4(0.22f, 0.08f, 0.30f, 1.0f);
+const glm::vec4 BTN_SHADOW = glm::vec4(0.12f, 0.04f, 0.17f, 1.0f);
+const glm::vec4 BTN_LIGHT = glm::vec4(0.34f, 0.16f, 0.42f, 1.0f);
+
+
