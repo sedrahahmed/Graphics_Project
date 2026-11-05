@@ -24,6 +24,7 @@ void initMainMenu(){
     
     menuTexture=loadTexture(ASSET_DIR"background/Main_menu_image.png");
 }
+unsigned int getMenuTexture() { return menuTexture; }   // ← NEW
 
 void updateMainMenu() {
     if (isClicked(startButton)) changeState(CUTSCENE);        // cutscene, then the game
