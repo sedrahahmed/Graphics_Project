@@ -32,3 +32,6 @@ const glm::vec4 HEALTHBAR_RED  (0.90f, 0.10f, 0.10f, 1.0f);
 const glm::vec4 HEALTHBAR_GREEN (0.45f, 0.85f, 0.15f, 1.0f); 
 const glm::vec4 HEALTHBAR_ORANGE  (1.00f, 0.55f, 0.05f, 1.0f);
 const glm::vec4 HEART_RED       (0.90f, 0.10f, 0.15f, 1.0f);
+
+const glm::vec4 CARD_PURPLE = glm::vec4(0.16f, 0.06f, 0.22f, 1.0f);
+const glm::vec4 CARD_BORDER = glm::vec4(0.55f, 0.35f, 0.70f, 1.0f);

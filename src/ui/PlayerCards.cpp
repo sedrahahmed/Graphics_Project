@@ -7,21 +7,26 @@
 #include "CharacterDraw.h"
 #include <string>
 #include "Text.h"
+#include "Waves.h"
 
 
 static int selectedCard =-1;
 static int hoveredCard = -1;
 static const float cardWidth= 80;
 static const float cardHeight=100;
-static const float cardSpacing=12;
+static const float cardSpacing=24;
 static const float cardYstart=650;
-static const float cardXStart=858;
+static const float cardXStart=190;
+
+static bool isUnlocked(PlayerType type){
+    return canAfford(type)&&(type==MIRROR_GUARD || getCurrentWave() >1);
+}
 void updatePlayerCards() {
     hoveredCard = -1;
     for(int i=0; i<3; i++) {
         float x = cardXStart + i * (cardWidth + cardSpacing);
         float y = cardYstart;
-        bool unlocked =canAfford((PlayerType)i);
+        bool unlocked =isUnlocked((PlayerType)i);
         if(unlocked && mouseInRect(x,y,cardWidth,cardHeight)) {
             hoveredCard = i;
             break;
@@ -34,7 +39,7 @@ void updatePlayerCards() {
             else
                 selectedCard = hoveredCard;
         }
-        if(selectedCard != -1&&!canAfford((PlayerType)selectedCard))
+        if(selectedCard != -1&&!isUnlocked((PlayerType)selectedCard))
             selectedCard = -1;
     }
 void drawPlayerCards() { 
@@ -42,17 +47,19 @@ void drawPlayerCards() {
         float x = cardXStart + i * (cardWidth + cardSpacing);
         float y = cardYstart;
         PlayerType type = (PlayerType)i;
-        bool unlocked= canAfford(type);
+        bool unlocked= isUnlocked(type);
         if(i==selectedCard)
             drawRect(x,y,cardWidth+8,cardHeight+8,0,TICKET_GOLD);
+        else
+            drawRect(x, y, cardWidth + 4, cardHeight + 4, 0, CARD_BORDER);
         
         glm::vec4 panel;
         if(!unlocked)
             panel =glm::vec4(0.25f, 0.25f, 0.25f, 1.0f);
         else if (i == hoveredCard)
-            panel = glm::vec4(0.45f, 0.25f, 0.55f, 1.0f);
+            panel = glm::vec4(0.28f, 0.14f, 0.36f, 1.0f);
         else 
-            panel= CURSE_PURPLE;
+            panel= CARD_PURPLE;
         drawRect(x,y,cardWidth,cardHeight,0,panel);
 
         
