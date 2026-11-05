@@ -13,6 +13,7 @@ static unsigned int playerWalkTexture[3] = { 0 }; //unsigned bec el lload textur
 static unsigned int playerAttackTexture[3] = { 0 };
 static unsigned int playerJumpTexture[2]={};
 static unsigned int playerDuckTexture[2]={};
+static unsigned int tokenTexture = 0;
 
 static unsigned int sparkTexture = 0;
 static unsigned int clownBallTexture = 0;
@@ -151,7 +152,10 @@ void drawJuggleBall(float x, float y, float time, float hitProgress){
 
 //Collectibles
 
-void drawToken(float x, float y, float time) { drawCircle(x, y, 10, TICKET_GOLD); }   // TODO
+void drawToken(float x, float y, float time) {
+    float size = 24.0f;   // width and height on screen in pixels
+    drawSprite(tokenTexture, 0, 1, x, y + size / 2, size, size, 0.0f, WHITE);
+}
 
 
 //Enemies
@@ -176,6 +180,8 @@ void initCharacterTexture() {
     sparkTexture = loadTexture(ASSET_DIR "characters/magician_spell.png");
     clownBallTexture  = loadTexture(ASSET_DIR "characters/clown_ball.png");
     dartTexture = loadTexture(ASSET_DIR "characters/lama_dart.png");
+  tokenTexture = loadTexture(ASSET_DIR "background/Token.png");
+
 }
 
 void drawMagician(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
