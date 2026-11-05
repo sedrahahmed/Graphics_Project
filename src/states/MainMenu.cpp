@@ -15,9 +15,9 @@
 // The buttons: x, y (center), width, height, label.
 // They're "static" so they're made once and shared by update and draw.
 static const float CENTER_X = SCREEN_W / 2.0f;
-static Button startButton = { CENTER_X, 380, 280, 70, "START" };
-static Button soundButton = { CENTER_X, 290, 280, 70, "SOUND" };
-static Button exitButton  = { CENTER_X, 200, 280, 70, "EXIT" };
+static Button startButton = { CENTER_X, 380, 200, 70, "START" };
+static Button soundButton = { CENTER_X, 290, 200, 70, "SOUND" };
+static Button exitButton  = { CENTER_X, 200, 200, 70, "EXIT" };
 static unsigned int menuTexture=0;
 
 void initMainMenu(){

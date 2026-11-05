@@ -14,12 +14,14 @@
 #include "Text.h"
 #include "Colors.h"
 #include "Sound.h"
-#include <cmath>
 
 // ---------- Look of every button (change these to restyle all menus at once) ----------
 static const float BORDER = 3.0f; 
 static const float TEXT_SCALE = 0.6f;          // label size (1.0 = the font size given to initText)
-static const float TEXT_DROP = 10.0f;          // drawText's y is the BOTTOM of the letters,
+static const float TEXT_DROP = 10.0f;
+static const float CORNER =6;
+static const float DEPTH =6;
+static const float LIGHT_H=4;   
                                                // so we move it down a bit to look centered
 
 bool isHovered(const Button& b) {
@@ -37,52 +39,19 @@ bool isClicked(const Button& b) {
     return false;
 }
 
+static void drawCutRect(float x,float y,float w,float h, float c,glm::vec4 col){
+    drawRect(x, y, w, h - 2*c, 0, col);
+    drawRect(x, y, w - 2*c, h, 0, col);
+}
 void drawButton(const Button& b) {
     bool hover = isHovered(b);
+    glm::vec4 face = hover ? glm::mix(BTN_FACE, WHITE, 0.15f) : BTN_FACE;
 
-    // 1. Border: a gold rectangle a little bigger than the button, drawn first so it sits behind
-    //drawRect(b.x, b.y, b.w + 2 * BORDER, b.h + 2 * BORDER, 0.0f, TICKET_GOLD);
-    // 1. Border: 4 gold lines around the box (an outline, so the background shows through the box)
-    float r=b.h/2;
-    float midW=b.w-b.h;
-    float midCirc= b.x-midW/2;
-    float midCirc2= b.x+midW/2;
-    const int SEG=20;
-    glm::vec4 fill = hover ? glm::mix(BOARDWALK, WHITE, 0.3f) : BOARDWALK;
-    fill.a=0.4;
-    drawRect(b.x, b.y, midW, b.h, 0.0f, fill);
-    for(int dx=0;dx<r;dx++){
-        float sliceH = 2 * sqrt(r*r - dx*dx);
-        drawRect(midCirc2 + dx + 0.5f, b.y, 1, sliceH, 0, fill);
-        drawRect(midCirc - dx - 0.5f, b.y, 1, sliceH, 0, fill);
-    }
-
-    drawLine(midCirc,b.y+r,midCirc2,b.y+r,BORDER,TICKET_GOLD);
-    drawLine(midCirc,b.y-r,midCirc2,b.y-r,BORDER,TICKET_GOLD);
-    for(int i=0;i<SEG;i++){
-        float angle1 = -90 + i * (180.0f / SEG);
-        float angle2 = -90 + (i + 1) * (180.0f / SEG);
-        float angle3 = 90 + i * (180.0f / SEG);
-        float angle4 = 90 + (i + 1) * (180.0f / SEG);
-        float x1 = midCirc2 + r * cos(glm::radians(angle1));
-        float y1 = b.y + r * sin(glm::radians(angle1));
-        float x2 = midCirc2 + r * cos(glm::radians(angle2));
-        float y2 = b.y + r * sin(glm::radians(angle2));
-        float x3 = midCirc + r * cos(glm::radians(angle3));
-        float y3 = b.y + r * sin(glm::radians(angle3));
-        float x4 = midCirc + r * cos(glm::radians(angle4));
-        float y4 = b.y + r * sin(glm::radians(angle4));
-        drawLine(x1, y1, x2, y2, BORDER, TICKET_GOLD); 
-        drawLine(x3, y3, x4, y4, BORDER, TICKET_GOLD); 
-      }
-
-    
-
-    
-
-    // 3. The label, centered:
-    //    textWidth tells us how wide the word is, so we start it half that width left of the center
+    drawCutRect(b.x, b.y, b.w, b.h, CORNER, TICKET_GOLD); //outline
+    drawCutRect(b.x, b.y, b.w - 2*BORDER, b.h - 2*BORDER, CORNER - 2, BTN_SHADOW); //shadow
+    drawCutRect(b.x, b.y + DEPTH/2, b.w - 2*BORDER, b.h - 2*BORDER - DEPTH, CORNER - 2, face);//face
+    drawRect(b.x,b.y+b.h/2-BORDER-LIGHT_H/2,b.w-2*BORDER-2*CORNER,LIGHT_H,0,BTN_LIGHT);
     float textX = b.x - textWidth(b.label, TEXT_SCALE) / 2.0f;
-    float textY = b.y - TEXT_DROP;
+    float textY = b.y - TEXT_DROP + DEPTH/2;
     drawText(b.label, textX, textY, TEXT_SCALE, hover ? TICKET_GOLD : WHITE);
 }
