@@ -36,7 +36,7 @@ static const float BEAT2_START = 3.0f;
 static const float BEAT3_START = 6.0f;   
 static const float BEAT4_START = 7.5f;
 static const float BEAT5_START = 10.0f;
-static const float BEAT6_START = 15.0f;
+static const float BEAT6_START = 10.0f;
 static const float BEAT7_END   = 20.0f;
 
 // beat 1 hand-shake choreography
@@ -314,15 +314,12 @@ static void drawBeat3(float t) {
 
     // the poster grows slightly (1.0 -> 1.08) so the shot isn't frozen
     float zoom = 1.0f + 0.08f * progressBetween(BEAT3_START, BEAT4_START);
-        drawSprite(wheelTexture, 0, 1, 1080.0f, 470.0f, 300.0f, 286.0f, 0, glm::vec4(1.0f), false);
+ 
 
     // visitors walking left -> right, each with a different tint
     glm::vec4 tints[4] = { glm::vec4(1.0f), glm::vec4(0.8f, 0.9f, 1.0f, 1.0f),
                            glm::vec4(1.0f, 0.85f, 0.85f, 1.0f), glm::vec4(0.9f, 1.0f, 0.85f, 1.0f) };
-    for (int i = 0; i < 4; i++) {
-        float vx = fmodf(i * 330.0f + t * 60.0f, 1400.0f) - 60.0f;
-        drawSprite(visitorTexture, (int)(t * 6) % 2, 2, vx, laneFloorY(0) + 58.0f, 82.0f, 116.0f, 0, tints[i], false);
-    }
+
 
     // the poster in front of everything
     drawSprite(posterTexture, 0, 1, 640.0f, 410.0f, 368.0f * zoom, 440.0f * zoom, 0, glm::vec4(1.0f), false);
@@ -453,10 +450,15 @@ static void drawBeat6(float t) {
     float local = t - BEAT6_START;
     drawStageBase(t, true, true, false);
     drawBeat6Actors(t);
+    if (t < 15.0f) drawTapeStatic(t);        // faint static while the tape plays
 
-    if (t >= 17.2f)      subtitleOneLine("Jana: Stay behind me!");
-    else if (t >= 16.0f) subtitleOneLine("Jester: The Golden Ticket... our way out!");
     drawBeatFades(local, 100.0f);
+
+    if (t < 11.6f)       subtitleOneLine("Owner: Hello, hello! Welcome to the carnival!");
+    else if (t < 13.2f)  subtitleOneLine("Owner: Our performers... wander after closing.");
+    else if (t < 15.0f)  subtitleOneLine("Owner: Don't let them reach the Golden Ticket.");
+    else if (t >= 17.2f) subtitleOneLine("Jana: Stay behind me!");
+    else if (t >= 16.0f) subtitleOneLine("Jester: The Golden Ticket... our way out!");
 }
 
 static void drawBeat7(float t) {
@@ -499,8 +501,8 @@ void startCutscene() {
         shadowArmTexture = loadTexture(ASSET_DIR "background/shadow_arm_strip.png");
         ticketTexture    = loadTexture(ASSET_DIR "background/golden_ticket.png");
         posterTexture    = loadTexture(ASSET_DIR "background/job_poster.png");
-        wheelTexture     = loadTexture(ASSET_DIR "background/ferris_wheel.png");
-        visitorTexture   = loadTexture(ASSET_DIR "background/visitor.png");
+        //wheelTexture     = loadTexture(ASSET_DIR "background/ferris_wheel.png");
+        //visitorTexture   = loadTexture(ASSET_DIR "background/visitor.png");
         cassetteTexture  = loadTexture(ASSET_DIR "background/cassette.png");
     }
 }
@@ -531,7 +533,7 @@ void drawCutscene() {
     else if (cutsceneTime < BEAT3_START) drawBeat2(cutsceneTime);
     else if (cutsceneTime < BEAT4_START) drawBeat3(cutsceneTime);
     else if (cutsceneTime < BEAT5_START) drawBeat4(cutsceneTime);
-    else if (cutsceneTime < BEAT6_START) drawBeat5(cutsceneTime);
+    //else if (cutsceneTime < BEAT6_START) drawBeat5(cutsceneTime);
     else if (cutsceneTime < 18.5f)       drawBeat6(cutsceneTime);
     else                                 drawBeat7(cutsceneTime);
 }
