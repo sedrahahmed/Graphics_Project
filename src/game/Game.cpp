@@ -160,7 +160,7 @@ void updateGame(float dt) {
     for (Enemy& e : enemies) {
         e.alive = false;
     }}
-    //updateWaves(dt);
+    updateWaves(dt);
     moveEveryone(dt);
     updateCombat(dt);
     updateShots(dt);

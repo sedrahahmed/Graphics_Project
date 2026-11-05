@@ -18,7 +18,7 @@ const float HOME_BASE_X = 105.0f;      // center of the  booth(homebase)
 const float HUD_Y = 640.0f;     // cards + coin count are fo2 da 
 
 
-const int START_COINS = 60;
+const int START_COINS = 30;
 const int COST_MELEE = 10;  // Mirror Guard
 const int COST_RANGED = 20;    // Lantern Guard 
 const int COST_DEFENSE = 30;   // Sentinel Guard
