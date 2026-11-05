@@ -6,7 +6,7 @@
 
 //da for enemies
 static unsigned int enemyWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it 
-static unsigned int enemyAttackTexture [3]= {0};
+static unsigned int enemyAttackTexture [3]= {0};//load texture takes the pic and gives it to gpu and id
 //Players
 
 static unsigned int playerWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it
@@ -210,20 +210,42 @@ void drawJester(float x, float y, float time, AnimState state, float stateTime, 
 
 
 //Health bar
-// x, y = center of the bar. Placeholder: works already, make it prettier later.
 void drawHealthBar(float x, float y, int current, int max) {
     float w = 50.0f, h = 6.0f;
     float frac = max > 0 ? (float)current / max : 0.0f;
     if (frac < 0.0f) frac = 0.0f; else if (frac > 1.0f) frac = 1.0f;
-    glm::vec4 fillcolor = glm::mix(CURSE_RED, HEALTH_GREEN, frac);   // red -> green as health goes up
-    drawRect(x, y, w+4, h+4, 0, TICKET_GOLD);
-    drawRect(x, y, w, h, 0, BLACK);
+    glm::vec4 fillcolor;
+    if (frac > 0.6)
+        fillcolor = HEALTHBAR_GREEN;  
+    else if (frac > 0.3)
+        fillcolor = HEALTHBAR_ORANGE;    
+    else
+        fillcolor = HEALTHBAR_RED;
+    drawRect(x, y, w+4, h+4, 0, BLACK);
+    drawCircle(x+w/2,y, (h+4)/2, BLACK);
+    drawRect(x, y, w, h, 0, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+    drawCircle(x+w/2,y, h/2, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     drawRect(x - w / 2 + (w * frac) / 2, y, w * frac, h, 0, fillcolor);
+    if(frac >= 1)
+        drawCircle(x+w/2,y, h/2, fillcolor);
+    float shineW = w*frac*0.8;
+    drawRect(x-w/2+2+shineW/2, y+h/4, shineW, h/4, 0, glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
     float left = x-w/2;
     float segmentWidth = w/max;
     for(int i=1; i<max;i++){
         float dx=left + i * segmentWidth;
         drawLine(dx, y-h/2, dx, y+h/2, 1,BLACK);
     }
+    float hx=x-w/2;
+    float hy=y;
+    float s=h*2.2;
+    drawCircle(hx - s/4, hy + s/6, s/4+ 1.5, BLACK);
+    drawCircle(hx + s/4, hy + s/6, s/4+1.5, BLACK);
+    drawTriangle(hx, hy - s/6, s+3, s * 0.6f+3, 180, BLACK);
+    drawCircle(hx - s/4, hy + s/6, s/4, HEART_RED);
+    drawCircle(hx + s/4, hy + s/6, s/4, HEART_RED);
+    drawTriangle(hx, hy - s/6, s, s * 0.6f, 180, HEART_RED);
+    drawRect(hx - s/4, hy + s/4, s/6, s/6, 0, WHITE);
+
 }
 

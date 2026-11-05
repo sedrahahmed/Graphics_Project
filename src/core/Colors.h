@@ -26,3 +26,9 @@ const glm::vec4 HEALTH_GREEN    (0.2f, 0.9f, 0.3f, 1.0f);
 const glm::vec4 HIGHLIGHT       (1.0f, 1.0f, 1.0f, 0.15f);   // lane hover (transparent)
 const glm::vec4 DARK_BROWN      (0.28f, 0.18f, 0.11f, 1.0f);   // lane dividers
 const glm::vec4 SELECTED_LANE   (1.0f, 1.0f, 1.0f, 0.25f);   // lane selected (transparent)
+
+//healthbar
+const glm::vec4 HEALTHBAR_RED  (0.90f, 0.10f, 0.10f, 1.0f);
+const glm::vec4 HEALTHBAR_GREEN (0.45f, 0.85f, 0.15f, 1.0f); 
+const glm::vec4 HEALTHBAR_ORANGE  (1.00f, 0.55f, 0.05f, 1.0f);
+const glm::vec4 HEART_RED       (0.90f, 0.10f, 0.15f, 1.0f);
