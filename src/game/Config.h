@@ -40,12 +40,12 @@ const float SPEED_JESTER = 70.0f;   // bec da hayegry
 const float SPEED_PROJECTILE = 250.0f;
 
 
-const float ATTACK_COOLDOWN = 1.0f;    
+const float ATTACK_COOLDOWN = 2.0f;     
 const float JUMP_DURATION = 0.6f;
 const float DUCK_DURATION = 0.6f;
 const float Walk_ANIMATION_SPEED = 0.8f;   // time per frame for walk animation
-const float ENEMY_FRAMES_PER_SECOND = 5.0f; 
-const float ATTACK_FRAMES_PER_SECOND = 5.0f;
+const float ATTACK_FRAMES_PER_SECOND = 8.0f / ATTACK_COOLDOWN;
+const float ENEMY_FRAMES_PER_SECOND  = 8.0f / ATTACK_COOLDOWN;
 
 const int WAVE_SIZES[3] = { 3, 5, 10 };
 const float SPAWN_INTERVAL = 4.0f;    // time between the enemies lama yetla3o
