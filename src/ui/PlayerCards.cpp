@@ -60,8 +60,8 @@ void drawPlayerCards() {
         drawGuardIcon(type,x,y,cardWidth,cardHeight,tint);
 
         glm::vec4 priceColour = unlocked ? TICKET_GOLD : glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-        drawCircle(x - 15, y - 38, 7, priceColour);
-        drawText(std::to_string(costOf(type)), x - 4, y - 45, 0.4f, priceColour);
+        drawCircle(x - 10, y - cardHeight/2 -12, 5, priceColour);
+        drawText(std::to_string(costOf(type)), x - 2, y - cardHeight/2 -18, 0.3f, priceColour);
         
     
  }
