@@ -25,7 +25,7 @@ void updateLanes() {
         hoveredLane = -1;
    if(mouseClicked() && hoveredLane != -1) { //If the mouse was clicked and the mouse is over a lane, then we check if a card is selected. If it is, we place the guard in that lane. If not, we toggle the selection of that lane.
         if (hasSelectedCard()) { 
-            if(placeGuard(getSelectedCard(), hoveredLane)) {
+            if(placeGuard(getSelectedCard(), hoveredLane, m.x)) {   // m.x = where you clicked
                 clearSelectedCard(); //Clear the selected card after placing the guard.
             }
         } else {

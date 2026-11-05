@@ -164,6 +164,10 @@ void drawToken(float x, float y, float time) {
     drawSprite(tokenTexture, 0, 1, x, y + size / 2, size, size, 0.0f, WHITE);
 }
 
+void drawTokenIcon(float x, float y, float size, glm::vec4 tint) {
+    drawSprite(tokenTexture, 0, 1, x, y, size, size, 0.0f, tint);
+}
+
 
 //Enemies
 

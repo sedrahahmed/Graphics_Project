@@ -214,13 +214,18 @@ void drawGame() {
 float laneCenterY(int lane) { return LANE_BOTTOM + LANE_HEIGHT * lane + LANE_HEIGHT / 2.0f; }
 float laneFloorY(int lane)  { return LANE_BOTTOM + LANE_HEIGHT * lane + 10.0f; }
 
-bool placeGuard(PlayerType type, int lane) { 
+bool placeGuard(PlayerType type, int lane, float x) {
     if(!spend(type)) 
         return false; //If the player can't afford the guard, return false.
     Player newPlayer;
     newPlayer.type = type;
     newPlayer.lane = lane;
-    newPlayer.x = LANE_LEFT + 40.0f; //Place the guard at the left edge of the lane. 
+    newPlayer.x = LANE_LEFT + 40.0f; //Place the guard at the left edge of the lane.
+    if (type == DEFENSE_GUARD && x >= 0) {   // Defense Guard goes where the mouse clicked
+        newPlayer.x = x;
+        if (newPlayer.x < LANE_LEFT + 40.0f)  newPlayer.x = LANE_LEFT + 40.0f;    // keep it fully inside the lane
+        if (newPlayer.x > LANE_RIGHT - 40.0f) newPlayer.x = LANE_RIGHT - 40.0f;
+    }
     newPlayer.maxHealth = maxHealthOf(type);
     newPlayer.health = newPlayer.maxHealth;
     newPlayer.state = (newPlayer.type == DEFENSE_GUARD) ? IDLE : WALK; //Defense guards start idle, others start walking.

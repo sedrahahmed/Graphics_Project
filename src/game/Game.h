@@ -45,7 +45,8 @@ float laneFloorY(int lane);   // y where characters' feet stand in the lane
 // Called by Lanes (Person B) when a lane is clicked with a card selected.
 // Checks coins, pays, adds the guard at the left of the lane.
 // Returns false if it can't be afforded (nothing happens).
-bool placeGuard(PlayerType type, int lane);
+// x = where to put a Defense Guard (mouse x). Left out (-1) = left edge of the lane.
+bool placeGuard(PlayerType type, int lane, float x = -1.0f);
 
 // Called by Waves (Person D). Adds a villain at the right edge, full health.
 void spawnEnemy(EnemyType type, int lane);
