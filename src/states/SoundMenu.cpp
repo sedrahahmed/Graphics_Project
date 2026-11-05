@@ -13,9 +13,9 @@
 static const float CENTER_X = SCREEN_W / 2.0f;
 static Button upButton    = { CENTER_X + 150, 470, 120, 55, "+" };
 static Button downButton  = { CENTER_X - 150, 470, 120, 55, "-" };
-static Button musicButton = { CENTER_X - 150, 400, 280, 55, "MUSIC: ON" };
-static Button sfxButton   = { CENTER_X + 150, 400, 280, 55, "EFFECTS: ON" };//x y  width height
-static Button muteAll     = { CENTER_X,       330, 370, 55, "MUSIC & EFFECTS: ON" };
+static Button musicButton = { CENTER_X - 130, 400, 240, 55, "MUSIC: ON" };
+static Button sfxButton   = { CENTER_X + 130, 400, 240, 55, "EFFECTS: ON" };//x y  width height
+static Button muteAll     = { CENTER_X,       330, 350, 55, "MUSIC & EFFECTS: ON" };
 static Button backButton  = { CENTER_X,       260, 240, 55, "BACK" };
 
 // The volume bar between the - and + buttons
@@ -50,8 +50,8 @@ void drawSoundMenu() {
 
     // The mute button's word changes so you know what clicking it will do
     musicButton.label = isMusicMuted() ? "MUSIC: OFF" : "MUSIC: ON";
-    sfxButton.label = isSoundEffectsMuted() ? "SoundEffects: OFF" : "SoundEffects: ON";
-    muteAll.label = isSoundEffectsMuted()&&isMusicMuted() ? "MUSIC & EFFECTS: OFF" : "MUSIC & EFFECTS: ON";
+    sfxButton.label = isSoundEffectsMuted() ? "SFX: OFF" : "SFX: ON";
+    muteAll.label = isSoundEffectsMuted()&&isMusicMuted() ? "MUSIC & SFX: OFF" : "MUSIC & SFX: ON";
 
     drawButton(downButton);
     drawButton(upButton);
