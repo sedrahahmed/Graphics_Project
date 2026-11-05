@@ -26,7 +26,7 @@ void drawGuardIcon(PlayerType type, float x, float y, float w,float h, glm::vec4
     
 }
 
-void drawMirrorGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
+void drawMirrorGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
     unsigned int tex;
     int frames;
     int frame;
@@ -62,12 +62,12 @@ void drawMirrorGuard(float x, float y, float time, AnimState state, float stateT
     }
         float size = 160;
         drawSprite(tex, frame, frames, x, y + size / 2 - 4, size, size, 0.0f,
-        damageTint(WHITE, healthFrac)); 
+        damageTint(WHITE, healthFrac), flipX);
         }
 
 
         
-void drawLanternGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
+void drawLanternGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
     unsigned int tex;
     int frames;
     int frame;
@@ -102,16 +102,24 @@ void drawLanternGuard(float x, float y, float time, AnimState state, float state
     float size = 160;
     if (state == DUCK) size = 130;
     drawSprite(tex, frame, frames, x, y + size / 2-4, size, size, 0.0f,
-    damageTint(WHITE, healthFrac));
+    damageTint(WHITE, healthFrac), flipX);
 }
-void drawDefenseGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
+void drawDefenseGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
     unsigned int tex;
     int frame;
     if (state == WALK && playerWalkTexture[DEFENSE_GUARD] != 0) {
         // only the cutscene ever puts Jana in WALK (beat 3/4 walk-ins);
-        // gameplay never does, so nothing changes on the field
-        tex = playerWalkTexture[DEFENSE_GUARD];                   // jana_walk strip
+        // gameplay never does, so nothing changes on the field.
+        // jana_walk.png frames are tall (272 x 724) with lots of empty space:
+        // she fills only ~35% of the frame height and her feet are ~31% up from the bottom.
+        // So draw the frame at its real shape, scaled so she's as tall as in jana_defend.
         frame = (int)(time * 8) % 8;
+        float h = 335.0f;                          // frame height on screen -> Jana ~118 px tall, like jana_defend
+        float w = h * (272.0f / 724.0f);           // keep the frame's shape (no squishing)
+        float centerY = y + 7.0f + h * (0.5f - 0.31f);   // feet land where jana_defend's feet are
+        drawSprite(playerWalkTexture[DEFENSE_GUARD], frame, 8, x, centerY, w, h, 0.0f,
+                   damageTint(WHITE, healthFrac), flipX);
+        return;
     } else {
         tex = playerAttackTexture[DEFENSE_GUARD];    // jana_defend: bracing / standing
         if (state == ATTACK)                                  // bracing frames while blocked
@@ -121,14 +129,14 @@ void drawDefenseGuard(float x, float y, float time, AnimState state, float state
     }
     float size = 140;
     drawSprite(tex, frame, 8, x, y + size / 2-4, size, size, 0.0f,
-    damageTint(WHITE, healthFrac));
+    damageTint(WHITE, healthFrac), flipX);
 }
 
-void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac) {
+void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
     switch (type) {
-        case MIRROR_GUARD:   drawMirrorGuard(x, y, time, state, stateTime, healthFrac); break;
-        case LANTERN_GUARD:  drawLanternGuard(x, y, time, state, stateTime, healthFrac); break;
-        case DEFENSE_GUARD:  drawDefenseGuard(x, y, time, state, stateTime, healthFrac); break;
+        case MIRROR_GUARD:   drawMirrorGuard(x, y, time, state, stateTime, healthFrac, flipX); break;
+        case LANTERN_GUARD:  drawLanternGuard(x, y, time, state, stateTime, healthFrac, flipX); break;
+        case DEFENSE_GUARD:  drawDefenseGuard(x, y, time, state, stateTime, healthFrac, flipX); break;
     }
 }
 

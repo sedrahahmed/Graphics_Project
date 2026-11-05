@@ -1,12 +1,13 @@
 // Cutscene.cpp. Owner: Person D
 // The 20-second intro (script v2: "Golden Ticket"). Seven beats on ONE clock:
 //
-//   0.0- 2.5  The deal          owner + shadow handshake, red flash, gold ticket
-//   2.5- 5.0  The curse         performers turn red, lights flicker
-//   5.0- 7.5  The job           daytime, ferris wheel, crowd, poster, guards walk in
-//   7.5-10.0  The first night   booth, cassette, guards walk over, PLAY pressed
-//  10.0-15.0  The recording     black + static, owner's three lines
-//  15.0-18.5  The curse awakens game stage: performers walk in, ball vs Lama, Jester vs Jana
+//   0.0- 3.0  The deal          owner + shadow handshake, red flash, gold ticket
+//   3.0- 7.0  The curse         performers turn red, lights flicker
+//   7.0- 8.5  The job           daytime, poster
+//   8.5-11.0  The first night   booth, cassette, guards walk in and stop, PLAY pressed
+//  11.0-16.0  The chase         owner's three lines play while the guards run left
+//                               to their posts with the performers chasing them
+//  16.0-18.5  The curse awakens guards turn around: ball vs Lama, Jester vs Jana
 //  18.5-20.0  Night One         fade to black, title card, fades into the game
 //
 // Every position / tint / subtitle is computed from cutsceneTime each frame,
@@ -33,10 +34,10 @@ static unsigned int ownerTexture = 0, shadowArmTexture = 0, ticketTexture = 0,
 // ---------------- timeline (seconds) ----------------
 static const float BEAT1_START = 0.0f;
 static const float BEAT2_START = 3.0f;   
-static const float BEAT3_START = 6.0f;   
-static const float BEAT4_START = 7.5f;
-static const float BEAT5_START = 10.0f;
-static const float BEAT6_START = 10.0f;
+static const float BEAT3_START = 7.0f;    // beat 2 got 1 extra second
+static const float BEAT4_START = 8.5f;
+static const float BEAT5_START = 11.0f;
+static const float BEAT6_START = 11.0f;
 static const float BEAT7_END   = 20.0f;
 
 // beat 1 hand-shake choreography
@@ -332,6 +333,23 @@ static void drawBeat3(float t) {
 }
 
 
+// ================= guard formation (shared by beat 4 and beat 6) =================
+// Everyone (guards AND performers) moves left at ONE steady speed and stops at
+// STOP_TIME, when the owner finishes talking. Nobody speeds up, slows down or pauses.
+// POST = where each guard stops. Lane 1: Jana in front, Seif behind her. Lane 2: Lama.
+static const float CHASE_SPEED     = 130.0f;   // guards, pixels per second (start off-screen right in beat 4)
+static const float PERFORMER_SPEED = 130.0f;   // performers: same speed, so the chase gap stays the same
+static const float STOP_TIME       = 16.0f;    // owner's last line ends -> everyone stops, guards turn, fight starts
+static const float SEIF_POST_X = 320.0f, JANA_POST_X = 460.0f, LAMA_POST_X = 400.0f;
+static const float JESTER_STOP_X = 700.0f, CLOWN_STOP_X = 680.0f, MAGICIAN_STOP_X = 820.0f;
+
+// x of someone who walks left at a steady speed and stops at stopX at STOP_TIME
+static float chaseX(float stopX, float t, float speed = CHASE_SPEED) {
+    float timeLeft = STOP_TIME - t;
+    if (timeLeft < 0.0f) timeLeft = 0.0f;
+    return stopX + speed * timeLeft;
+}
+
 // ================= BEAT 4: the first night (7.5 - 10.0) =================
 
 static void drawBeat4(float t) {
@@ -339,28 +357,22 @@ static void drawBeat4(float t) {
     drawStageBase(t, true, true, false);
     drawMoonRise(t);
 
-    // guards walk from x = 600 toward the booth
-    float p = progressBetween(7.6f, 9.4f);
-    float seifX = lerp(600.0f, 340.0f, p);
-    float janaX = lerp(540.0f, 280.0f, p);
-    float lamaX = lerp(480.0f, 220.0f, p);
-    bool walking = p < 1.0f;
-    int lane = 1;
-    AnimState st = walking ? WALK : ATTACK;
+    // guards walk left, facing left; they keep going at the same speed into beat 6
+    float seifX = chaseX(SEIF_POST_X, t);
+    float janaX = chaseX(JANA_POST_X, t);
+    float lamaX = chaseX(LAMA_POST_X, t);
+    bool walking = true;
+    AnimState st = WALK;
 
-    drawGuard(seifX, laneFloorY(lane), MIRROR_GUARD,  t, st, 0.0f, 1.0f);
-    drawGuard(janaX, laneFloorY(lane), DEFENSE_GUARD, t, st, 0.0f, 1.0f);
-    // Lama (nearest the booth) reaches for PLAY at 9.6s
-    if (t >= 9.6f) {
-        drawGuard(lamaX, laneFloorY(lane), LANTERN_GUARD, t, ATTACK, t - 9.6f, 1.0f);
-    } else {
-        drawGuard(lamaX, laneFloorY(lane), LANTERN_GUARD, t, st, 0.0f, 1.0f);
-    }
+    // back lane first so the front lane is drawn over it
+    drawGuard(lamaX, laneFloorY(3), LANTERN_GUARD, t, st, 0.0f, 1.0f, walking);
+    drawGuard(seifX, laneFloorY(1), MIRROR_GUARD,  t, st, 0.0f, 1.0f, walking);   // face left while walking
+    drawGuard(janaX, laneFloorY(1), DEFENSE_GUARD, t, st, 0.0f, 1.0f, walking);
 
-        drawCassette(150.0f, 157.0f, t >= 9.6f);  // on the booth counter; PLAY pressed at 9.6s
+        drawCassette(150.0f, 157.0f, t >= 10.6f);  // on the booth counter; PLAY pressed at 10.6s
 
 
-    drawBeatFades(local, BEAT5_START - BEAT4_START);
+    drawBeatFades(local, 100.0f);   // fade in only: beat 6 continues the same shot, no black dip
     subtitleTwoLines("Three new guards took the night shift,",
                     "unaware of what happened to the ones before.");
 }
@@ -383,48 +395,58 @@ static void drawBeat5(float t) {
 static void drawBeat6Actors(float t) {
     float laneY1 = laneFloorY(1);
     float laneY2 = laneFloorY(2);
+    float laneY3 = laneFloorY(3);
+    // lanes: 1 = Seif, Jana, Jester | 2 = Magician | 3 = Lama, Clown (ball + jump)
 
-    // the guards are already at their posts
-    drawGuardAtPost(MIRROR_GUARD, 460.0f, 1, t, 0.0f);              // Seif
-    if (t < 16.3f) drawGuardAtPost(DEFENSE_GUARD, 560.0f, 1, t, 0.0f);
-    else           drawGuardAtPost(DEFENSE_GUARD, 560.0f, 1, t, t - 16.3f);   // Jana braces
+    // 11-16 (while the owner talks): the guards run back toward the booth facing left,
+    // with the performers chasing. At 16 they reach their posts and turn to face them.
+    bool running = t < STOP_TIME;
+    AnimState guardSt = running ? WALK : ATTACK;
+    float seifX = chaseX(SEIF_POST_X, t);   // same formula as beat 4, so no jump between beats
+    float janaX = chaseX(JANA_POST_X, t);
+    float lamaX = chaseX(LAMA_POST_X, t);
 
-    // three pairs of red eyes appear on the right at 15.0 (the performers, not in
-    // yet). They fade out once the performers themselves start walking in.
-    float peekA = progressBetween(15.0f, 15.2f) * (1.0f - progressBetween(15.4f, 15.7f));
+    drawGuard(seifX, laneY1, MIRROR_GUARD, t, guardSt, 0.0f, 1.0f, running);
+    if (t < 16.3f) drawGuard(janaX, laneY1, DEFENSE_GUARD, t, guardSt, 0.0f, 1.0f, running);
+    else           drawGuard(janaX, laneY1, DEFENSE_GUARD, t, ATTACK, t - 16.3f, 1.0f);   // Jana braces
+
+    // three pairs of red eyes appear on the right at 11.0 (the performers, not in
+    // yet). They fade out once the performers themselves come on screen.
+    float peekA = progressBetween(11.0f, 11.2f) * (1.0f - progressBetween(11.4f, 11.7f));
     drawRedEyes(1290.0f, laneY1 + 85.0f, peekA);                    // Jester's pair
-    drawRedEyes(1315.0f, laneY2 + 85.0f, peekA);                    // Clown's pair
+    drawRedEyes(1315.0f, laneY3 + 85.0f, peekA);                    // Clown's pair
     drawRedEyes(1335.0f, laneY2 + 85.0f, peekA);                    // Magician's pair
 
-    // the performers walk in from x = 1350 (15.2 - 16.0) and stop
-    float p = progressBetween(15.2f, 16.0f);
-    float clownX = lerp(1350.0f, 980.0f, p);                        // lane 2 (per script)
-    float jesterX = lerp(1350.0f, 960.0f, p);                       // lane 1
-    float magX = lerp(1350.0f, 1120.0f, p);                         // lane 2
+    // the performers chase in from off-screen right (at 11 s they're at x 1330+),
+    // gaining on the guards, and stop close behind them at STOP_TIME
+    bool chasing = t < STOP_TIME;
+    float clownX  = chaseX(CLOWN_STOP_X,    t, PERFORMER_SPEED);    // lane 3
+    float jesterX = chaseX(JESTER_STOP_X,   t, PERFORMER_SPEED);    // lane 1
+    float magX    = chaseX(MAGICIAN_STOP_X, t, PERFORMER_SPEED);    // lane 2
 
-    // the Jester lunges toward Jana from 16.3 (lands at x = 640 by 16.8)
+    // the Jester lunges toward Jana from 16.3 (lands just in front of her by 16.8)
     float lungeP = 0.0f;
     if (t >= 16.0f) {
         lungeP = progressBetween(16.3f, 16.8f);
-        jesterX = lerp(jesterX, 640.0f, lungeP);
+        jesterX = lerp(jesterX, JANA_POST_X + 80.0f, lungeP);
     }
 
-    // clown throws the ball at Lama at 16.2 (250 px/s, leftwards). It rolls under
-    // her jump (17.8 - 18.4) and dies at LANE_LEFT like in gameplay.
+    // clown throws the ball at Lama at 16.2 (250 px/s like in gameplay, leftwards).
+    // It reaches her at ~17.3, the middle of her jump (17.0 - 17.6), and dies at LANE_LEFT.
     if (t >= 16.2f) {
-        float ballX = 960.0f - 250.0f * (t - 16.2f);
-        if (ballX > LANE_LEFT) drawJuggleBall(ballX, laneY2, t, 0.0f);
+        float ballX = (CLOWN_STOP_X - 20.0f) - 250.0f * (t - 16.2f);
+        if (ballX > LANE_LEFT) drawJuggleBall(ballX, laneY3, t, 0.0f);
     }
 
-    // Lama jumps 17.8 - 18.4 (the exact control the player will press next).
+    // Lama jumps 17.0 - 17.6 (the exact control the player will press next).
     // Otherwise she just stands at her post.
-    if (t >= 17.8f) {
-        float jp = (t - 17.8f) / 0.6f;
+    if (t >= 17.0f) {
+        float jp = (t - 17.0f) / 0.6f;
         if (jp > 1.0f) jp = 1.0f;
         float bob = sinf(jp * 3.1415926f) * 42.0f;                  // small hop arc
-        drawGuard(500.0f, laneY2 + bob, LANTERN_GUARD, t, JUMP, t - 17.8f, 1.0f);
+        drawGuard(LAMA_POST_X, laneY3 + bob, LANTERN_GUARD, t, JUMP, t - 17.0f, 1.0f);
     } else {
-        drawGuardAtPost(LANTERN_GUARD, 500.0f, 2, t, 0.0f);
+        drawGuard(lamaX, laneY3, LANTERN_GUARD, t, guardSt, 0.0f, 1.0f, running);
     }
 
     // performers: walking while p<1, then standing; the clown winds up his throw
@@ -432,15 +454,15 @@ static void drawBeat6Actors(float t) {
     float clownStateTime = 0.0f;
     if (t >= 16.0f) { clownSt = ATTACK; clownStateTime = 0.0f; }
     if (t >= 16.2f) { clownStateTime = t - 16.2f; }                 // throw animation plays
-    drawEnemy(clownX, laneY2, CLOWN, t, clownSt, clownStateTime, 1.0f);
-    drawRedEyes(clownX, laneY2 + 85.0f, 1.0f);                      // eyes ride with them
+    drawEnemy(clownX, laneY3, CLOWN, t, clownSt, clownStateTime, 1.0f);
+    drawRedEyes(clownX, laneY3 + 85.0f, 1.0f);                      // eyes ride with them
 
-    AnimState jesterSt = (p < 1.0f || (t >= 16.3f && lungeP < 1.0f)) ? WALK : ATTACK;
+    AnimState jesterSt = (chasing || (t >= 16.3f && lungeP < 1.0f)) ? WALK : ATTACK;
     float jesterStateTime = (jesterSt == ATTACK) ? t - 16.8f : 0.0f;
     drawEnemy(jesterX, laneY1, JESTER, t, jesterSt, jesterStateTime, 1.0f);
     drawRedEyes(jesterX, laneY1 + 85.0f, 1.0f);
 
-    AnimState magSt = (p < 1.0f) ? WALK : ATTACK;
+    AnimState magSt = chasing ? WALK : ATTACK;
     float magStateTime = (magSt == ATTACK) ? t - 16.0f : 0.0f;
     drawEnemy(magX, laneY2, MAGICIAN, t, magSt, magStateTime, 1.0f);
     drawRedEyes(magX, laneY2 + 85.0f, 1.0f);
@@ -450,13 +472,12 @@ static void drawBeat6(float t) {
     float local = t - BEAT6_START;
     drawStageBase(t, true, true, false);
     drawBeat6Actors(t);
-    if (t < 15.0f) drawTapeStatic(t);        // faint static while the tape plays
+    // (no tape static over the stage: the chase is shown clean while the owner talks)
+    // no fade here: it continues straight on from beat 4
 
-    drawBeatFades(local, 100.0f);
-
-    if (t < 11.6f)       subtitleOneLine("Owner: Hello, hello! Welcome to the carnival!");
-    else if (t < 13.2f)  subtitleOneLine("Owner: Our performers... wander after closing.");
-    else if (t < 15.0f)  subtitleOneLine("Owner: Don't let them reach the Golden Ticket.");
+    if (t < 12.6f)       subtitleOneLine("Owner: Hello, hello! Welcome to the carnival!");
+    else if (t < 14.2f)  subtitleOneLine("Owner: Our performers... wander after closing.");
+    else if (t < 16.0f)  subtitleOneLine("Owner: Don't let them reach the Golden Ticket.");
     else if (t >= 17.2f) subtitleOneLine("Jana: Stay behind me!");
     else if (t >= 16.0f) subtitleOneLine("Jester: The Golden Ticket... our way out!");
 }
@@ -515,12 +536,12 @@ void updateCutscene(float dt) {
     // Sounds: fired once, the moment their cue time is crossed.
     // (rumble / thud / deep hit / wind / footsteps / static / final note are
     //  TODO when the team drops the extra files in assets/sounds.)
-    if (previousCutsceneTime < 9.6f  && cutsceneTime >= 9.6f)  playSoundEffect(SOUND_CASSETTE);      // PLAY pressed
-    if (previousCutsceneTime < 10.0f && cutsceneTime >= 10.0f) {                                     // tape starts
+    if (previousCutsceneTime < 10.6f && cutsceneTime >= 10.6f) playSoundEffect(SOUND_CASSETTE);      // PLAY pressed
+    if (previousCutsceneTime < 11.0f && cutsceneTime >= 11.0f) {                                     // tape starts
         stopMusic();
         playSoundEffect(SOUND_OWNER_VOICE);
     }
-    if (previousCutsceneTime < 15.0f && cutsceneTime >= 15.0f) {                                     // midnight
+    if (previousCutsceneTime < 16.0f && cutsceneTime >= 16.0f) {                                     // midnight: guards turn, fight starts
         playMusic();                               // carnival music back on (creepier feel: TODO)
         playSoundEffect(SOUND_CLOCK);
     }
