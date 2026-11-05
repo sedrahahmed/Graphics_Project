@@ -5,3 +5,4 @@
 
 void updateMainMenu();   // button clicks -> changeState(...)
 void drawMainMenu();
+void initMainMenu();
