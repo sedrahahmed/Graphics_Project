@@ -6,7 +6,9 @@
 static ma_engine engine;
 static ma_sound backgroundMusic;
 static bool ready = false;
-static float volume = 1.0f;
+static float volume = 0.5f;
+static float musicVolume = 0.5f;
+static float soundEffectVolume = 1.0f;
 static bool musicMuted = false;
 static bool soundEffectsMuted = false;
 static ma_sound_group soundEffects;
@@ -29,6 +31,9 @@ void initSound() {
     ma_sound_group_init(&engine, 0, NULL, &soundEffects);
     ma_sound_init_from_file(&engine, ASSET_DIR "sounds/music.mp3", MA_SOUND_FLAG_STREAM, NULL, NULL, &backgroundMusic);
     ma_sound_set_looping(&backgroundMusic, MA_TRUE);
+    ma_engine_set_volume(&engine, volume);
+    ma_sound_set_volume(&backgroundMusic, musicVolume);
+    ma_sound_group_set_volume(&soundEffects, soundEffectVolume);
  }
 void shutdownSound() {
     if(ready){
@@ -56,28 +61,28 @@ void volumeUp() {
     if(volume > 1) volume = 1;
     if(ready){
         ma_engine_set_volume(&engine,volume);
-        ma_sound_set_volume(&backgroundMusic, musicMuted ? 0.0f : 1.0f);
-        ma_sound_group_set_volume(&soundEffects, soundEffectsMuted ? 0.0f : 1.0f);    }
+        ma_sound_set_volume(&backgroundMusic, musicMuted ? 0.0f : musicVolume);
+        ma_sound_group_set_volume(&soundEffects, soundEffectsMuted ? 0.0f : soundEffectVolume);    }
 }
 void volumeDown() {
     volume = volume - 0.1;
     if(volume < 0) volume = 0;
     if(ready){
         ma_engine_set_volume(&engine,volume);
-        ma_sound_set_volume(&backgroundMusic, musicMuted ? 0.0f : 1.0f);
-        ma_sound_group_set_volume(&soundEffects, soundEffectsMuted ? 0.0f : 1.0f);
+        ma_sound_set_volume(&backgroundMusic, musicMuted ? 0.0f : musicVolume);
+        ma_sound_group_set_volume(&soundEffects, soundEffectsMuted ? 0.0f : soundEffectVolume);
     }
 }
 void toggleMusicMute() {
     musicMuted = !musicMuted;
     if(ready){
-        ma_sound_set_volume(&backgroundMusic, musicMuted ? 0.0f : 1);
+        ma_sound_set_volume(&backgroundMusic, musicMuted ? 0.0f : musicVolume);
     }
 }
 void toggleSoundEffectsMute() {
     soundEffectsMuted = !soundEffectsMuted;
     if(ready){
-        ma_sound_set_volume(&soundEffects, soundEffectsMuted ? 0.0f : 1);
+        ma_sound_group_set_volume(&soundEffects, soundEffectsMuted ? 0.0f : soundEffectVolume);
     }
 }
 float getVolume() { return volume; }

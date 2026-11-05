@@ -120,8 +120,8 @@ static AttackHeight heightOf(ShotType type) {
     
     switch(type) {
         case LANTERN_ORB: return HIGH;
-        case CURSED_CARD: return LOW;
-        case JUGGLE_BALL: return MELEE_HIT;
+        case CURSED_CARD: return HIGH;
+        case JUGGLE_BALL: return LOW;
         default:          return MELEE_HIT;
     }
 }

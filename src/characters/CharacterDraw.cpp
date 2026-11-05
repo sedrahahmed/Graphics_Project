@@ -30,16 +30,16 @@ void drawMirrorGuard(float x, float y, float time, AnimState state, float stateT
         }
         case JUMP :{
             tex = playerJumpTexture[MIRROR_GUARD];
-            frames = 4;
-            frame = (int)(stateTime / JUMP_DURATION * 4);              // plays once over the jump
-            if (frame > 3) frame = 3;
+            frames = 8;
+            frame = (int)(stateTime / JUMP_DURATION * 8);              // plays once over the jump
+            if (frame > 7) frame = 7;
             break;
         }
         case DUCK :{
             tex = playerDuckTexture[MIRROR_GUARD];
-            frames = 4;
-            frame = (int)(stateTime / DUCK_DURATION * 4);
-            if (frame > 3) frame = 3;
+            frames = 8;
+            frame = (int)(stateTime / DUCK_DURATION * 8);
+            if (frame > 7) frame = 7;
             break;
         }
 
@@ -51,8 +51,8 @@ void drawMirrorGuard(float x, float y, float time, AnimState state, float stateT
         }
 
     }
-        float size = 140;
-        drawSprite(tex, frame, frames, x, y + size / 2, size, size, 0.0f,
+        float size = 160;
+        drawSprite(tex, frame, frames, x, y + size / 2 - 4, size, size, 0.0f,
         damageTint(WHITE, healthFrac)); 
     }
 
@@ -71,16 +71,16 @@ void drawLanternGuard(float x, float y, float time, AnimState state, float state
         }
         case JUMP: {
             tex = playerJumpTexture[LANTERN_GUARD];
-            frames = 4;
-            frame = (int)(stateTime / JUMP_DURATION * 4);              // plays once over the jump
-            if (frame > 3) frame = 3;
+            frames = 8;
+            frame = (int)(stateTime / DUCK_DURATION * 8);
+            if (frame > 7) frame = 7;
             break;
         }
         case DUCK: {
             tex = playerDuckTexture[LANTERN_GUARD];
-            frames = 4;
-            frame = (int)(stateTime / DUCK_DURATION * 4);
-            if (frame > 3) frame = 3;
+            frames = 8;
+            frame = (int)(stateTime / DUCK_DURATION * 8);
+            if (frame > 7) frame = 7;
             break;
         }
         default: {
@@ -90,7 +90,7 @@ void drawLanternGuard(float x, float y, float time, AnimState state, float state
             break;
         }
     }
-    float size = 140;
+    float size = 160;
     drawSprite(tex, frame, frames, x, y + size / 2, size, size, 0.0f,
                damageTint(WHITE, healthFrac));
 }
@@ -101,9 +101,9 @@ void drawDefenseGuard(float x, float y, float time, AnimState state, float state
         tex = playerAttackTexture[DEFENSE_GUARD];                     // jana_defend: bracing
         frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
     } else {
-        tex = playerWalkTexture[DEFENSE_GUARD];                       // standing, animated
-        frame = (int)(time * 8) % 8;                                  // loops forever
-    }
+    tex = playerAttackTexture[DEFENSE_GUARD];    // jana_defend
+    frame = 0;                                   // first frame, standing still
+}
     float size = 140;
     drawSprite(tex, frame, 8, x, y + size / 2 , size, size, 0.0f,
     damageTint(WHITE, healthFrac));
@@ -130,15 +130,15 @@ void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, fl
 void drawLanternOrb(float x, float y, float hitProgress) { drawCircle(x, y, 8, GHOST_LIGHT); }   // TODO
 void drawSpark(float x, float y, float time, float hitProgress){
     int frame = (int)(time * 10) % 4;                     // twinkles, 10 frames per second
-    float size = 80.0f * (1.0f - hitProgress);           // shrinks to nothing on impact
+    float size = 140.0f * (1.0f - hitProgress);           // shrinks to nothing on impact
     glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress); // and fades out
-    drawSprite(sparkTexture, frame, 4, x, y, size, size, 0.0f, tint);
+    drawSprite(sparkTexture, frame, 4, x, y - 4, size, size, 0.0f, tint);
 }
 void drawJuggleBall(float x, float y, float time, float hitProgress){
     int frame = (int)(time * 12) % 4;                     // star turns as it rolls
-    float size = 64.0f * (1.0f - hitProgress);
+    float size = 110.0f * (1.0f - hitProgress);
     glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress);
-    drawSprite(clownBallTexture, frame, 4, x, y, size, size, 0.0f, tint);
+    drawSprite(clownBallTexture, frame, 4, x, y+15, size, size, 0.0f, tint);
 }
 
 
@@ -210,20 +210,42 @@ void drawJester(float x, float y, float time, AnimState state, float stateTime, 
 
 
 //Health bar
-// x, y = center of the bar. Placeholder: works already, make it prettier later.
 void drawHealthBar(float x, float y, int current, int max) {
     float w = 50.0f, h = 6.0f;
     float frac = max > 0 ? (float)current / max : 0.0f;
     if (frac < 0.0f) frac = 0.0f; else if (frac > 1.0f) frac = 1.0f;
-    glm::vec4 fillcolor = glm::mix(CURSE_RED, HEALTH_GREEN, frac);   // red -> green as health goes up
-    drawRect(x, y, w+4, h+4, 0, TICKET_GOLD);
-    drawRect(x, y, w, h, 0, BLACK);
+    glm::vec4 fillcolor;
+    if (frac > 0.6)
+        fillcolor = HEALTHBAR_GREEN;  
+    else if (frac > 0.3)
+        fillcolor = HEALTHBAR_ORANGE;    
+    else
+        fillcolor = HEALTHBAR_RED;
+    drawRect(x, y, w+4, h+4, 0, BLACK);
+    drawCircle(x+w/2,y, (h+4)/2, BLACK);
+    drawRect(x, y, w, h, 0, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
+    drawCircle(x+w/2,y, h/2, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     drawRect(x - w / 2 + (w * frac) / 2, y, w * frac, h, 0, fillcolor);
+    if(frac >= 1)
+        drawCircle(x+w/2,y, h/2, fillcolor);
+    float shineW = w*frac*0.8;
+    drawRect(x-w/2+2+shineW/2, y+h/4, shineW, h/4, 0, glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
     float left = x-w/2;
     float segmentWidth = w/max;
     for(int i=1; i<max;i++){
         float dx=left + i * segmentWidth;
         drawLine(dx, y-h/2, dx, y+h/2, 1,BLACK);
     }
+    float hx=x-w/2;
+    float hy=y;
+    float s=h*2.2;
+    drawCircle(hx - s/4, hy + s/6, s/4+ 1.5, BLACK);
+    drawCircle(hx + s/4, hy + s/6, s/4+1.5, BLACK);
+    drawTriangle(hx, hy - s/6, s+3, s * 0.6f+3, 180, BLACK);
+    drawCircle(hx - s/4, hy + s/6, s/4, HEART_RED);
+    drawCircle(hx + s/4, hy + s/6, s/4, HEART_RED);
+    drawTriangle(hx, hy - s/6, s, s * 0.6f, 180, HEART_RED);
+    drawRect(hx - s/4, hy + s/4, s/6, s/6, 0, WHITE);
+
 }
 
