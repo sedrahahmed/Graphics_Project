@@ -5,9 +5,9 @@ const int   SCREEN_W = 1280;//screen width of height the origin  bottom left top
 const int   SCREEN_H = 720;
 
 const int   LANE_COUNT = 4;
-const float LANE_BOTTOM = 26.0f;      // y where the lowest lane starts
-const float LANE_HEIGHT = 93.7f;     // each lane is 93.7 px tall
-const float LANE_LEFT = 209.0f;     // lanes start right of the home base be shwaya
+const float LANE_BOTTOM = 22.4f;      // y where the lowest lane starts
+const float LANE_HEIGHT = 94.2f;     // each lane is 130 px tall
+const float LANE_LEFT = 210.0f;     // lanes start right of the home base be shwaya
 const float LANE_RIGHT = 1280.0f;    // enemies enter men hena
 
 

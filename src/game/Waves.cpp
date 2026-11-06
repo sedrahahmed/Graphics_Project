@@ -1,4 +1,3 @@
-// Waves.cpp. Owner: Person D
 #include "Waves.h"
 #include "Game.h"
 #include <cstdlib>
