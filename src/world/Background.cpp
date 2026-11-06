@@ -1,4 +1,3 @@
-// Background.cpp. Owner: Person D
 #include "Background.h"
 #include "Draw.h"
 #include "Colors.h"

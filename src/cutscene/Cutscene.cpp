@@ -227,7 +227,7 @@ static void drawTapeStatic(float t) {
 static void drawStageBase(float t, bool withBooth, bool lights, bool lightsFlicker) {
     drawBackground(t);
     drawNightOverlay();
-    drawEnvironment(t);
+    drawEnvironment();
     if (withBooth) {
         if (boothTexture == 0) boothTexture = loadTexture(ASSET_DIR "background/Ticket_booth.png");
         drawSprite(boothTexture, 0, 1, 105.0f, 183.5f, 210.0f, 315.0f, 0.0f, glm::vec4(1.0f), false);
@@ -309,7 +309,7 @@ static void drawBeat2(float t) {
 
 static void drawBeat3(float t) {
     drawBackground(t);
-    drawEnvironment(t);
+    drawEnvironment();
     drawFullscreenRect(1.0f, 0.93f, 0.55f, 0.30f);          // daytime wash
 
     // the poster grows slightly (1.0 -> 1.08) so the shot isn't frozen

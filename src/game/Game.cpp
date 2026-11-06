@@ -168,7 +168,7 @@ void drawGame() {
     // drawBackground, drawEnvironment, drawHomeBase, drawLanes, tokens,
     // guards, villains, shots, health bars, drawHUD, drawPlayerCards
     drawBackground(gameTime);
-    drawEnvironment(gameTime);
+    drawEnvironment();
     drawLanes();
     for(const Drop& d : drops) {
         drawToken(d.x, laneFloorY(d.lane), gameTime);
