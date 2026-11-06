@@ -156,7 +156,7 @@ void updateGame(float dt) {
     moveEveryone(dt);
     updateCombat(dt);
     updateShots(dt);
-    updateEconomy(dt);
+    updateEconomy();
     checkWinLose();
     removeDead();
    

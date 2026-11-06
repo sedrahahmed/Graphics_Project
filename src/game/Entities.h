@@ -1,7 +1,7 @@
 #pragma once
 // Entities.h: what every character and object IS, as data.
 // Logic changes these values; Characters reads them to draw.
-// Shared contract: don't change without telling the team.
+
 
 enum PlayerType   { MIRROR_GUARD, LANTERN_GUARD, DEFENSE_GUARD };   // melee, ranged, defense
 enum EnemyType    { MAGICIAN, CLOWN, JESTER };                        // easy, medium, hard
