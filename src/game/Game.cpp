@@ -160,7 +160,7 @@ void updateGame(float dt) {
 void drawGame() {
    
     drawBackground(gameTime);
-    drawEnvironment(gameTime);
+    drawEnvironment();
     drawLanes();
     for(const Drop& d : drops) {
         drawToken(d.x, laneFloorY(d.lane), gameTime);
