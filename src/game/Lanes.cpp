@@ -30,16 +30,11 @@ void updateLanes() {
     else
         hoveredLane = -1;
    if(mouseClicked() && hoveredLane != -1) { //check en ehna f lane 
-        if (hasSelectedCard()) { //check if a card is selected
-            if(placeGuard(getSelectedCard(), hoveredLane, m.x)) {   //place the guard
-                clearSelectedCard(); //Clear the selected card after placing the guard
-            }
-        } else {
-            laneSelected[hoveredLane] = !laneSelected[hoveredLane]; //law mafesh card selected toggle el lane
+            laneSelected[hoveredLane] = !laneSelected[hoveredLane]; //toggle lane selection
             if(isLaneSelected(hoveredLane))
                 selectOrder[hoveredLane]=++selectCounter;
             playSoundEffect(SOUND_LANE);
-        }
+        
     }
     if (keyPressed(GLFW_KEY_W) || keyPressed(GLFW_KEY_UP)) { //If the W or Up key is pressed, we jump all selected lanes
                 for (Player& p : players) {
