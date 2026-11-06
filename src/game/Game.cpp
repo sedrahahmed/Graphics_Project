@@ -1,4 +1,4 @@
-// Game.cpp. Owner: Person C
+
 #include "Game.h"
 #include "CharacterDraw.h"
 #include "Draw.h"
