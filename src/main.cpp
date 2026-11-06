@@ -13,6 +13,7 @@
 #include "Background.h"
 #include "Environment.h"
 #include "MainMenu.h"
+#include "HUD.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
@@ -54,6 +55,7 @@ int main() {
     initBackground();
     initMainMenu();
     initEnvironment();
+    initHUD();
     initText(ASSET_DIR "fonts/carnival.ttf",48);
     unsigned int testTex = loadTexture(ASSET_DIR "characters/test_sprite.png"); //load the pic 3ashan n paste it onto the shape (da hena the texture part)
     initInput(window);// waiting for input 

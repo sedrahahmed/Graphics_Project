@@ -13,7 +13,8 @@
 static float cutsceneTime = 0.0f;
 static float previousCutsceneTime = 0.0f;   // for "play sound once at moment T" checks
 static unsigned int ownerTexture = 0, shadowArmTexture = 0, ticketTexture = 0,
-                    posterTexture = 0, wheelTexture = 0, visitorTexture = 0, cassetteTexture = 0;
+                    posterTexture = 0, wheelTexture = 0, visitorTexture = 0, cassetteTexture = 0,
+                    bannerTexture = 0;
 
 //timeline
 static const float SCENE1_START = 0.0f;
@@ -104,8 +105,7 @@ static void drawStringLights(bool flickerOn) {
     }
 }
 
-// cassette recorder, big in the top-left corner (160 x 104, 20 px from the edges);
-// frame 1 = PLAY lit
+// draws the tape in the top-left corner of the screen
 static void drawCassette(bool playing) {
     drawSprite(cassetteTexture, playing ? 1 : 0, 2, 100.0f, 648.0f, 160.0f, 104.0f, 0, glm::vec4(1.0f), false);
 }
@@ -134,9 +134,17 @@ static void drawStageBase(float t, bool withBooth, bool lights, bool lightsFlick
 }
 
 
+// how big to draw the villains in the cutscene (1 = normal size)
+static const float VILLAIN_SCALE = 1.08f;
+static const float JESTER_SCALE = 1.13f;   // the jester is bigger than the other villains
+
+// villain pictures have empty space under their feet so move them down to make their feet at middle of lane
+static float villainY(float laneY, float scale = VILLAIN_SCALE) { return laneY - 140.0f * scale * 0.07f; }
+
 // performers stand in place (frame 0 of their standing strip): ATTACK + stateTime 0
 static void drawPerformer(EnemyType type, float x, int lane, float t, float healthFrac) {
-    drawEnemy(x, laneFloorY(lane), type, t, ATTACK, 0.0f, healthFrac);
+    float scale = (type == JESTER) ? JESTER_SCALE : VILLAIN_SCALE;
+    drawEnemy(x, villainY(laneFloorY(lane), scale), type, t, ATTACK, 0.0f, healthFrac, scale);
 }
 
 
@@ -198,11 +206,8 @@ static void drawScene3(float t) {
     // the poster in front of everything
     drawSprite(posterTexture, 0, 1, 640.0f, 410.0f, 368.0f * zoom, 440.0f * zoom, 0, glm::vec4(1.0f), false);
 
-    // a dark banner under it for the details
-    drawRect(640.0f, 100.0f, 520.0f, 110.0f, 0, glm::vec4(0.05f, 0.02f, 0.08f, 0.8f));
-    float s = 0.6f;
-    drawText("GENEROUS PAY!", 640.0f - textWidth("GENEROUS PAY!", s) / 2.0f, 110.0f, s, TICKET_GOLD);
-    drawText("12:00 AM - 6:00 AM", 640.0f - textWidth("12:00 AM - 6:00 AM", s) / 2.0f, 65.0f, s, WHITE);
+    // the "Generous Pay" banner under it (the picture already has the text on it)
+    drawSprite(bannerTexture, 0, 1, 640.0f, 100.0f, 390.0f, 130.0f, 0, glm::vec4(1.0f), false);
 }
 
 
@@ -210,8 +215,15 @@ static void drawScene3(float t) {
 static const float CHASE_SPEED     = 130.0f;   
 static const float PERFORMER_SPEED = 130.0f;   
 static const float STOP_TIME       = 16.0f;    
-static const float SEIF_SCALE = 1.08f;        // Seif is drawn a bit bigger in the cutscene only
-static const float SEIF_FEET_DROP = 5.0f;     // his sprite's feet sit ~5 px above Jana's; line them up
+// how big to draw each guard in the cutscene (1 = normal size), so they match the villains' height
+static const float SEIF_SCALE = 1.19f;
+static const float LAMA_SCALE = 1.12f;
+static const float JANA_SCALE = 1.06f;
+// how far to move each guard down so their feet touch the middle of the lane
+// (their pictures have some empty space under the feet)
+static const float SEIF_FEET_DROP = 11.0f;
+static const float JANA_FEET_DROP = 6.0f;
+static const float LAMA_FEET_DROP = 19.0f;
 static const float SEIF_POST_X = 320.0f, JANA_POST_X = 460.0f, LAMA_POST_X = 400.0f;
 static const float JESTER_STOP_X = 700.0f, CLOWN_STOP_X = 680.0f, MAGICIAN_STOP_X = 820.0f;
 
@@ -235,9 +247,9 @@ static void drawScene4(float t) {
     AnimState st = WALK;
 
     // back lane first so the front lane is drawn over it
-    drawGuard(lamaX, laneFloorY(3), RANGED_LAMA, t, st, 0.0f, 1.0f, walking);
+    drawGuard(lamaX, laneFloorY(3) - LAMA_FEET_DROP, RANGED_LAMA, t, st, 0.0f, 1.0f, walking, LAMA_SCALE);
     drawGuard(seifX, laneFloorY(1) - SEIF_FEET_DROP, MELEE_SEIF,  t, st, 0.0f, 1.0f, walking, SEIF_SCALE);   // face left while walking
-    drawGuard(janaX, laneFloorY(1), DEFENSE_JANA, t, st, 0.0f, 1.0f, walking);
+    drawGuard(janaX, laneFloorY(1) - JANA_FEET_DROP, DEFENSE_JANA, t, st, 0.0f, 1.0f, walking, JANA_SCALE);
 
 
     drawSceneFades(local, 100.0f);   // fade in only: scene 5 continues the same shot, no black dip
@@ -265,8 +277,8 @@ static void drawScene5Actors(float t) {
     float lamaX = chaseX(LAMA_POST_X, t);
 
     drawGuard(seifX, laneY1 - SEIF_FEET_DROP, MELEE_SEIF, t, guardSt, 0.0f, 1.0f, running, SEIF_SCALE);
-    if (t < 16.3f) drawGuard(janaX, laneY1, DEFENSE_JANA, t, guardSt, 0.0f, 1.0f, running);
-    else           drawGuard(janaX, laneY1, DEFENSE_JANA, t, ATTACK, t - 16.3f, 1.0f);   // Jana braces
+    if (t < 16.3f) drawGuard(janaX, laneY1 - JANA_FEET_DROP, DEFENSE_JANA, t, guardSt, 0.0f, 1.0f, running, JANA_SCALE);
+    else           drawGuard(janaX, laneY1 - JANA_FEET_DROP, DEFENSE_JANA, t, ATTACK, t - 16.3f, 1.0f, false, JANA_SCALE);   // Jana braces
 
 
     // the performers chase in from off-screen right (at 11 s they're at x 1330+),
@@ -293,9 +305,9 @@ static void drawScene5Actors(float t) {
         float jp = (t - 17.0f) / 0.6f;
         if (jp > 1.0f) jp = 1.0f;
         float bob = sinf(jp * 3.1415926f) * 42.0f;                  // small hop arc
-        drawGuard(LAMA_POST_X, laneY3 + bob, RANGED_LAMA, t, JUMP, t - 17.0f, 1.0f);
+        drawGuard(LAMA_POST_X, laneY3 - LAMA_FEET_DROP + bob, RANGED_LAMA, t, JUMP, t - 17.0f, 1.0f, false, LAMA_SCALE);
     } else {
-        drawGuard(lamaX, laneY3, RANGED_LAMA, t, guardSt, 0.0f, 1.0f, running);
+        drawGuard(lamaX, laneY3 - LAMA_FEET_DROP, RANGED_LAMA, t, guardSt, 0.0f, 1.0f, running, LAMA_SCALE);
     }
 
     //eniemies
@@ -303,17 +315,17 @@ static void drawScene5Actors(float t) {
     float clownStateTime = 0.0f;
     if (t >= 16.0f) { clownSt = ATTACK; clownStateTime = 0.0f; }
     if (t >= 16.2f) { clownStateTime = t - 16.2f; }                 // throw animation plays
-    drawEnemy(clownX, laneY3, CLOWN, t, clownSt, clownStateTime, 1.0f);
+    drawEnemy(clownX, villainY(laneY3 - 8.0f), CLOWN, t, clownSt, clownStateTime, 1.0f, VILLAIN_SCALE);
     
 
     AnimState jesterSt = (chasing || (t >= 16.3f && lungeP < 1.0f)) ? WALK : ATTACK;
     float jesterStateTime = (jesterSt == ATTACK) ? t - 16.8f : 0.0f;
-    drawEnemy(jesterX, laneY1, JESTER, t, jesterSt, jesterStateTime, 1.0f);
+    drawEnemy(jesterX, villainY(laneY1, JESTER_SCALE), JESTER, t, jesterSt, jesterStateTime, 1.0f, JESTER_SCALE);
 
 
     AnimState magSt = chasing ? WALK : ATTACK;
     float magStateTime = (magSt == ATTACK) ? t - 16.0f : 0.0f;
-    drawEnemy(magX, laneY3, MAGICIAN, t, magSt, magStateTime, 1.0f);
+    drawEnemy(magX, villainY(laneY3 - 8.0f), MAGICIAN, t, magSt, magStateTime, 1.0f, VILLAIN_SCALE);
 
 }
 
@@ -374,6 +386,7 @@ void startCutscene() {
         ticketTexture    = loadTexture(ASSET_DIR "background/golden_ticket.png");
         posterTexture    = loadTexture(ASSET_DIR "background/job_poster.png");
         cassetteTexture  = loadTexture(ASSET_DIR "background/cassette.png");
+        bannerTexture    = loadTexture(ASSET_DIR "background/generous_pay_banner.png");
     }
 }
 

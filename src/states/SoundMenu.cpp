@@ -55,7 +55,7 @@ void drawSoundMenu() {
     
     drawRect(CENTER_X, 470, BAR_W, BAR_H, 0.0f, BLACK);
     if (fillW > 0.0f){
-        drawRect(barLeft + fillW / 2.0f, 470, fillW, BAR_H, 0.0f, TICKET_GOLD);
+        drawRect(barLeft + fillW / 2.0f, 470, fillW, BAR_H, 0.0f, CURSE_RED);
     }
 
     // The mute button's word changes so you know what clicking it will do

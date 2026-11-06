@@ -40,7 +40,7 @@ void drawEndMenu() {
 
     const char* title = won ? "THE CARNIVAL STAYS SEALED" : "THE TICKET IS LOST";
     const char* line  = won ? "You win!" : "You lose... the curse escapes.";
-    drawOutlinedText(title, CENTER_X - textWidth(title, 1.0f) / 2.0f, 480, 1.0f, won ? TICKET_GOLD : glm::vec4(1.0f, 0.25f, 0.25f, 1.0f),1.5);//centter minus half toget left
+    drawOutlinedText(title, CENTER_X - textWidth(title, 1.0f) / 2.0f, 480, 1.0f, won ? glm::vec4(0.22f, 0.70f, 0.22f, 1.0f) : glm::vec4(1.0f, 0.25f, 0.25f, 1.0f),1.5);//centter minus half toget left
     drawOutlinedText(line,  CENTER_X - textWidth(line, 0.6f) / 2.0f, 420, 0.6f, WHITE,1.5);
 
     drawButton(restartButton);

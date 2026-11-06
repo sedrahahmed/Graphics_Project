@@ -47,11 +47,11 @@ void drawButton(const Button& b) {
     bool hover = isHovered(b);
     glm::vec4 face = hover ? glm::mix(BTN_FACE, WHITE, 0.15f) : BTN_FACE;
 
-    drawCutRect(b.x, b.y, b.w, b.h, CORNER, TICKET_GOLD); //outline
+    drawCutRect(b.x, b.y, b.w, b.h, CORNER, CURSE_RED); //outline
     drawCutRect(b.x, b.y, b.w - 2*BORDER, b.h - 2*BORDER, CORNER - 2, BTN_SHADOW); //shadow
     drawCutRect(b.x, b.y + DEPTH/2, b.w - 2*BORDER, b.h - 2*BORDER - DEPTH, CORNER - 2, face);//face
     drawRect(b.x,b.y+b.h/2-BORDER-LIGHT_H/2,b.w-2*BORDER-2*CORNER,LIGHT_H,0,BTN_LIGHT);
     float textX = b.x - textWidth(b.label, TEXT_SCALE) / 2.0f;
     float textY = b.y - TEXT_DROP + DEPTH/2;
-    drawText(b.label, textX, textY, TEXT_SCALE, hover ? TICKET_GOLD : WHITE);
+    drawText(b.label, textX, textY, TEXT_SCALE, hover ? CURSE_RED : WHITE);
 }
