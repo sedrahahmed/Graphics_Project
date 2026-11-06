@@ -255,20 +255,26 @@ void drawJester(float x, float y, float time, AnimState state, float stateTime, 
 //Health bar
 void drawHealthBar(float x, float y, int current, int max) {
     float w = 50.0f, h = 6.0f;
-    float frac = max > 0 ? (float)current / max : 0.0f;
-    if (frac < 0.0f) frac = 0.0f; else if (frac > 1.0f) frac = 1.0f;
+    float frac = max > 0 ? (float)current / max : 0.0f; //how full the bar is
+    if (frac < 0.0f) 
+        frac = 0.0f; 
+    else 
+        if (frac > 1.0f) 
+            frac = 1.0f;
     glm::vec4 fillcolor;
-    if (frac > 0.6)
+    if (frac > 0.6)//>60%
         fillcolor = HEALTHBAR_GREEN;  
-    else if (frac > 0.3)
+    else if (frac > 0.3)//>30%
         fillcolor = HEALTHBAR_ORANGE;    
     else
         fillcolor = HEALTHBAR_RED;
-    drawRect(x, y, w+4, h+4, 0, BLACK);
-    drawCircle(x+w/2,y, (h+4)/2, BLACK);
+    drawRect(x, y, w+4, h+4, 0, BLACK);//frame
+    drawCircle(x+w/2,y, (h+4)/2, BLACK);//curve
     drawRect(x - w / 2 + (w * frac) / 2, y, w * frac, h, 0, fillcolor);
-    if(frac >= 1)
+    if(frac >= 1)//full health
         drawCircle(x+w/2,y, h/2, fillcolor);
+
+    //shine
     float shineW = w*frac*0.8;
     drawRect(x-w/2+2+shineW/2, y+h/4, shineW, h/4, 0, glm::vec4(1.0f, 1.0f, 1.0f, 0.6f));
     float left = x-w/2;
@@ -277,6 +283,8 @@ void drawHealthBar(float x, float y, int current, int max) {
         float dx=left + i * segmentWidth;
         drawLine(dx, y-h/2, dx, y+h/2, 1,BLACK);
     }
+
+    //heart
     float hx=x-w/2;
     float hy=y;
     float s=h*2.2;
