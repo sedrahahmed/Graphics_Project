@@ -10,19 +10,12 @@ const float LANE_HEIGHT = 94.2f;     // each lane is 130 px tall
 const float LANE_LEFT = 210.0f;     // lanes start right of the home base be shwaya
 const float LANE_RIGHT = 1280.0f;    // enemies enter men hena
 
-//ASK ABOUT THIS
-// Lane 0 is the bottom lane. Center of lane i:
-//   LANE_BOTTOM + LANE_HEIGHT * i + LANE_HEIGHT / 2
-
-//const float HOME_BASE_X = 105.0f;      // center of the  booth(homebase) (NOT USED)
-//const float HUD_Y = 640.0f;     // cards + coin count are fo2 da (NOT USED)
-
 
 const int START_COINS = 30;
-const int COST_MELEE = 10;  // Mirror Guard
-const int COST_RANGED = 20;    // Lantern Guard 
-const int COST_DEFENSE = 30;   // Sentinel Guard
-const int COINS_PER_KILL = 20;
+const int COST_MELEE = 10;  //seif
+const int COST_RANGED = 20;    // lama 
+const int COST_DEFENSE = 30;   // jana
+const int COINS_PER_KILL = 20; //azon nezawedha 
 const float HIT_DURATION = 0.2f;
 
 const int HP_MELEE = 5, HP_RANGED = 5, HP_DEFENSE = 7;
@@ -38,18 +31,17 @@ const float SPEED_GUARD = 40.0f;
 const float SPEED_ENEMY = 30.0f;
 const float SPEED_JESTER = 70.0f;   // bec da hayegry
 const float SPEED_PROJECTILE = 250.0f;
-const float SPEED_DART  = 250.0f;
-const float SPEED_BALL  = 250.0f;
-const float SPEED_SPARK = 220.0f;
+const float SPEED_DART  = 250.0f;//lama
+const float SPEED_BALL  = 250.0f; //clown
+const float SPEED_SPARK = 220.0f;//magician
 
 
 const float ENEMY_ATTACK_COOLDOWN = 4.0f; 
 const float HERO_ATTACK_COOLDOWN = 1.5f;   // time between attacks for guards and enemies    
 const float JUMP_DURATION = 0.6f;
 const float DUCK_DURATION = 0.6f;
-//const float Walk_ANIMATION_SPEED = 0.8f;   // time per frame for walk animation (NOT USED)
 const float ATTACK_FRAMES_PER_SECOND = 8.0f / HERO_ATTACK_COOLDOWN;
-const float ENEMY_FRAMES_PER_SECOND  = 8.0f / ENEMY_ATTACK_COOLDOWN;
-const float LANTERN_COOLDOWN=2.0;
-const int WAVE_SIZES[3] = { 3, 5, 10 };
+const float ENEMY_FRAMES_PER_SECOND  = 8.0f / ENEMY_ATTACK_COOLDOWN;//how fast el frames hat play like thats why 8 frames over el time mabein el attacks nel7a2 n loop over el frames before starting over
+const float LANTERN_COOLDOWN=2.0; // speed of lamas attack fel animation ha use it fel drawing  but logic is 1.5
+const int WAVE_SIZES[3] = { 3, 5, 10 };//enemies per wave
 const float SPAWN_INTERVAL = 10.0f;    // time between the enemies lama yetla3o
