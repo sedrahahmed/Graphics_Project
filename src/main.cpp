@@ -1,13 +1,11 @@
-//opens the window and runs the game loop
 #include <glad/glad.h>        // lazem before GLFW and its used to find opengl functions from our computer so we can call them
 #include <GLFW/glfw3.h>//helper library to opengl and its used to read keyboard masalam
-#include <iostream>
+#include <iostream>//for error messages
 #include "CharacterDraw.h"
 #include "Config.h"
 #include "Draw.h"
 #include "Input.h"
 #include "StateManager.h"
-#include "Button.h"
 #include "Text.h"
 #include "Sound.h"
 #include "Background.h"
@@ -15,10 +13,11 @@
 #include "MainMenu.h"
 #include "HUD.h"
 
-void framebufferSizeCallback(GLFWwindow* window, int width, int height)
+void framebufferSizeCallback(GLFWwindow* window, int width, int height)//GWLF calls it when window is resized
 {
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, width, height);//tells OpenGL the new drawing area to stretch 
 }
+
 int main() {
     glfwInit(); //turn on the library and we call it before using any function taba3ha
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -57,18 +56,19 @@ int main() {
     initEnvironment();
     initHUD();
     initText(ASSET_DIR "fonts/carnival.ttf",48);
-    unsigned int testTex = loadTexture(ASSET_DIR "characters/test_sprite.png"); //load the pic 3ashan n paste it onto the shape (da hena the texture part)
     initInput(window);// waiting for input 
 
     initSound();
     playMusic();
 
-    float lastTime = (float)glfwGetTime();
+    float lastTime = (float)glfwGetTime();//the time at the start used to measure dt
 
     while (!glfwWindowShouldClose(window)) { //kol loop in a frame
         float now = (float)glfwGetTime();
         float dt = now - lastTime;
         lastTime = now;//ad eh time passed men last frame
+        if(dt>0.1)//cap dt: if the window froze (dragging/resizing on Windows)don’t let the game jump forward by seconds
+            dt=0.1;
 
         updateInput();
         updateCurrentState(dt);//getting inputs and udate the game like law smt moved

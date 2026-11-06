@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.16)
 project(CarnivalOfTheCursed C CXX)
 set(CMAKE_CXX_STANDARD 17)
 
-# Build GLFW from source, skipping its extras
+#Build GLFW from source
 set(GLFW_BUILD_DOCS     OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 add_subdirectory(external/glfw)
-# FreeType (text rendering): build from source, without optional extras
+
 set(FT_DISABLE_ZLIB     ON CACHE BOOL "" FORCE)
 set(FT_DISABLE_BZIP2    ON CACHE BOOL "" FORCE)
 set(FT_DISABLE_PNG      ON CACHE BOOL "" FORCE)
@@ -31,9 +31,9 @@ target_include_directories(Carnival PRIVATE
 )
 
 find_package(OpenGL REQUIRED)
-target_link_libraries(Carnival PRIVATE glfw OpenGL::GL freetype) #Adding freetype to target_link_libraries connects it to your game.
+target_link_libraries(Carnival PRIVATE glfw OpenGL::GL freetype) #Adding freetype to target_link_libraries connects it to game
 
-# Lets code find fonts/sounds from anywhere
+#Lets code find fonts/sounds from anywhere
 target_compile_definitions(Carnival PRIVATE ASSET_DIR="${CMAKE_SOURCE_DIR}/assets/")
 
 if (APPLE)

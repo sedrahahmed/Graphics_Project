@@ -7,19 +7,21 @@
 //da for enemies
 static unsigned int enemyWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it 
 static unsigned int enemyAttackTexture [3]= {0};//load texture takes the pic and gives it to gpu and id
-//Players
 
-static unsigned int playerWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it
+
+//Players
+static unsigned int playerWalkTexture[3] = { 0 }; //unsigned bec el load texture returns it
 static unsigned int playerAttackTexture[3] = { 0 };
 static unsigned int playerJumpTexture[2]={};
 static unsigned int playerDuckTexture[2]={};
 static unsigned int tokenTexture = 0;
+static unsigned int PlayerFrontTexture[3] = { 0 };
 
 static unsigned int sparkTexture = 0;
 static unsigned int clownBallTexture = 0;
 static unsigned int dartTexture = 0;
 
-static unsigned int PlayerFrontTexture[3] = { 0 };
+
 
 void drawGuardIcon(PlayerType type, float x, float y, float w,float h, glm::vec4 tint){
     drawSprite(PlayerFrontTexture[type],0,1, x, y, w, h,0,tint);
@@ -40,7 +42,7 @@ void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTim
         case JUMP :{
             tex = playerJumpTexture[MELEE_SEIF];
             frames = 8;
-            frame = (int)(stateTime / JUMP_DURATION * 8);              // plays once over the jump
+            frame = (int)(stateTime / JUMP_DURATION * 8);             
             if (frame > 7) frame = 7;
             break;
         }
@@ -52,7 +54,7 @@ void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTim
             break;
         }
 
-        default :{
+        default :{//walk
             tex = playerWalkTexture[MELEE_SEIF];
             frames = 8;
             frame = (int)(time * 8) % 8;
@@ -76,13 +78,13 @@ void drawRangedLama(float x, float y, float time, AnimState state, float stateTi
         case ATTACK: {
             tex = playerAttackTexture[RANGED_LAMA];
             frames = 8;
-            frame = (int)(stateTime * (8.0f / LANTERN_COOLDOWN) + 4) % 8;
+            frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND+4) % 8;
             break;
         }
         case JUMP: {
             tex = playerJumpTexture[RANGED_LAMA];
             frames = 8;
-            frame = (int)(stateTime / DUCK_DURATION * 8);
+            frame = (int)(stateTime / JUMP_DURATION * 8);
             if (frame > 7) frame = 7;
             break;
         }
@@ -110,12 +112,7 @@ void drawRangedLama(float x, float y, float time, AnimState state, float stateTi
 void drawDefenseJana(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     unsigned int tex;
     int frame;
-    if (state == WALK && playerWalkTexture[DEFENSE_JANA] != 0) {
-        // only the cutscene ever puts Jana in WALK (beat 3/4 walk-ins);
-        // gameplay never does, so nothing changes on the field.
-        // jana_walk.png frames are tall (272 x 724) with lots of empty space:
-        // she fills only ~35% of the frame height and her feet are ~31% up from the bottom.
-        // So draw the frame at its real shape, scaled so she's as tall as in jana_defend.
+    if (state == WALK && playerWalkTexture[DEFENSE_JANA] != 0) { //only in the cutscene 
         frame = (int)(time * 8) % 8;
         float h = 335.0f * scale;                  // picture height on screen (scale makes her bigger in the cutscene)
         float w = h * (272.0f / 724.0f);           // keep the frame's shape (no squishing)
@@ -154,7 +151,6 @@ void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, fl
 }
 
 //Projectiles
-
 void drawDart(float x, float y, float time, float hitProgress) {
     int frame = (int)(time * 12) % 8;                     // speed lines flicker as it flies
     float w = 80.0f * (1.0f - hitProgress);               // shrinks on impact
@@ -177,8 +173,7 @@ void drawJuggleBall(float x, float y, float time, float hitProgress){
 
 
 //Collectibles
-
-void drawToken(float x, float y, float time) {
+void drawToken(float x, float y) {
     float size = 24.0f;   // width and height on screen in pixels
     drawSprite(tokenTexture, 0, 1, x, y + size / 2, size, size, 0.0f, WHITE);
 }
@@ -188,7 +183,7 @@ void drawTokenIcon(float x, float y, float size, glm::vec4 tint) {
 }
 
 
-//Enemies
+
 
 void initCharacterTexture() {
     enemyWalkTexture[MAGICIAN] = loadTexture(ASSET_DIR "characters/magician_walking.png");
@@ -270,8 +265,6 @@ void drawHealthBar(float x, float y, int current, int max) {
         fillcolor = HEALTHBAR_RED;
     drawRect(x, y, w+4, h+4, 0, BLACK);
     drawCircle(x+w/2,y, (h+4)/2, BLACK);
-    drawRect(x, y, w, h, 0, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-    drawCircle(x+w/2,y, h/2, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     drawRect(x - w / 2 + (w * frac) / 2, y, w * frac, h, 0, fillcolor);
     if(frac >= 1)
         drawCircle(x+w/2,y, h/2, fillcolor);

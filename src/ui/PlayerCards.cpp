@@ -10,6 +10,7 @@
 #include "Waves.h"
 
 
+
 static int selectedCard =-1;
 static int hoveredCard = -1;
 static const float cardWidth= 80;
@@ -19,7 +20,7 @@ static const float cardYstart=650;
 static const float cardXStart=190;
 
 static bool isUnlocked(PlayerType type){
-    return canAfford(type)&&(type==MELEE_SEIF || getCurrentWave() >1); //only seif locked f wave 1
+    return canAfford(type)&&(type==MELEE_SEIF || getCurrentWave() >1); //only seif unlocked f wave 1
 }
 
 
@@ -43,6 +44,7 @@ void updatePlayerCards() {
         }
         if(selectedCard != -1&&!isUnlocked((PlayerType)selectedCard))
             selectedCard = -1;
+
     }
 
 void drawPlayerCards() { 
@@ -66,13 +68,16 @@ void drawPlayerCards() {
         drawRect(x,y,cardWidth,cardHeight,0,panel);
 
         
-        glm::vec4 tint = unlocked ? WHITE : glm::vec4(0.35,0.35,0.35,1); //fade el unlocked cards
+        glm::vec4 tint = unlocked ? WHITE : glm::vec4(0.7f, 0.7f, 0.7f, 1.0f); //fade el locked cards
+        if(!unlocked)
+            setGrayscale(true);
         drawGuardIcon(type,x,y,cardWidth,cardHeight,tint);
         if (i == hoveredCard) drawRect(x, y, cardWidth, cardHeight, 0, HIGHLIGHT);
         
         glm::vec4 priceColour = unlocked ? TICKET_GOLD : glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
         glm::vec4 tokenTint = unlocked ? WHITE : glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);   // grayed out if you can't afford it
         drawTokenIcon(x - 10, y - cardHeight/2 -12, 16, tokenTint);
+        setGrayscale(false);
         drawText(std::to_string(costOf(type)), x - 2, y - cardHeight/2 -18, 0.3f, priceColour);
         
     

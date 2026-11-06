@@ -29,10 +29,8 @@ void drawSpark(float x, float y, float time, float hitProgress);
 void drawJuggleBall(float x, float y, float time, float hitProgress);
 
 // Misc
-void drawToken(float x, float y, float time);
+void drawToken(float x, float y);
 void drawTokenIcon(float x, float y, float size, glm::vec4 tint);   // x, y = center (for the HUD and card prices)
 void drawHealthBar(float x, float y, int current, int max);
-
 void initCharacterTexture();
-
 void drawGuardIcon(PlayerType type, float x, float y, float w,float h, glm::vec4 tint);
