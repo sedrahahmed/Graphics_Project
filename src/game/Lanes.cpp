@@ -10,11 +10,16 @@
 
 static bool laneSelected[LANE_COUNT] = { false }; //initalize all lanes to false
 static int  hoveredLane = -1;
+static int selectOrder[LANE_COUNT] = { 0 };
+static int selectCounter = 0;
 
 void resetLanes() {
-    for (int i = 0; i < LANE_COUNT; i++) 
+    for (int i = 0; i < LANE_COUNT; i++) {
         laneSelected[i] = false;
+        selectOrder[i]=0;
+    }
     hoveredLane = -1;
+    selectCounter=0;
 }
 
 void updateLanes() { 
@@ -31,6 +36,8 @@ void updateLanes() {
             }
         } else {
             laneSelected[hoveredLane] = !laneSelected[hoveredLane]; //law mafesh card selected toggle el lane
+            if(isLaneSelected(hoveredLane))
+                selectOrder[hoveredLane]=++selectCounter;
             playSoundEffect(SOUND_LANE);
         }
     }
@@ -79,3 +86,12 @@ int  laneAtY(float y) {
 }
 
 bool isLaneSelected(int lane) { return lane >= 0 && lane < LANE_COUNT && laneSelected[lane]; }
+
+int getLastSelectedLane(){
+    int best=-1;
+    for(int i=0;i<LANE_COUNT;i++){
+        if(isLaneSelected(i)&&(best==-1||selectOrder[i]>selectOrder[best]))
+             best=i;
+    }
+    return best;
+}

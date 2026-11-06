@@ -1,8 +1,8 @@
-// Text.cpp. Owner: Person D
-//How text rendering works (read first)
-// A font file (.ttf) describes letter shapes, not pictures. FreeType turns each letter into a small greyscale image (a “glyph”).
-// At startup, you turn each of the 128 basic characters (letters, numbers, symbols) into a texture, the same as loadTexture in Lab 4, and store it with a few measurements.
-// To draw a word, you go letter by letter: draw a small rectangle in the right place with that letter’s texture on it, then move right by the letter’s width.
+
+//A font file (.ttf) describes letter shapes, not pictures. 
+//FreeType turns each letter into a small greyscale image (a “glyph”).
+//At startup, you turn each of the 128 basic characters (letters, numbers, symbols) into a texture.
+//To draw a word, you go letter by letter: draw a small rectangle in the right place with that letter’s texture on it, then move right by the letter’s width.
 #include "Text.h"
 #include "Draw.h"
 #include <ft2build.h>
@@ -14,24 +14,20 @@
 #include <map>
 #include "Config.h"
 
-//We could load a character glyph, retrieve its metrics, and generate a texture each time we want to render a character to the screen, but it would be inefficient to do this each frame. 
-//We'd rather store the generated data somewhere in the application and query it whenever we want to render a character.
-//We'll define a convenient struct that we'll store in a map:
 struct Character {
-    unsigned int TextureID;  // ID handle of the glyph texture
-    glm::ivec2   Size;       // Size of glyph
-    glm::ivec2   Bearing;    // Offset from baseline to left/top of glyph
-    unsigned int Advance;    // Offset to advance to next glyph
+    unsigned int TextureID;  //the letter’s picture on the GPU
+    glm::ivec2   Size;    
+    glm::ivec2   Bearing;    //how far the letter sits from the cursor and from the baseline
+    unsigned int Advance;    //how far to move right before the next letter
 };
 
 
 static std::map<char, Character> Characters;
-static unsigned int textVAO, textVBO;
+static unsigned int textVAO, textVBO; //for the rectangle
 static unsigned int textShader;
 static int locProjection, locTextColor, locTextSampler;
 
 //shaders
-//To render the glyphs we'll be using the following vertex shader:
 static const char* vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
@@ -46,7 +42,8 @@ void main()
 }  
 )";
 
-//We combine both the position and texture coordinate data into one vec4. The vertex shader multiplies the coordinates with a projection matrix and forwards the texture coordinates to the fragment shader:
+//We combine both the position and texture coordinate data into one vec4. 
+//The vertex shader multiplies the coordinates with a projection matrix and forwards the texture coordinates to the fragment shader
 static const char* fragmentShaderSource = R"(
 #version 330 core
 in vec2 TexCoords;
@@ -62,7 +59,6 @@ void main()
 }
 )";
 
-//your two shaders are just text right now. The GPU has to compile them (like C++ code) and link them into one program. (from labs)
 static GLuint compileShader(GLenum type, const char* source) {
     GLuint shader = glCreateShader(type);
     glShaderSource(shader, 1, &source, nullptr);
@@ -76,6 +72,7 @@ static GLuint compileShader(GLenum type, const char* source) {
     }
     return shader;
 }
+
 void initText(const char* fontPath, int pixelSize) {
     GLuint vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
     GLuint fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
@@ -83,7 +80,7 @@ void initText(const char* fontPath, int pixelSize) {
     glAttachShader(textShader, vertexShader);
     glAttachShader(textShader, fragmentShader);
     glLinkProgram(textShader);
-    glDeleteShader(vertexShader);
+    glDeleteShader(vertexShader);//delete the separate shaders
     glDeleteShader(fragmentShader);
     locTextColor = glGetUniformLocation(textShader, "textColor");
     locTextSampler = glGetUniformLocation(textShader, "text");
@@ -104,16 +101,16 @@ void initText(const char* fontPath, int pixelSize) {
             std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl << fontPath << std::endl;  
             return;
         }
-    FT_Set_Pixel_Sizes(face, 0, pixelSize); // Set the font size
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Disable byte-alignment restriction
+    FT_Set_Pixel_Sizes(face, 0, pixelSize); //Set the font size
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //Disable byte-alignment restriction
     for (unsigned char c = 0; c < 128; c++){
-        // Load character glyph 
+        //Load character glyph 
         if (FT_Load_Char(face, c, FT_LOAD_RENDER))
         {
             std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
             continue;
         }
-        // Generate texture
+        //Generate texture
         unsigned int texture;
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
@@ -128,12 +125,12 @@ void initText(const char* fontPath, int pixelSize) {
             GL_UNSIGNED_BYTE,
             face->glyph->bitmap.buffer
         );
-        // Set texture options
+        //Set texture options
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        // Store character for later use
+       
         Character character = {
             texture, 
             glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
@@ -181,7 +178,7 @@ void drawText(const std::string& text, float x, float y, float scale, glm::vec4 
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        x += (ch.Advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
+        x += (ch.Advance >> 6) * scale; //Bitshift by 6 to get value in pixels
     }
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);

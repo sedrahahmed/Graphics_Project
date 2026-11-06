@@ -6,29 +6,31 @@
 
 //da for enemies
 static unsigned int enemyWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it 
-static unsigned int enemyAttackTexture [3]= {0};//load texture takes the pic and gives it to gpu and gives us  id
-//Players
+static unsigned int enemyAttackTexture [3]= {0};//load texture takes the pic and gives it to gpu and gives us id
 
-static unsigned int playerWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it
+
+//Players
+static unsigned int playerWalkTexture[3] = { 0 }; //unsigned bec el load texture returns it
 static unsigned int playerAttackTexture[3] = { 0 };
 static unsigned int playerJumpTexture[2]={};
 static unsigned int playerDuckTexture[2]={};//bec jana no jump or duck
 static unsigned int tokenTexture = 0;
+static unsigned int PlayerFrontTexture[3] = { 0 };
 
 static unsigned int sparkTexture = 0;
 static unsigned int clownBallTexture = 0;
 static unsigned int dartTexture = 0;//one id
 
-static unsigned int PlayerFrontTexture[3] = { 0 };
+
 
 void drawGuardIcon(PlayerType type, float x, float y, float w,float h, glm::vec4 tint){
     drawSprite(PlayerFrontTexture[type],0,1, x, y, w, h,0,tint);//frame 0 of a 1 frame pic
     
 }
 
-void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     unsigned int tex;//pic
-    int frames;//how many frames fel strip
+    int frames;//how many frames fwl pic
     int frame;//curr frame
     switch(state){
         case ATTACK :{
@@ -40,7 +42,7 @@ void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTim
         case JUMP :{
             tex = playerJumpTexture[MELEE_SEIF];
             frames = 8;
-            frame = (int)(stateTime / JUMP_DURATION * 8);              // plays once over the jump
+            frame = (int)(stateTime / JUMP_DURATION * 8);             
             if (frame > 7) frame = 7;
             break;
         }
@@ -52,7 +54,7 @@ void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTim
             break;//sae as jump
         }
 
-        default :{
+        default :{//walk
             tex = playerWalkTexture[MELEE_SEIF];
             frames = 8;
             frame = (int)(time * 8) % 8;
@@ -60,14 +62,15 @@ void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTim
         }
 
     }
-        float size = 160;                //lifting y 3ashan feet y alight with lane botton
-        drawSprite(tex, frame, frames, x, y + size / 2 - 4, size, size, 0.0f,
-        damageTint(WHITE, healthFrac), flipX);//w and h are size  in px then no rot . colour is the red tint thing wel flip x mirrors it bas 
+        float size = 160 * scale;   // scale makes him bigger (only the cutscene uses it)
+        //alight feet to lane fa move el y
+        drawSprite(tex, frame, frames, x, y + size / 2 - 4 - (size - 160) * 0.094f, size, size, 0.0f,
+        damageTint(WHITE, healthFrac), flipX);//w and h are size in px yhen no rot . color sis red tint thing wel flip x mirrors
         }
 
 
-        //similar idea
-void drawRangedLama(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+    //similar idea    
+void drawRangedLama(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     unsigned int tex;
     int frames;
     int frame;
@@ -75,13 +78,13 @@ void drawRangedLama(float x, float y, float time, AnimState state, float stateTi
         case ATTACK: {
             tex = playerAttackTexture[RANGED_LAMA];
             frames = 8;
-            frame = (int)(stateTime * (8.0f / LANTERN_COOLDOWN) + 4) % 8;
+            frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND+4) % 8;
             break;
         }
         case JUMP: {
             tex = playerJumpTexture[RANGED_LAMA];
             frames = 8;
-            frame = (int)(stateTime / DUCK_DURATION * 8);
+            frame = (int)(stateTime / JUMP_DURATION * 8);
             if (frame > 7) frame = 7;
             break;
         }
@@ -99,19 +102,21 @@ void drawRangedLama(float x, float y, float time, AnimState state, float stateTi
             break;
         }
     }
-    float size = 160;
-    if (state == DUCK) size = 130;
-    drawSprite(tex, frame, frames, x, y + size / 2-4, size, size, 0.0f,
+    float base = 160;
+    if (state == DUCK) base = 130;
+    float size = base * scale;   // scale makes her bigger (only the cutscene uses it)
+    // move her downto keep her feet in place
+    drawSprite(tex, frame, frames, x, y + size / 2-6 - (size - base) * 0.109f, size, size, 0.0f,
     damageTint(WHITE, healthFrac), flipX);
 }
-void drawDefenseJana(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawDefenseJana(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     unsigned int tex;
     int frame;
-    if (state == WALK && playerWalkTexture[DEFENSE_JANA] != 0) {//only fel cutscene
+    if (state == WALK && playerWalkTexture[DEFENSE_JANA] != 0) { //only in the cutscene 
         frame = (int)(time * 8) % 8;
-        float h = 335.0f;  
-        float w = h * (272.0f / 724.0f);   
-        float centerY = y + 7.0f + h * (0.5f - 0.31f);   //fix size and pos bec el pic feeha empty space and its small
+        float h = 335.0f * scale; // picture height on screen scale lel cutcene
+        float w = h * (272.0f / 724.0f);   // keep frame shape
+        float centerY = y + 7.0f + h * (0.5f - 0.31f);   // align feet
         drawSprite(playerWalkTexture[DEFENSE_JANA], frame, 8, x, centerY, w, h, 0.0f,
                    damageTint(WHITE, healthFrac), flipX);
         return;
@@ -122,24 +127,26 @@ void drawDefenseJana(float x, float y, float time, AnimState state, float stateT
         else
             frame = 0;          // first frame standing still
     }
-    float size = 140;
-    drawSprite(tex, frame, 8, x, y + size / 2-4, size, size, 0.0f,
+    float size = 140 * scale;   // scale makes her bigger for cutscene
+   // move her down bc empty space underfeet
+    // by the extra when she gets bigger to keep her feet in place
+    drawSprite(tex, frame, 8, x, y + size / 2-4 - (size - 140) * 0.07f, size, size, 0.0f,
     damageTint(WHITE, healthFrac), flipX);
 }
 
-void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     switch (type) {
-        case MELEE_SEIF:   drawMeleeSeif(x, y, time, state, stateTime, healthFrac, flipX); break;
-        case RANGED_LAMA:  drawRangedLama(x, y, time, state, stateTime, healthFrac, flipX); break;
-        case DEFENSE_JANA:  drawDefenseJana(x, y, time, state, stateTime, healthFrac, flipX); break;
+        case MELEE_SEIF:   drawMeleeSeif(x, y, time, state, stateTime, healthFrac, flipX, scale); break;
+        case RANGED_LAMA:  drawRangedLama(x, y, time, state, stateTime, healthFrac, flipX, scale); break;
+        case DEFENSE_JANA:  drawDefenseJana(x, y, time, state, stateTime, healthFrac, flipX, scale); break;
     }
 }
 
-void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, float stateTime, float healthFrac) {
+void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, float stateTime, float healthFrac, float scale) {
     switch (type) {
-        case MAGICIAN: drawMagician(x, y, time, state, stateTime, healthFrac); break;
-        case CLOWN:    drawClown(x, y, time, state, stateTime, healthFrac);    break;
-        case JESTER:   drawJester(x, y, time, state, stateTime, healthFrac);   break;
+        case MAGICIAN: drawMagician(x, y, time, state, stateTime, healthFrac, scale); break;
+        case CLOWN:    drawClown(x, y, time, state, stateTime, healthFrac, scale);    break;
+        case JESTER:   drawJester(x, y, time, state, stateTime, healthFrac, scale);   break;
     }
 }
 
@@ -167,8 +174,7 @@ void drawJuggleBall(float x, float y, float time, float hitProgress){
 
 
 //Collectibles
-
-void drawToken(float x, float y, float time) {
+void drawToken(float x, float y) {
     float size = 24.0f;   // width and height on screen in pixels
     drawSprite(tokenTexture, 0, 1, x, y + size / 2, size, size, 0.0f, WHITE);
 }
@@ -178,7 +184,7 @@ void drawTokenIcon(float x, float y, float size, glm::vec4 tint) {
 }
 
 
-//Enemies
+
 
 void initCharacterTexture() {
     enemyWalkTexture[MAGICIAN] = loadTexture(ASSET_DIR "characters/magician_walking.png");
@@ -207,7 +213,7 @@ void initCharacterTexture() {
 
 }
 
-void drawMagician(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
+void drawMagician(float x, float y, float time, AnimState state, float stateTime, float healthFrac, float scale) {
    
   
     unsigned int tex = (state == ATTACK) ? enemyAttackTexture[MAGICIAN] : enemyWalkTexture[MAGICIAN];//atttack el stand while attack el walk attack while walk
@@ -216,7 +222,7 @@ void drawMagician(float x, float y, float time, AnimState state, float stateTime
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
         int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //curr frame ashoof ana emta then frames per sec to see show which frame mod 8 to wrap
-        float size=140.0f;
+        float size=140.0f*scale;//scale makes them bigger (only the cutscene uses it)
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 
 
@@ -224,24 +230,24 @@ void drawMagician(float x, float y, float time, AnimState state, float stateTime
 
 
 }
-void drawClown(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
+void drawClown(float x, float y, float time, AnimState state, float stateTime, float healthFrac, float scale) {
     unsigned int tex = (state == ATTACK) ? enemyAttackTexture[CLOWN] : enemyWalkTexture[CLOWN];
     float t=(state==ATTACK)?stateTime:time;//time da game clock law statetime its 0 awel man attack start frame 0
     if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
-        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //curr frame ashoof ana emta then frames per sec to see show which frame mod 8 to wrap
-        float size=140.0f;
+        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8;//curr frame ashoof ana emta then frames per sec to see show which frame mod 8 to wrap
+        float size=140.0f*scale;   // scale makes them bigger (only the cutscene uses it)
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 }
-void drawJester(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
+void drawJester(float x, float y, float time, AnimState state, float stateTime, float healthFrac, float scale) {
     unsigned int tex = (state == ATTACK) ? enemyAttackTexture[JESTER] : enemyWalkTexture[JESTER];
     float t=(state==ATTACK)?stateTime:time;//time da game clock law statetime its 0 awel man attack start frame 0
     if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
         int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //curr frame ashoof ana emta then frames per sec to see show which frame mod 8 to wrap
-        float size=140.0f;
+        float size=154.0f*scale;   // scale makes them bigger (only the cutscene uses it)
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 }
 
@@ -260,8 +266,6 @@ void drawHealthBar(float x, float y, int current, int max) {
         fillcolor = HEALTHBAR_RED;
     drawRect(x, y, w+4, h+4, 0, BLACK);
     drawCircle(x+w/2,y, (h+4)/2, BLACK);
-    drawRect(x, y, w, h, 0, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
-    drawCircle(x+w/2,y, h/2, glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
     drawRect(x - w / 2 + (w * frac) / 2, y, w * frac, h, 0, fillcolor);
     if(frac >= 1)
         drawCircle(x+w/2,y, h/2, fillcolor);

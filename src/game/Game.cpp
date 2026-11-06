@@ -162,7 +162,7 @@ void drawGame() {
     drawEnvironment();
     drawLanes();
     for(const Drop& d : drops) {
-        drawToken(d.x, laneFloorY(d.lane), gameTime);
+        drawToken(d.x, laneFloorY(d.lane));
     }
     for (const Player& p : players) {
                 float cooldown = HERO_ATTACK_COOLDOWN;

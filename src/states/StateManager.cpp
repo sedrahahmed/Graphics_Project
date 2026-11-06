@@ -1,11 +1,6 @@
-// StateManager.cpp. Owner: Person A
-// Decides which screen is showing, and sends update/draw to that screen.
-//
-//   MAIN_MENU --Start--> CUTSCENE --ends--> PLAYING --Esc--> PAUSED
-//   PLAYING --win/lose--> WON / LOST
-//   MAIN_MENU <--> SOUND_SETTINGS
+// Decides which screen is showing and sends update/draw to that screen.
 #define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>      // only for the key codes (GLFW_KEY_ESCAPE, ...)
+#include <GLFW/glfw3.h>      // only for key names like GLFW_KEY_ESCAPE
 #include "StateManager.h"
 #include "Input.h"
 #include "Game.h"
@@ -17,41 +12,43 @@
 #include "Sound.h"
 #include "HUD.h"
 
+// the screen showing right now (the game opens on the main menu)
 static GameState current = MAIN_MENU;
 
+// lets other files ask which screen is showing
 GameState getState() { return current; }
 
-// Runs the setup a screen needs when we enter it.
-// How the menus use it:
-//   Main menu Start     -> changeState(CUTSCENE)
-//   Pause Continue      -> changeState(PLAYING)                 (keeps the round going)
-//   Pause Restart       -> resetGame(); changeState(PLAYING);   (fresh round)
-//   Win/Lose Restart    -> changeState(PLAYING)                 (resets automatically)
-//   Any "Main Menu"     -> changeState(MAIN_MENU)
+// Switches to another screen and does any setup that screen needs.
+//   Start button -> CUTSCENE
+//   Pause "Continue" -> PLAYING (same round)
+//   Pause "Restart"  -> resetGame() then PLAYING (new round)
+//   Win/Lose "Restart" -> PLAYING (new round)
+//   any "Main Menu" -> MAIN_MENU
+
 void changeState(GameState next) {
-    if (next == current) return;
-    GameState previous = current;
+    if (next == current) return;   // already on this screen
+    GameState previous = current;  // remember where we came from
     current = next;
 
     switch (next) {
     case CUTSCENE:
-        startCutscene();
+        startCutscene(); // play the cutscene from the start
         break;
     case PLAYING:
-        // Coming back from pause continues the same round. Anything else starts a new one.
-        if (previous != PAUSED) resetGame();
+        if (previous != PAUSED) resetGame(); // from pause: keep the same round. from anywhere else: new round
         break;
     case WON:
-        playSoundEffect(SOUND_WIN);
+        playSoundEffect(SOUND_WIN); // played once, when the screen opens
         break;
     case LOST:
         playSoundEffect(SOUND_LOSE);
         break;
     default:
-        break;   // menus, PAUSED, WON, LOST need no setup
+        break;   // main menu, sound menu and pause need no setup
     }
 }
 
+// logic of the screen that's showing (every frame)
 void updateCurrentState(float dt) {
     switch (current) {
     case MAIN_MENU:
@@ -64,32 +61,35 @@ void updateCurrentState(float dt) {
 
     case CUTSCENE:
         updateCutscene(dt);
-        // Enter / Space skips straight to the game
+        // Enter or Space skips the cutscene
         if (keyPressed(GLFW_KEY_ENTER) || keyPressed(GLFW_KEY_SPACE)) {
             skipCutscene();
             changeState(PLAYING);
         }
-        else if (isCutsceneFinished()) changeState(PLAYING);
+        else if (isCutsceneFinished()) changeState(PLAYING);   // cutscene ended
         break;
 
     case PLAYING:
+        // Esc or pause button pauses, otherwise game runs
         if (keyPressed(GLFW_KEY_ESCAPE) || pauseIconClicked()) changeState(PAUSED);
         else updateGame(dt);
         break;
 
     case PAUSED:
-        // The game is NOT updated here, so everything stays frozen
+        // updateGame is not called so game is frozen
         if (keyPressed(GLFW_KEY_ESCAPE)) changeState(PLAYING);   // Esc again = continue
         else updatePauseMenu();
         break;
 
     case WON:
     case LOST:
-        updateEndMenu();   // the field stays frozen behind the menu
+        updateEndMenu();   // game is frozen behind menu
         break;
     }
 }
 
+// Draws the screen that's showing (every frame)
+// Whatever is drawn last appears on top
 void drawCurrentState() {
     switch (current) {
     case MAIN_MENU:
@@ -110,14 +110,14 @@ void drawCurrentState() {
         break;
 
     case PAUSED:
-        drawGame();        // frozen field underneath
-        drawPauseMenu();   // menu on top
+        drawGame();        // frozen game first
+        drawPauseMenu();   // then the menu on top
         break;
 
     case WON:
     case LOST:
-        drawGame();
-        drawEndMenu();
+        drawGame();        // frozen game first
+        drawEndMenu();     // then the menu on top
         break;
     }
 }
