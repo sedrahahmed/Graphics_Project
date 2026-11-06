@@ -6,7 +6,6 @@
 #include "HUD.h"
 #include "Economy.h"
 #include "Waves.h"
-#include "HomeBase.h"
 #include "Input.h"
 #include <GLFW/glfw3.h>
 #include "StateManager.h"
@@ -16,6 +15,7 @@
 #include "Environment.h"
 #include "Shots.h"
 #include "PlayerCards.h"
+
 
 
 std::vector<Player>     players;
@@ -145,18 +145,18 @@ void updateGame(float dt) {
     gameTime += dt;
     updatePlayerCards();
     updateLanes();
-    for (int lane = 0; lane < LANE_COUNT; lane++) {   // go through every lane
-        if (isLaneSelected(lane)){
-            if (keyPressed(GLFW_KEY_1)) placeGuard(MIRROR_GUARD, lane);
-            if (keyPressed(GLFW_KEY_2)) placeGuard(LANTERN_GUARD, lane);
-            if (keyPressed(GLFW_KEY_3)) placeGuard(DEFENSE_GUARD, lane);
-        }
+     for (int lane = 0; lane < LANE_COUNT; lane++) {   // go through every lane
+         if (isLaneSelected(lane)){
+             if (keyPressed(GLFW_KEY_1)) placeGuard(MIRROR_GUARD, lane);
+             if (keyPressed(GLFW_KEY_2)) placeGuard(LANTERN_GUARD, lane);
+             if (keyPressed(GLFW_KEY_3)) placeGuard(DEFENSE_GUARD, lane);
+         }
     }         
     updateWaves(dt);
     moveEveryone(dt);
     updateCombat(dt);
     updateShots(dt);
-    updateEconomy(dt);
+    updateEconomy();
     checkWinLose();
     removeDead();
    

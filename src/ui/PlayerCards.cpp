@@ -19,7 +19,7 @@ static const float cardYstart=650;
 static const float cardXStart=190;
 
 static bool isUnlocked(PlayerType type){
-    return canAfford(type)&&(type==MIRROR_GUARD || getCurrentWave() >1);
+    return canAfford(type)&&(type==MIRROR_GUARD || getCurrentWave() >1); //only seif locked f wave 1
 }
 
 
@@ -44,6 +44,7 @@ void updatePlayerCards() {
         if(selectedCard != -1&&!isUnlocked((PlayerType)selectedCard))
             selectedCard = -1;
     }
+
 void drawPlayerCards() { 
     for(int i=0; i<3; i++) {
         float x = cardXStart + i * (cardWidth + cardSpacing);
@@ -65,9 +66,10 @@ void drawPlayerCards() {
         drawRect(x,y,cardWidth,cardHeight,0,panel);
 
         
-        glm::vec4 tint = unlocked ? WHITE : glm::vec4(0.35,0.35,0.35,1);
+        glm::vec4 tint = unlocked ? WHITE : glm::vec4(0.35,0.35,0.35,1); //fade el unlocked cards
         drawGuardIcon(type,x,y,cardWidth,cardHeight,tint);
-
+        if (i == hoveredCard) drawRect(x, y, cardWidth, cardHeight, 0, HIGHLIGHT);
+        
         glm::vec4 priceColour = unlocked ? TICKET_GOLD : glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
         glm::vec4 tokenTint = unlocked ? WHITE : glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);   // grayed out if you can't afford it
         drawTokenIcon(x - 10, y - cardHeight/2 -12, 16, tokenTint);

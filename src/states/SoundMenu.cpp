@@ -34,7 +34,7 @@ void updateSoundMenu() {
 }
 
 void drawSoundMenu() {
-    drawRect(CENTER_X, SCREEN_H / 2.0f, SCREEN_W, SCREEN_H, 0.0f,NIGHT_SKY);
+    //drawRect(CENTER_X, SCREEN_H / 2.0f, SCREEN_W, SCREEN_H, 0.0f,glm::vec4(0.16f, 0.06f, 0.22f, 0.7f));
     drawSprite(getMenuTexture(), 0, 1, CENTER_X, SCREEN_H / 2.0f, SCREEN_W, SCREEN_H, 0.0f, WHITE);   // ← NEW
 
     //const char* title = "SOUND";

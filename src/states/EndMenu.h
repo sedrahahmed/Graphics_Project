@@ -5,3 +5,4 @@
 
 void updateEndMenu();   // button clicks -> changeState(...)
 void drawEndMenu();
+void drawOutlinedText();

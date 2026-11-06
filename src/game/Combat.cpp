@@ -1,26 +1,27 @@
-// Combat.cpp. Owner: Person C
+
 #include "Combat.h"
 #include "Game.h"
 #include "Config.h"
 #include "Sound.h"
-
-static const float MELEE_RANGE = 50.0f; //fix later if not alligned with the art
+//runs mara every frame men update game
+//checks whos dead and makes them dead bas doesnt remove and lets players find a target 
+static const float MELEE_RANGE = 50.0f; //max distance for melee characters to be considered touching fa hay attack
 
 //Helpers
 static int enemyInFront(const Player& p){
-    int closest = -1;
+    int closest = -1;//if fighting no one
     for(int i=0; i<(int)enemies.size(); i++){
         const Enemy& enemy = enemies[i];
         float distance = enemy.x - p.x;
         if(enemy.alive && enemy.lane == p.lane && enemy.x >= p.x && distance <= MELEE_RANGE) {
-            if(closest == -1 || enemy.x < enemies[closest].x) {
+            if(closest == -1 || enemy.x < enemies[closest].x) {//if first enemy we meet or if its closer than closest so far
                 closest = i;
             }
         }
     }
     return closest;
 }
-
+//exact same as above bas for players
 static int guardInFront(const Enemy& e){
     int closest = -1;
     for(int i=0; i<(int)players.size(); i++){
@@ -37,7 +38,7 @@ static int guardInFront(const Enemy& e){
 
 
 void updateCombat(float dt) {
-    for(Player &p: players){   
+    for(Player &p: players){   //checking if dead and making them dead if yes
         if(p.alive && p.health <= 0) {
             p.alive = false;
             playSoundEffect(SOUND_DEATH);
@@ -55,8 +56,8 @@ void updateCombat(float dt) {
         if(p.alive) {
             int enemyIndex = enemyInFront(p);
             if(enemyIndex != -1 && (p.state == WALK || p.state == IDLE)) {   //theres an enemy infront and the player is walking and not a defense guard
-                p.state = ATTACK;
-                p.stateTimer = 0.0f;
+                p.state = ATTACK;// also makes them stop moving (state attack is not moving)
+                p.stateTimer = 0.0f;//reset to make animations start from beginning frame 0 
             }
             if(enemyIndex == -1 && p.state == ATTACK) {  //theres no enemy infront and i was attacking but now theres no enemy infront so go back to walking
                 if(p.type==DEFENSE_GUARD)
@@ -65,8 +66,8 @@ void updateCombat(float dt) {
                     p.state=WALK;
                 p.stateTimer = 0.0f;
             }
-            p.attackTimer -= dt;            
-            if(p.attackTimer<=0){
+            p.attackTimer -= dt;            //constantly runs counts cooldown
+            if(p.attackTimer<=0){ //time to attack
                 //attack logic
                 switch (p.type){
                     case MIRROR_GUARD:{
@@ -78,18 +79,18 @@ void updateCombat(float dt) {
                         break;
                     }
                     case LANTERN_GUARD:{
-                        fireShot(LANTERN_ORB, p.lane, p.x + 40.0f, true); //fire a lantern orb from the guard's position
+                        fireShot(LANTERN_ORB, p.lane, p.x + 40.0f, true); //fire a lantern orb from the guard's position +40 px
                         playSoundEffect(SOUND_RANGED_ATTACK);
                         break;
                     }
                     case DEFENSE_GUARD:{
-                        break;
+                        break; //doesnt attack only blocks
                     }
                 }
-                p.attackTimer = HERO_ATTACK_COOLDOWN;
+                p.attackTimer = HERO_ATTACK_COOLDOWN;//reset the attack timer to the cooldown time(wait 1.5 seconds before attacking again)
             }
         }
-    }
+    }//same as the players but for villains now
     for(Enemy &e: enemies){
         if(e.alive) {
             int playerIndex = guardInFront(e);
@@ -106,7 +107,7 @@ void updateCombat(float dt) {
                 //attack logic
                 switch(e.type){
                     case MAGICIAN:{
-                        fireShot(CURSED_CARD, e.lane, e.x - 40.0f, false); //fire a cursed card from the enemy's position
+                        fireShot(CURSED_CARD, e.lane, e.x - 40.0f, false); //fire a cursed card from the enemy's position. false bec its not from the player its enemy
                         playSoundEffect(SOUND_RANGED_ATTACK);
                         break;
                     }
@@ -124,7 +125,7 @@ void updateCombat(float dt) {
                         break;
                     }
                 }
-                e.attackTimer = ENEMY_ATTACK_COOLDOWN;
+                e.attackTimer = ENEMY_ATTACK_COOLDOWN;//reset the attack timer to the cooldown time(wait 4 seconds before attacking again)
             }
 
         }

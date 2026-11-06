@@ -76,27 +76,6 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         drawCurrentState();
 
-        // ---- TEMP TEST (delete later) ----
-        // All values are in pixels now: (0,0) = bottom-left, (1280,720) = top-right
-        // drawRect(640, 360, 256, 72, 45.0f, glm::vec4(1, 0, 0, 1));
-        // drawCircle(960, 540, 72, glm::vec4(0, 1, 0, 1));
-        // drawEllipse(320, 540, 256, 72, 30.0f, glm::vec4(0, 0.5f, 1, 1));
-        // drawTriangle(320, 216, 192, 144, 0.0f, glm::vec4(1, 1, 0, 1));
-        // drawLine(128, 72, 1152, 180, 4, glm::vec4(1, 1, 1, 1));
-        // int frame = (int)(now * 22.0f);   // 4 frames per second
-        // glm::vec4 white(1, 1, 1, 1);
-        // drawSprite(testTex, frame, 4, 896, 324, 128, 128, 0.0f, white);                     // normal
-        // drawSprite(testTex, frame, 4, 1056, 324, 128, 128, 0.0f, white, true);              // mirrored
-        // drawSprite(testTex, frame, 4, 1216, 324, 128, 128, 0.0f, damageTint(white, 0.25f)); // damaged
-        // setGrayscale(true);                                                                 // grayscale test
-        // drawSprite(testTex, frame, 4, 1056, 160, 128, 128, 0.0f, white);
-        // setGrayscale(false);
-        // Button testButton = { 640, 600, 260, 70, "START" };   // x, y (center), width, height, label
-        // drawButton(testButton);
-        // if (isClicked(testButton)) std::cout << "clicked!" << std::endl;
-
-        // ----------------------------------
-
         glfwSwapBuffers(window); //draw my new frame on the window
         glfwPollEvents(); //check for if we preessed a key(input?)
     }
