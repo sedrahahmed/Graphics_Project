@@ -79,6 +79,7 @@ int main() {
         glfwPollEvents(); //check for if we preessed a key(input?)
     }
 
+    shutdownSound();
     shutdownDraw();
     glfwTerminate();
     return 0; //just to close baraga3 mem and close window

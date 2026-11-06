@@ -3,15 +3,15 @@
 #include "Sound.h"
 
 
-static ma_engine engine;
-static ma_sound backgroundMusic;
-static bool ready = false;
-static float volume = 0.5f;
+static ma_engine engine;//sound system mixes sounds and contacts speakers
+static ma_sound backgroundMusic;//to start stop and loop bec we want to loop
+static bool ready = false;//becomes true when music starts
+static float volume = 0.5f; //like everything together used to scale stuff correctly
 static float musicVolume = 0.5f;
 static float soundEffectVolume = 1.0f;
 static bool musicMuted = false;
 static bool soundEffectsMuted = false;
-static ma_sound_group soundEffects;
+static ma_sound_group soundEffects;//group el sfx to conrol them tog
 static const char* soundFiles[] = {ASSET_DIR "sounds/click.mp3",
                                    ASSET_DIR "sounds/lane.mp3",
                                    ASSET_DIR "sounds/placement.mp3",
@@ -22,14 +22,13 @@ static const char* soundFiles[] = {ASSET_DIR "sounds/click.mp3",
                                    ASSET_DIR "sounds/coin.mp3",
                                    ASSET_DIR "sounds/win.mp3",
                                    ASSET_DIR "sounds/lose.mp3",
-                                   // cutscene cues (add these files to assets/sounds)
                                    ASSET_DIR "sounds/cassette_click.mp3",
                                    ASSET_DIR "sounds/owner_recording.mp3",
                                    ASSET_DIR "sounds/clock_midnight.mp3"
                         };
 
 void initSound() {
-    if(ma_engine_init(NULL, &engine)!= MA_SUCCESS) //audio fails but game shouldn't be affected
+    if(ma_engine_init(NULL, &engine)!= MA_SUCCESS) //audio fails but game shouldn't be affected. null is default settings 
         return;
     ready = true; 
     ma_sound_group_init(&engine, 0, NULL, &soundEffects);
@@ -62,7 +61,7 @@ void playSoundEffect(SoundID id) {
 
 void volumeUp() {
     volume = volume + 0.1;
-    if(volume > 1) volume = 1;
+    if(volume > 1) volume = 1;//max is 1
     if(ready){
         ma_engine_set_volume(&engine,volume);
         ma_sound_set_volume(&backgroundMusic, musicMuted ? 0.0f : musicVolume);
@@ -77,18 +76,20 @@ void volumeDown() {
         ma_sound_group_set_volume(&soundEffects, soundEffectsMuted ? 0.0f : soundEffectVolume);
     }
 }
-void toggleMusicMute() {
-    musicMuted = !musicMuted;
+void setMusicMuted(bool muted) {
+    musicMuted = muted;
     if(ready){
         ma_sound_set_volume(&backgroundMusic, musicMuted ? 0.0f : musicVolume);
     }
 }
-void toggleSoundEffectsMute() {
-    soundEffectsMuted = !soundEffectsMuted;
+void setSoundEffectsMuted(bool muted) {
+    soundEffectsMuted = muted;
     if(ready){
         ma_sound_group_set_volume(&soundEffects, soundEffectsMuted ? 0.0f : soundEffectVolume);
     }
 }
+void toggleMusicMute() { setMusicMuted(!musicMuted); }
+void toggleSoundEffectsMute() { setSoundEffectsMuted(!soundEffectsMuted); }
 float getVolume() { return volume; }
 bool isMusicMuted(){return musicMuted;}
 bool isSoundEffectsMuted(){return soundEffectsMuted;}
