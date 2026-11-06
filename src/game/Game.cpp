@@ -17,7 +17,6 @@
 #include "PlayerCards.h"
 
 
-
 std::vector<Player>     players;
 std::vector<Enemy>      enemies;
 std::vector<Projectile> shots;

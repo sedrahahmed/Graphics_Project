@@ -1,22 +1,19 @@
-// Draw.cpp. Owner: Person A
+
 // Follow learnopengl: Hello Triangle -> Shaders -> Transformations -> Textures.
 #include "Draw.h"
 #include "Config.h"   // SCREEN_W, SCREEN_H
-#include <glad/glad.h>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <vector>
+#include <glad/glad.h>//opengl functions
+#include <glm/gtc/matrix_transform.hpp>//translate rotate etc
+#include <glm/gtc/type_ptr.hpp>//gives ptr le a matrixs number
+#include <vector>//for std vector
 #include <cmath>
-#include <iostream>
-// stb_image is a "single header" library: it contains the whole loader inside the .h file.
-// Defining STB_IMAGE_IMPLEMENTATION in EXACTLY ONE .cpp file tells it to include the real code here.
+#include <iostream>//error print
+// stb_image is a library it loads the png into mem
+//defining STB_IMAGE_IMPLEMENTATION in 1 .cpp file to include the real code here
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
-
-// Sprite functions live at the bottom of this file; we declare them here so initDraw/shutdownDraw can call them
 static void initSprites();
-static void shutdownSprites();
-// ---------- Shaders (same idea as the lab, but ONE color for the whole shape) ----------
+static void shutdownSprites();//implemented here fel a5er
 static const char* vertexShaderSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;
@@ -26,7 +23,8 @@ void main()
 {
     gl_Position = projection * u_Transform * vec4(aPos, 1.0);
 }
-)";
+)";//el shaders nafs fekret the lab bas 1 color for the whole shape 
+//dauser the corners to transform and project and fragment colours the pixels
 
 static const char* fragmentShaderSource = R"(
 #version 330 core
@@ -43,24 +41,23 @@ void main()
 }
 )";
 
-// ---------- Globals ----------
-static GLuint shaderProgram = 0;
-static GLint locTransform = -1;
-static GLint locColor = -1;
-static GLint locGrayscale = -1;
-static bool grayscaleOn = false;   // set by setGrayscale(), sent to both shaders on every draw
 
-// Pixel coordinates: (0,0) = bottom-left, (SCREEN_W, SCREEN_H) = top-right.
-// learnopengl uses ortho(0, 800, 600, 0) for a top-left origin; we swap the last two for bottom-left.
-static glm::mat4 projection = glm::ortho(0.0f, (float)SCREEN_W, 0.0f, (float)SCREEN_H, -1.0f, 1.0f);
+static GLuint shaderProgram = 0;//id of chape shader
+static GLint locTransform = -1;//where the transform is in the shader
+static GLint locColor = -1;//where the colour is
+static GLint locGrayscale = -1;//where greyscale is
+static bool grayscaleOn = false;   // set by setGrayscale() and sent to both shaders on every draw
 
-// One VAO/VBO per base shape. Each is a "unit" shape that we scale/rotate/move later.
+
+static glm::mat4 projection = glm::ortho(0.0f, (float)SCREEN_W, 0.0f, (float)SCREEN_H, -1.0f, 1.0f);//map x from o and 1280 to -1 and 1 same for y. left right bottom top
+
+// One VAO(how to read block) and VBO(block of gpu mem holding corners ). el shapes unit shapes we han transform them
 static GLuint squareVAO, squareVBO;
 static GLuint triangleVAO, triangleVBO;
 static GLuint circleVAO, circleVBO;
-static const int CIRCLE_SEGMENTS = 50;      // higher = smoother circle
+static const int CIRCLE_SEGMENTS = 50;      // higher it is smoother the circle
 
-static GLuint compileShader(GLenum type, const char* source) {
+static GLuint compileShader(GLenum type, const char* source) {//takes shader text and turns it into a  program .taken from lab 1
     GLuint shader = glCreateShader(type);
     glShaderSource(shader, 1, &source, nullptr);
     glCompileShader(shader);
@@ -74,22 +71,22 @@ static GLuint compileShader(GLenum type, const char* source) {
     return shader;
 }
 
-// Uploads a list of x,y,z floats and returns the VAO/VBO for it
-static void makeShape(const std::vector<float>& verts, GLuint& vao, GLuint& vbo) {
+
+static void makeShape(const std::vector<float>& verts, GLuint& vao, GLuint& vbo) {//coordinates of corners and its vao and vbo
     glGenVertexArrays(1, &vao);
-    glGenBuffers(1, &vbo);
+    glGenBuffers(1, &vbo);//get ids
     glBindVertexArray(vao);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);//lab 1 stuff
+    glBufferData(GL_ARRAY_BUFFER, verts.size() * sizeof(float), verts.data(), GL_STATIC_DRAW);//num to gpu
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(0);//how to read buffer
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
 
 void initDraw() {
-    initSprites();   // also set up the image-drawing shader and quad
-    // Build shader program
+    initSprites();   
+    // build shader program like lab 1
     GLuint vs = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
     GLuint fs = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
     shaderProgram = glCreateProgram();
@@ -101,17 +98,15 @@ void initDraw() {
 
     locTransform = glGetUniformLocation(shaderProgram, "u_Transform");
     locColor = glGetUniformLocation(shaderProgram, "u_Color");
-    locGrayscale = glGetUniformLocation(shaderProgram, "u_Grayscale");
+    locGrayscale = glGetUniformLocation(shaderProgram, "u_Grayscale");//from lab 2 gets loc of the u slot and stores in local version
 
-    // The projection never changes, so send it once (like learnopengl does in Init)
     glUseProgram(shaderProgram);
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));//select program and send matrix
 
-    // Lets the alpha (4th number of the color) make shapes see-through
     glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);//using alpa lel transparency
 
-    // Unit square: 1 x 1, centered on (0,0). Drawn as a triangle fan.
+    //unit square
     makeShape({
         -0.5f, -0.5f, 0.0f,
          0.5f, -0.5f, 0.0f,
@@ -119,14 +114,14 @@ void initDraw() {
         -0.5f,  0.5f, 0.0f
         }, squareVAO, squareVBO);
 
-    // Unit triangle: 1 wide, 1 tall, centered on (0,0)
+    // Unit triangle . this and circle from labs 
     makeShape({
         -0.5f, -0.5f, 0.0f,
          0.5f, -0.5f, 0.0f,
          0.0f,  0.5f, 0.0f
         }, triangleVAO, triangleVBO);
 
-    // Unit circle: radius 1, triangle fan (center point + points around the edge)
+    // unit circle
     std::vector<float> circle = { 0.0f, 0.0f, 0.0f };
     for (int i = 0; i <= CIRCLE_SEGMENTS; ++i) {
         float angle = 2.0f * 3.14159265f * (float)i / (float)CIRCLE_SEGMENTS;
@@ -135,34 +130,34 @@ void initDraw() {
     makeShape(circle, circleVAO, circleVBO);
 }
 
-void shutdownDraw() {
-    shutdownSprites();   // free the image-drawing shader and quad
+void shutdownDraw() {//like lab 1 deletes vao and vbos
+    shutdownSprites();   // free the image drawing shader and quad
     glDeleteVertexArrays(1, &squareVAO);   glDeleteBuffers(1, &squareVBO);
     glDeleteVertexArrays(1, &triangleVAO); glDeleteBuffers(1, &triangleVBO);
     glDeleteVertexArrays(1, &circleVAO);   glDeleteBuffers(1, &circleVBO);
     glDeleteProgram(shaderProgram);
 }
 
-// ---------- The one helper that everything uses ----------
-// Order matters: scale first, then rotate, then move. In glm you write it in reverse.
+
+//scale first then rotate then move ffa write opposite for glm
 static void drawShape(GLuint vao, GLenum mode, int vertexCount,
     float x, float y, float scaleX, float scaleY, float rotationDeg, glm::vec4 color)
-{
+{                                //does nothing
     glm::mat4 t = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));          // 3. move
     t = glm::rotate(t, glm::radians(rotationDeg), glm::vec3(0.0f, 0.0f, 1.0f));    // 2. rotate
     t = glm::scale(t, glm::vec3(scaleX, scaleY, 1.0f));                            // 1. scale
 
-    glUseProgram(shaderProgram);
-    glUniformMatrix4fv(locTransform, 1, GL_FALSE, glm::value_ptr(t));
+    glUseProgram(shaderProgram);//select
+    glUniformMatrix4fv(locTransform, 1, GL_FALSE, glm::value_ptr(t));//send matric
     glUniform4fv(locColor, 1, glm::value_ptr(color));
-    glUniform1i(locGrayscale, grayscaleOn);
+    glUniform1i(locGrayscale, grayscaleOn);//colour and greyscale flags
     glBindVertexArray(vao);
-    glDrawArrays(mode, 0, vertexCount);
-    glBindVertexArray(0);
+    glDrawArrays(mode, 0, vertexCount);//pick shape and draaw it
+    glBindVertexArray(0);//unbind
 }
 
-// ---------- The 5 functions you asked for ----------
-void drawRect(float x, float y, float w, float h, float rotation, glm::vec4 color) {
+            //centre coordinates
+void drawRect(float x, float y, float w, float h, float rotation, glm::vec4 color) {//scale is the w and h brc sides are 1
     drawShape(squareVAO, GL_TRIANGLE_FAN, 4, x, y, w, h, rotation, color);
 }
 
@@ -171,7 +166,7 @@ void drawCircle(float x, float y, float radius, glm::vec4 color) {
 }
 
 void drawEllipse(float x, float y, float w, float h, float rotation, glm::vec4 color) {
-    // w and h are the full width/height, the unit circle has radius 1, so we use half
+    //div by 2 bec w and h are the full ones and unit circle r is 1
     drawShape(circleVAO, GL_TRIANGLE_FAN, CIRCLE_SEGMENTS + 2, x, y, w / 2.0f, h / 2.0f, rotation, color);
 }
 
@@ -180,33 +175,26 @@ void drawTriangle(float x, float y, float w, float h, float rotation, glm::vec4 
 }
 
 void drawLine(float x1, float y1, float x2, float y2, float thickness, glm::vec4 color) {
-    // A line is just a thin rectangle: put it at the midpoint, as long as the gap,
-    // and tilt it by the angle between the two points.
+    // A line isa thin rectangle
     float dx = x2 - x1;
     float dy = y2 - y1;
     float length = sqrtf(dx * dx + dy * dy);
-    float angleDeg = glm::degrees(atan2f(dy, dx));
+    float angleDeg = glm::degrees(atan2f(dy, dx));//rad to deg
     drawRect((x1 + x2) / 2.0f, (y1 + y2) / 2.0f, length, thickness, angleDeg, color);
 }
 
 glm::vec4 damageTint(glm::vec4 color, float healthFrac) {
     glm::vec4 red(0.9f, 0.05f, 0.05f, color.a);   // keep the original transparency
-    float hurt = 1.0f - healthFrac;                // 0 = healthy, 1 = almost dead
-    return glm::mix(color, red, hurt * 0.8f);      // 0.8 so it never becomes a flat red blob
+    float hurt = 1.0f - healthFrac;   // 0 = healthy 1 = almost dead(3akast el health)
+    return glm::mix(color, red, hurt * 0.8f);      // 0.8 so it never becomes purely red
 }
 
 void setGrayscale(bool on) { grayscaleOn = on; }
 
-// =====================================================================================
-//                                  SPRITES (PNG images)
-// =====================================================================================
-// A sprite is just a rectangle with a picture glued on it. The picture is a "texture".
-// Every corner of the rectangle gets a UV coordinate:
-//   UV = (0,0) is the bottom-left of the picture, UV = (1,1) is the top-right.
-// The GPU then looks up the right pixel of the picture for every pixel of the rectangle.
 
-// ---------- Sprite shaders ----------
-// Vertex shader: runs once per corner of the rectangle
+
+
+//vertex shader runs once for each corner of the rectangle
 static const char* spriteVertexSource = R"(
 #version 330 core
 layout (location = 0) in vec3 aPos;      // corner position (the unit square, -0.5 to 0.5)
@@ -231,9 +219,9 @@ void main()
     // (u + frame) picks the frame, dividing by frameCount shrinks it into 0-1 of the whole image.
     vUV = vec2((u + u_Frame) / u_FrameCount, aUV.y);
 }
-)";
+)";//same as shapeone bas also can choose which part of the pic to show el pic 8 frames
 
-// Fragment shader: runs once per pixel of the rectangle
+// fragment shader runs once every pixel of the rectangle
 static const char* spriteFragmentSource = R"(
 #version 330 core
 in vec2 vUV;                             // the picture spot for this pixel
@@ -251,12 +239,11 @@ void main()
         FragColor = vec4(average, average, average, FragColor.a);
     }
 }
-)";
+)";//reads colour at each pixel and multiply tint by the colour at uv
 
-// ---------- Sprite globals ----------
 static GLuint spriteProgram = 0;         // the compiled sprite shader
 static GLuint spriteVAO = 0, spriteVBO = 0;   // the rectangle (with UVs)
-static GLint locSpriteTransform = -1;    // the "slots" in the shader we send values into
+static GLint locSpriteTransform = -1;    // the slots in the shader we send values into
 static GLint locSpriteFrame = -1;
 static GLint locSpriteFrameCount = -1;
 static GLint locSpriteFlipX = -1;
@@ -265,17 +252,16 @@ static GLint locSpriteTexture = -1;
 static GLint locSpriteGrayscale = -1;
 
 static void initSprites() {
-    // Compile both shaders and link them into one program (same steps as initDraw)
+    // same steps as initDraw
     GLuint vs = compileShader(GL_VERTEX_SHADER, spriteVertexSource);
     GLuint fs = compileShader(GL_FRAGMENT_SHADER, spriteFragmentSource);
     spriteProgram = glCreateProgram();
     glAttachShader(spriteProgram, vs);
     glAttachShader(spriteProgram, fs);
     glLinkProgram(spriteProgram);
-    glDeleteShader(vs);                  // shaders are copied into the program, so we can delete these
+    glDeleteShader(vs);               
     glDeleteShader(fs);
 
-    // Ask the shader where each uniform lives so we can fill them in later
     locSpriteTransform = glGetUniformLocation(spriteProgram, "u_Transform");
     locSpriteFrame = glGetUniformLocation(spriteProgram, "u_Frame");
     locSpriteFrameCount = glGetUniformLocation(spriteProgram, "u_FrameCount");
@@ -283,110 +269,96 @@ static void initSprites() {
     locSpriteTint = glGetUniformLocation(spriteProgram, "u_Tint");
     locSpriteTexture = glGetUniformLocation(spriteProgram, "u_Texture");
     locSpriteGrayscale = glGetUniformLocation(spriteProgram, "u_Grayscale");
-
-    // Send the projection once, same as the shape shader
     glUseProgram(spriteProgram);
     glUniformMatrix4fv(glGetUniformLocation(spriteProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
-    // The unit square again, but now each corner is: x, y, z, u, v (5 floats)
-    // Corner order goes around the square so GL_TRIANGLE_FAN fills it.
     float quad[] = {
+        //where it goes on screen and which spot on the png we should show
         //  x      y     z     u     v
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f,   // bottom-left  -> bottom-left of the picture
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f,   // bottom-right -> bottom-right of the picture
-         0.5f,  0.5f, 0.0f, 1.0f, 1.0f,   // top-right    -> top-right of the picture
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f    // top-left     -> top-left of the picture
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom-left  to  bottom left of the pic
+         0.5f, -0.5f, 0.0f, 1.0f, 0.0f,   // bottom right 
+         0.5f,  0.5f, 0.0f, 1.0f, 1.0f,  // top right   
+        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f// top left  
     };
 
-    glGenVertexArrays(1, &spriteVAO);    // make the VAO (remembers how to read the data)
-    glGenBuffers(1, &spriteVBO);         // make the VBO (holds the data on the GPU)
+    glGenVertexArrays(1, &spriteVAO);  
+    glGenBuffers(1, &spriteVBO);         
     glBindVertexArray(spriteVAO);        // start recording into this VAO
     glBindBuffer(GL_ARRAY_BUFFER, spriteVBO);                            // use this VBO
     glBufferData(GL_ARRAY_BUFFER, sizeof(quad), quad, GL_STATIC_DRAW);  // copy the corners to the GPU
 
-    // Attribute 0 = position: 3 floats, each corner is 5 floats long (stride), starts at byte 0
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // Attribute 1 = UV: 2 floats, starts after the 3 position floats
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(1);//like labs saying el layout badal za7ma keda lazem a know wha these numbers represent
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);    // unbind so we don't change them by accident
+    glBindBuffer(GL_ARRAY_BUFFER, 0); //to not chnge bel8alat
     glBindVertexArray(0);
 }
 
-static void shutdownSprites() {
+static void shutdownSprites() {//delete
     glDeleteVertexArrays(1, &spriteVAO);
     glDeleteBuffers(1, &spriteVBO);
     glDeleteProgram(spriteProgram);
 }
 
-// ---------- loadTexture ----------
-// Reads a PNG file from disk, uploads it to the GPU, returns its ID. Returns 0 if it failed.
-unsigned int loadTexture(const char* path) {
-    // OpenGL thinks (0,0) is the BOTTOM-left, but image files store the TOP row first.
-    // This flips the image while loading so it isn't upside down.
-    stbi_set_flip_vertically_on_load(true);
+unsigned int loadTexture(const char* path) {//read png gives it to gpu and returns id
 
-    int width, height, channels;         // stb fills these in: image size and channels in the FILE
-    // The last "4" forces RGBA (red, green, blue, alpha) no matter what the file has,
-    // so we always know the pixel layout. Piskel PNGs keep transparency in alpha.
-    unsigned char* data = stbi_load(path, &width, &height, &channels, 4);
-    if (!data) {                         // file missing / wrong path / not a real PNG
+    stbi_set_flip_vertically_on_load(true);//flip pic bec origin bottom in opengl in pic its top
+
+    int width, height, channels;         // stb fills these in px size and how many color values per pixel
+    unsigned char* data = stbi_load(path, &width, &height, &channels, 4);//4 for alpha
+    if (!data) {                         
         std::cerr << "Failed to load texture: " << path << std::endl;
-        return 0;
+        return 0;//lab 4 check failure
     }
 
     GLuint texture;
-    glGenTextures(1, &texture);                  // ask OpenGL for a texture ID
-    glBindTexture(GL_TEXTURE_2D, texture);       // "everything below is about this texture"
+    glGenTextures(1, &texture);                  // get id from opengl and select
+    glBindTexture(GL_TEXTURE_2D, texture);       
 
-    // NEAREST = no blur when scaled. Keeps pixel art crisp (LINEAR would smudge it).
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);   // when shown smaller
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);   // when shown bigger
-    // CLAMP_TO_EDGE = never wrap around to the opposite side of the picture at the borders
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);   // when shown bigger smt for making it not blurry when scaled
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);//in case the uv are not within 0to1
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);       // pixel rows are tightly packed (no padding bytes)
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);   // no padding bw rows fel px
 
-    // Copy the pixels to the GPU. Stored as RGBA, our data is RGBA, each channel is an unsigned byte.
+    // copy the pixels to the GPU as rgba each channel is an unsigned byte
+                //kind of txt  detail lvl   gpu format          border 0 my format       pxl men el stb
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-    stbi_image_free(data);                       // the GPU has its own copy now, free the CPU one
+    stbi_image_free(data);  // free cpu gpu has it 5alas
     glBindTexture(GL_TEXTURE_2D, 0);             // unbind
     return texture;
 }
-
-// ---------- drawSprite ----------
 void drawSprite(unsigned int texture, int frame, int frameCount,
     float x, float y, float w, float h,
     float rotation, glm::vec4 tint, bool flipX)
 {
-    if (texture == 0 || frameCount < 1) return;  // nothing to draw (failed load or bad frameCount)
+    if (texture == 0 || frameCount < 1) return;  // nothing to draw 
+//like draw shape
+    glm::mat4 t = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));    // 3. move center  to x, y
+    t = glm::rotate(t, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));  // 2. rotate (degrees to radians)
+    t = glm::scale(t, glm::vec3(w, h, 1.0f));                                     // 1. scale the unit square to w x h
 
-    // Same transform recipe as drawShape: scale first, then rotate, then move (written in reverse)
-    glm::mat4 t = glm::translate(glm::mat4(1.0f), glm::vec3(x, y, 0.0f));          // 3. move to x, y
-    t = glm::rotate(t, glm::radians(rotation), glm::vec3(0.0f, 0.0f, 1.0f));       // 2. rotate (degrees -> radians)
-    t = glm::scale(t, glm::vec3(w, h, 1.0f));                                      // 1. stretch the unit square to w x h
-
-    frame = frame % frameCount;                  // wrap so frame 4 of 4 goes back to 0
+    frame = frame % frameCount;     // wrap like frame 9 men 8 is 1 
     if (frame < 0) frame += frameCount;          // handle negative numbers too
 
-    glUseProgram(spriteProgram);                 // switch to the sprite shader
-    glUniformMatrix4fv(locSpriteTransform, 1, GL_FALSE, glm::value_ptr(t));   // send the transform
-    glUniform1f(locSpriteFrame, (float)frame);                                // send the frame number
-    glUniform1f(locSpriteFrameCount, (float)frameCount);                      // send how many frames there are
-    glUniform1f(locSpriteFlipX, flipX ? 1.0f : 0.0f);                         // send mirror on/off
-    glUniform4fv(locSpriteTint, 1, glm::value_ptr(tint));                     // send the tint color
-    glUniform1i(locSpriteGrayscale, grayscaleOn);                             // send grayscale on/off
+    glUseProgram(spriteProgram); // switch to the sprite shader
+    glUniformMatrix4fv(locSpriteTransform, 1, GL_FALSE, glm::value_ptr(t));   // send the transform lel shader
+    glUniform1f(locSpriteFrame, (float)frame);     // send the frame number
+    glUniform1f(locSpriteFrameCount, (float)frameCount); // send num of frames
+    glUniform1f(locSpriteFlipX, flipX ? 1.0f : 0.0f);   // send mirror on/off
+    glUniform4fv(locSpriteTint, 1, glm::value_ptr(tint));    // send the tint color
+    glUniform1i(locSpriteGrayscale, grayscaleOn);  // send grayscale on/off
 
-    glActiveTexture(GL_TEXTURE0);                // use texture slot 0
-    glBindTexture(GL_TEXTURE_2D, texture);       // put our picture in slot 0
-    glUniform1i(locSpriteTexture, 0);            // tell the shader "u_Texture is in slot 0"
+    glActiveTexture(GL_TEXTURE0);     // use texture slot 0 fel gpu
+    glBindTexture(GL_TEXTURE_2D, texture);   // put our picture in slot 0
+    glUniform1i(locSpriteTexture, 0); //tell the shader "u_Texture is in slot 0"
 
-    glBindVertexArray(spriteVAO);                // pick the rectangle
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);         // draw its 4 corners as a filled square
-    glBindVertexArray(0);                        // unbind
+    glBindVertexArray(spriteVAO);  //pick rect
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4); //draw
+    glBindVertexArray(0);         // unbind
     glBindTexture(GL_TEXTURE_2D, 0);
 }
