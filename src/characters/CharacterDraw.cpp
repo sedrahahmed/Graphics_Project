@@ -26,7 +26,7 @@ void drawGuardIcon(PlayerType type, float x, float y, float w,float h, glm::vec4
     
 }
 
-void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     unsigned int tex;
     int frames;
     int frame;
@@ -60,8 +60,10 @@ void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTim
         }
 
     }
-        float size = 160;
-        drawSprite(tex, frame, frames, x, y + size / 2 - 4, size, size, 0.0f,
+        float size = 160 * scale;   // scale > 1 only in the cutscene
+        // the bottom 9.4% of seif's frames is empty, so when scaled pull him down by
+        // the extra empty space to keep his feet where they are at normal size
+        drawSprite(tex, frame, frames, x, y + size / 2 - 4 - (size - 160) * 0.094f, size, size, 0.0f,
         damageTint(WHITE, healthFrac), flipX);
         }
 
@@ -132,9 +134,9 @@ void drawDefenseJana(float x, float y, float time, AnimState state, float stateT
     damageTint(WHITE, healthFrac), flipX);
 }
 
-void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     switch (type) {
-        case MELEE_SEIF:   drawMeleeSeif(x, y, time, state, stateTime, healthFrac, flipX); break;
+        case MELEE_SEIF:   drawMeleeSeif(x, y, time, state, stateTime, healthFrac, flipX, scale); break;
         case RANGED_LAMA:  drawRangedLama(x, y, time, state, stateTime, healthFrac, flipX); break;
         case DEFENSE_JANA:  drawDefenseJana(x, y, time, state, stateTime, healthFrac, flipX); break;
     }

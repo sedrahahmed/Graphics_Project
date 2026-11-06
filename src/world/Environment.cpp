@@ -18,10 +18,13 @@ void initEnvironment() {
 }
 
 //5 primitives for the background
-void drawEnvironment() { 
-    drawSprite(balloon_booth,0,1,271,489,130,157,0,WHITE);
-    drawSprite(circus_tent,0,1,676,492,177,163,0,WHITE);
-    drawSprite(carousel,0,1,896,488,141,154,0,WHITE); //carousel
-    drawSprite(popcorn_cart,0,1,1087,477,105,132,0,WHITE); //popcorn cart
+// widths follow each PNG's shape (height kept) so nothing is stretched.
+// y is picked so each prop's visible bottom (PNGs have different empty
+// space under them) stands at y = 400, right on the boardwalk's top rail
+void drawEnvironment() {
+    drawSprite(balloon_booth,0,1,271,476.7f,143,157,0,WHITE);
+    drawSprite(circus_tent,0,1,676,479.0f,198,163,0,WHITE);
+    drawSprite(carousel,0,1,896,469.7f,164,154,0,WHITE); //carousel
+    drawSprite(popcorn_cart,0,1,1087,460.5f,120,132,0,WHITE); //popcorn cart
     drawSprite(moon,0,1,1162,598,75,75,0,WHITE);
 }

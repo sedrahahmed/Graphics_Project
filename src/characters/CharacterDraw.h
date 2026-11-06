@@ -10,10 +10,11 @@
 
 // ---- Guards ----
 // flipX = true makes the guard face left (only the cutscene uses it)
-void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX = false);
+// scale     = size multiplier for Seif (only the cutscene changes it)
+void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX = false, float scale = 1.0f);
 void drawRangedLama(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX = false);
 void drawDefenseJana(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX = false);
-void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac, bool flipX = false);
+void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac, bool flipX = false, float scale = 1.0f);
 void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, float stateTime, float healthFrac);
 // ---- Cursed performers ----
 void drawMagician(float x, float y, float time, AnimState state, float stateTime, float healthFrac);

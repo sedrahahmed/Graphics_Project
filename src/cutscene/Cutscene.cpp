@@ -85,8 +85,6 @@ static void subtitleTwoLines(const std::string& a, const std::string& b) {
 
 
 static void drawTicket(float x, float y, float t) {
-    float r = 20.0f + 6.0f * sinf(t * 6.0f);                        // pulsing glow
-    drawCircle(x, y, r, glm::vec4(0.98f, 0.80f, 0.20f, 0.30f));
     drawSprite(ticketTexture, 0, 1, x, y, 48.0f, 36.0f, 0, glm::vec4(1.0f), false);
 }
 
@@ -106,9 +104,10 @@ static void drawStringLights(bool flickerOn) {
     }
 }
 
-// cassette recorder: dark grey rectangle + two reels; the PLAY triangle lights up
-static void drawCassette(float x, float y, bool playing) {
-    drawSprite(cassetteTexture, playing ? 1 : 0, 2, x, y, 40.0f, 26.0f, 0, glm::vec4(1.0f), false);
+// cassette recorder, big in the top-left corner (160 x 104, 20 px from the edges);
+// frame 1 = PLAY lit
+static void drawCassette(bool playing) {
+    drawSprite(cassetteTexture, playing ? 1 : 0, 2, 100.0f, 648.0f, 160.0f, 104.0f, 0, glm::vec4(1.0f), false);
 }
 
 // pairs of small red circles, 8 px apart, at the cursed performers' face height
@@ -173,14 +172,12 @@ static void drawScene2(float t) {
     drawStageBase(t, false, true, true);       // the lights flicker only in this scene
 
     // Clown, Jester and Magician side by side (standing strips, normal colors)
-// from 4.0s they tint blood-red (damageTint via healthFrac 1 -> 0 until 5.0s)   
-     float frac = 1.0f - progressBetween(4.0f, 5.0f);   
-    float eyeA = progressBetween(4.0f, 4.3f);          
+// from 4.0s they tint blood-red (damageTint via healthFrac 1 -> 0 until 5.0s)
+    float frac = 1.0f - progressBetween(4.0f, 5.0f);
     struct { EnemyType type; float x; } trio[3] = { { CLOWN, 520.0f }, { JESTER, 640.0f }, { MAGICIAN, 760.0f } };
     int lane = 2;
     for (int i = 0; i < 3; i++) {
         drawPerformer(trio[i].type, trio[i].x, lane, t, frac);
-        if (eyeA > 0.01f) drawRedEyes(trio[i].x, laneFloorY(lane) + 85.0f, eyeA);
     }
 
 
@@ -202,10 +199,10 @@ static void drawScene3(float t) {
     drawSprite(posterTexture, 0, 1, 640.0f, 410.0f, 368.0f * zoom, 440.0f * zoom, 0, glm::vec4(1.0f), false);
 
     // a dark banner under it for the details
-    drawRect(640.0f, 130.0f, 520.0f, 110.0f, 0, glm::vec4(0.05f, 0.02f, 0.08f, 0.8f));
+    drawRect(640.0f, 100.0f, 520.0f, 110.0f, 0, glm::vec4(0.05f, 0.02f, 0.08f, 0.8f));
     float s = 0.6f;
-    drawText("GENEROUS PAY!", 640.0f - textWidth("GENEROUS PAY!", s) / 2.0f, 140.0f, s, TICKET_GOLD);
-    drawText("12:00 AM - 6:00 AM", 640.0f - textWidth("12:00 AM - 6:00 AM", s) / 2.0f, 95.0f, s, WHITE);
+    drawText("GENEROUS PAY!", 640.0f - textWidth("GENEROUS PAY!", s) / 2.0f, 110.0f, s, TICKET_GOLD);
+    drawText("12:00 AM - 6:00 AM", 640.0f - textWidth("12:00 AM - 6:00 AM", s) / 2.0f, 65.0f, s, WHITE);
 }
 
 
@@ -213,6 +210,8 @@ static void drawScene3(float t) {
 static const float CHASE_SPEED     = 130.0f;   
 static const float PERFORMER_SPEED = 130.0f;   
 static const float STOP_TIME       = 16.0f;    
+static const float SEIF_SCALE = 1.08f;        // Seif is drawn a bit bigger in the cutscene only
+static const float SEIF_FEET_DROP = 5.0f;     // his sprite's feet sit ~5 px above Jana's; line them up
 static const float SEIF_POST_X = 320.0f, JANA_POST_X = 460.0f, LAMA_POST_X = 400.0f;
 static const float JESTER_STOP_X = 700.0f, CLOWN_STOP_X = 680.0f, MAGICIAN_STOP_X = 820.0f;
 
@@ -237,10 +236,8 @@ static void drawScene4(float t) {
 
     // back lane first so the front lane is drawn over it
     drawGuard(lamaX, laneFloorY(3), RANGED_LAMA, t, st, 0.0f, 1.0f, walking);
-    drawGuard(seifX, laneFloorY(1), MELEE_SEIF,  t, st, 0.0f, 1.0f, walking);   // face left while walking
+    drawGuard(seifX, laneFloorY(1) - SEIF_FEET_DROP, MELEE_SEIF,  t, st, 0.0f, 1.0f, walking, SEIF_SCALE);   // face left while walking
     drawGuard(janaX, laneFloorY(1), DEFENSE_JANA, t, st, 0.0f, 1.0f, walking);
-
-    drawCassette(150.0f, 157.0f, t >= 10.6f);  // on the booth counter; PLAY pressed at 10.6s
 
 
     drawSceneFades(local, 100.0f);   // fade in only: scene 5 continues the same shot, no black dip
@@ -267,7 +264,7 @@ static void drawScene5Actors(float t) {
     float janaX = chaseX(JANA_POST_X, t);
     float lamaX = chaseX(LAMA_POST_X, t);
 
-    drawGuard(seifX, laneY1, MELEE_SEIF, t, guardSt, 0.0f, 1.0f, running);
+    drawGuard(seifX, laneY1 - SEIF_FEET_DROP, MELEE_SEIF, t, guardSt, 0.0f, 1.0f, running, SEIF_SCALE);
     if (t < 16.3f) drawGuard(janaX, laneY1, DEFENSE_JANA, t, guardSt, 0.0f, 1.0f, running);
     else           drawGuard(janaX, laneY1, DEFENSE_JANA, t, ATTACK, t - 16.3f, 1.0f);   // Jana braces
 
@@ -326,6 +323,9 @@ static void drawScene5(float t) {
     drawScene5Actors(t);
     // (no tape static over the stage: the chase is shown clean while the owner talks)
     // no fade here: it continues straight on from scene 4
+
+    // the tape is on screen only while the owner's recording plays (11.0 - 16.0)
+    if (t < STOP_TIME) drawCassette(false);
 
     if (t < 12.6f)       subtitleOneLine("Owner: Hello, hello! Welcome to the carnival!");
     else if (t < 14.2f)  subtitleOneLine("Owner: Our performers... wander after closing.");
