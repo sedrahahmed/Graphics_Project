@@ -6,37 +6,37 @@
 
 //da for enemies
 static unsigned int enemyWalkTexture[3] = { 0 }; //unsigned bec el lload texture returns it 
-static unsigned int enemyAttackTexture [3]= {0};//load texture takes the pic and gives it to gpu and id
+static unsigned int enemyAttackTexture [3]= {0};//load texture takes the pic and gives it to gpu and gives us id
 
 
 //Players
 static unsigned int playerWalkTexture[3] = { 0 }; //unsigned bec el load texture returns it
 static unsigned int playerAttackTexture[3] = { 0 };
 static unsigned int playerJumpTexture[2]={};
-static unsigned int playerDuckTexture[2]={};
+static unsigned int playerDuckTexture[2]={};//bec jana no jump or duck
 static unsigned int tokenTexture = 0;
 static unsigned int PlayerFrontTexture[3] = { 0 };
 
 static unsigned int sparkTexture = 0;
 static unsigned int clownBallTexture = 0;
-static unsigned int dartTexture = 0;
+static unsigned int dartTexture = 0;//one id
 
 
 
 void drawGuardIcon(PlayerType type, float x, float y, float w,float h, glm::vec4 tint){
-    drawSprite(PlayerFrontTexture[type],0,1, x, y, w, h,0,tint);
+    drawSprite(PlayerFrontTexture[type],0,1, x, y, w, h,0,tint);//frame 0 of a 1 frame pic
     
 }
 
 void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
-    unsigned int tex;
-    int frames;
-    int frame;
+    unsigned int tex;//pic
+    int frames;//how many frames fwl pic
+    int frame;//curr frame
     switch(state){
         case ATTACK :{
             tex = playerAttackTexture[MELEE_SEIF];
             frames = 8;
-            frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
+            frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;//turn the statetime to which frame to show 
             break;
         }
         case JUMP :{
@@ -51,25 +51,25 @@ void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTim
             frames = 8;
             frame = (int)(stateTime / DUCK_DURATION * 8);
             if (frame > 7) frame = 7;
-            break;
+            break;//sae as jump
         }
 
         default :{//walk
             tex = playerWalkTexture[MELEE_SEIF];
             frames = 8;
             frame = (int)(time * 8) % 8;
-            break;
+            break;//use time bce da el default 8 frames per sec
         }
 
     }
         float size = 160 * scale;   // scale makes him bigger (only the cutscene uses it)
-        // move him down to keep his feet in place
+        //alight feet to lane fa move el y
         drawSprite(tex, frame, frames, x, y + size / 2 - 4 - (size - 160) * 0.094f, size, size, 0.0f,
-        damageTint(WHITE, healthFrac), flipX);
+        damageTint(WHITE, healthFrac), flipX);//w and h are size in px yhen no rot . color sis red tint thing wel flip x mirrors
         }
 
 
-        
+    //similar idea    
 void drawRangedLama(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     unsigned int tex;
     int frames;
@@ -114,21 +114,21 @@ void drawDefenseJana(float x, float y, float time, AnimState state, float stateT
     int frame;
     if (state == WALK && playerWalkTexture[DEFENSE_JANA] != 0) { //only in the cutscene 
         frame = (int)(time * 8) % 8;
-        float h = 335.0f * scale;                  // picture height on screen (scale makes her bigger in the cutscene)
-        float w = h * (272.0f / 724.0f);           // keep the frame's shape (no squishing)
-        float centerY = y + 7.0f + h * (0.5f - 0.31f);   // feet land where jana_defend's feet are
+        float h = 335.0f * scale; // picture height on screen scale lel cutcene
+        float w = h * (272.0f / 724.0f);   // keep frame shape
+        float centerY = y + 7.0f + h * (0.5f - 0.31f);   // align feet
         drawSprite(playerWalkTexture[DEFENSE_JANA], frame, 8, x, centerY, w, h, 0.0f,
                    damageTint(WHITE, healthFrac), flipX);
         return;
     } else {
-        tex = playerAttackTexture[DEFENSE_JANA];    // jana_defend: bracing / standing
-        if (state == ATTACK)                                  // bracing frames while blocked
+        tex = playerAttackTexture[DEFENSE_JANA];  
+        if (state == ATTACK)        //defending frames
             frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
         else
-            frame = 0;                                        // first frame, standing still
+            frame = 0;          // first frame standing still
     }
-    float size = 140 * scale;   // scale makes her bigger (only the cutscene uses it)
-    // her picture has empty space under her feet (7% of it), so we move her down
+    float size = 140 * scale;   // scale makes her bigger for cutscene
+   // move her down bc empty space underfeet
     // by the extra when she gets bigger to keep her feet in place
     drawSprite(tex, frame, 8, x, y + size / 2-4 - (size - 140) * 0.07f, size, size, 0.0f,
     damageTint(WHITE, healthFrac), flipX);
@@ -151,17 +151,18 @@ void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, fl
 }
 
 //Projectiles
-void drawDart(float x, float y, float time, float hitProgress) {
-    int frame = (int)(time * 12) % 8;                     // speed lines flicker as it flies
-    float w = 80.0f * (1.0f - hitProgress);               // shrinks on impact
-    float h = 40.0f * (1.0f - hitProgress);               // keeps the frame's 2:1 shape
-    glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress); // and fades
+
+void drawDart(float x, float y, float time, float hitProgress) {//0 to 1 finishes hit fel 1
+    int frame = (int)(time * 12) % 8;  //pick frame to show                  
+    float w = 80.0f * (1.0f - hitProgress); // shrinks on impact
+    float h = 40.0f * (1.0f - hitProgress);     // keeps the frames shape
+    glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress); //fades
     drawSprite(dartTexture, frame, 8, x, y+15, w, h, 0.0f, tint);
-}  
+}  //same idea
 void drawSpark(float x, float y, float time, float hitProgress){
-    int frame = (int)(time * 10) % 4;                     // twinkles, 10 frames per second
-    float size = 140.0f * (1.0f - hitProgress);           // shrinks to nothing on impact
-    glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress); // and fades out
+    int frame = (int)(time * 10) % 4;                     //10 frames per second
+    float size = 140.0f * (1.0f - hitProgress);          
+    glm::vec4 tint(1.0f, 1.0f, 1.0f, 1.0f - hitProgress);
     drawSprite(sparkTexture, frame, 4, x, y - 4, size, size, 0.0f, tint);
 }
 void drawJuggleBall(float x, float y, float time, float hitProgress){
@@ -187,7 +188,7 @@ void drawTokenIcon(float x, float y, float size, glm::vec4 tint) {
 
 void initCharacterTexture() {
     enemyWalkTexture[MAGICIAN] = loadTexture(ASSET_DIR "characters/magician_walking.png");
-    enemyWalkTexture[CLOWN] = loadTexture(ASSET_DIR "characters/clown_walking.png");//asset dir da 3ashan el path y work mesh 3andy bas
+    enemyWalkTexture[CLOWN] = loadTexture(ASSET_DIR "characters/clown_walking.png");//asset dir da el full path lel assets folder
     enemyWalkTexture[JESTER] = loadTexture(ASSET_DIR "characters/jester_walking.png");
     enemyAttackTexture[MAGICIAN] = loadTexture(ASSET_DIR "characters/magician_standing.png");
     enemyAttackTexture[CLOWN] = loadTexture(ASSET_DIR "characters/clown_standing.png");
@@ -215,12 +216,12 @@ void initCharacterTexture() {
 void drawMagician(float x, float y, float time, AnimState state, float stateTime, float healthFrac, float scale) {
    
   
-    unsigned int tex = (state == ATTACK) ? enemyAttackTexture[MAGICIAN] : enemyWalkTexture[MAGICIAN];
-    float t=(state==ATTACK)?stateTime:time;//time da 3ady
+    unsigned int tex = (state == ATTACK) ? enemyAttackTexture[MAGICIAN] : enemyWalkTexture[MAGICIAN];//atttack el stand while attack el walk attack while walk
+    float t=(state==ATTACK)?stateTime:time;//time da game clock law statetime its 0 awel man attack start frame 0
  if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
-        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //i did el seconds le how many frmaes passed then make it int bas
+        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //curr frame ashoof ana emta then frames per sec to see show which frame mod 8 to wrap
         float size=140.0f*scale;//scale makes them bigger (only the cutscene uses it)
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 
@@ -231,21 +232,21 @@ void drawMagician(float x, float y, float time, AnimState state, float stateTime
 }
 void drawClown(float x, float y, float time, AnimState state, float stateTime, float healthFrac, float scale) {
     unsigned int tex = (state == ATTACK) ? enemyAttackTexture[CLOWN] : enemyWalkTexture[CLOWN];
-    float t=(state==ATTACK)?stateTime:time;//time da 3ady fa han loop bas state da starts 0 lama n atack
+    float t=(state==ATTACK)?stateTime:time;//time da game clock law statetime its 0 awel man attack start frame 0
     if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
-        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //i did el seconds le how many frmaes passed then make it int bas
+        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8;//curr frame ashoof ana emta then frames per sec to see show which frame mod 8 to wrap
         float size=140.0f*scale;   // scale makes them bigger (only the cutscene uses it)
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 }
 void drawJester(float x, float y, float time, AnimState state, float stateTime, float healthFrac, float scale) {
     unsigned int tex = (state == ATTACK) ? enemyAttackTexture[JESTER] : enemyWalkTexture[JESTER];
-    float t=(state==ATTACK)?stateTime:time;//time da 3ady fa han loop bas state da starts 0 lama n atack
+    float t=(state==ATTACK)?stateTime:time;//time da game clock law statetime its 0 awel man attack start frame 0
     if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
-        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //i did el seconds le how many frmaes passed then make it int bas
+        int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //curr frame ashoof ana emta then frames per sec to see show which frame mod 8 to wrap
         float size=154.0f*scale;   // scale makes them bigger (only the cutscene uses it)
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 }
