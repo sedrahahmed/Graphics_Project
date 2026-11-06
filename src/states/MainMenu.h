@@ -1,9 +1,6 @@
 #pragma once
-// MainMenu.h: the first screen.
-// Buttons: Start (-> CUTSCENE), Sound, Exit
-// Owner: Person A
 
-void updateMainMenu();   // button clicks -> changeState(...)
+void updateMainMenu(); 
 void drawMainMenu();
 void initMainMenu();
 unsigned int getMenuTexture();

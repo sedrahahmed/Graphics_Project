@@ -1,4 +1,4 @@
-// main.cpp: opens the window and runs the game loop. Owner: Person A
+//opens the window and runs the game loop
 #include <glad/glad.h>        // lazem before GLFW and its used to find opengl functions from our computer so we can call them
 #include <GLFW/glfw3.h>//helper library to opengl and its used to read keyboard masalam
 #include <iostream>
@@ -14,7 +14,6 @@
 #include "Environment.h"
 #include "MainMenu.h"
 
-//GUYS 3AYZEEN N CHANGE VARIABLE NAMES WE NESHEEL EXTRA COMMENTS WHEN WERE DONE
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
@@ -80,6 +79,7 @@ int main() {
         glfwPollEvents(); //check for if we preessed a key(input?)
     }
 
+    shutdownSound();
     shutdownDraw();
     glfwTerminate();
     return 0; //just to close baraga3 mem and close window

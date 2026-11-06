@@ -37,8 +37,10 @@ void updateSoundMenu() {
         changeState(MAIN_MENU);
     }
     if(isClicked(muteAll)){
-        toggleMusicMute();
-        toggleSoundEffectsMute();
+        // If both are already off, turn both on; otherwise turn both off
+        bool muteBoth = !(isMusicMuted() && isSoundEffectsMuted());
+        setMusicMuted(muteBoth);
+        setSoundEffectsMuted(muteBoth);
     }
 }
 

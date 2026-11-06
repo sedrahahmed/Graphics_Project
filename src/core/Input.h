@@ -1,24 +1,20 @@
 #pragma once
-// Input.h: mouse and keyboard, in the same coordinates as the screen (origin bottom-left).
-// Owner: Person A
-
 #include <glm/glm.hpp>
 
-struct GLFWwindow;   // forward declaration: avoids including GLFW in every file
-
+struct GLFWwindow;  //to not include glfw in all files
 void initInput(GLFWwindow* window);   // call once after creating the window
-void updateInput();                   // call once at the START of every frame
+void updateInput();                  
 
-glm::vec2 mousePos();          // already flipped: y = 0 at the bottom
-bool mouseClicked();           // left button went down THIS frame
-bool mouseRightClicked();      // right button went down THIS frame (cancel card selection)
+glm::vec2 mousePos();          
+bool mouseClicked();           
+bool mouseRightClicked();      
 
-// key = GLFW key code, e.g. GLFW_KEY_W, GLFW_KEY_ESCAPE
-bool keyPressed(int key);      // went down THIS frame (one-time actions)
-bool keyHeld(int key);         // is down right now
+// key is key code masalan GLFW_KEY_W, GLFW_KEY_ESCAPE el howa number
+bool keyPressed(int key);      
+bool keyHeld(int key);         
 
-// Helper: is the mouse inside a rectangle? (x, y = center)
+
 bool mouseInRect(float x, float y, float w, float h);
 
-// Closes the game (used by the main menu's Exit button)
+// Closes the game
 void requestExit();
