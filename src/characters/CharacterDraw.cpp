@@ -26,26 +26,26 @@ void drawGuardIcon(PlayerType type, float x, float y, float w,float h, glm::vec4
     
 }
 
-void drawMirrorGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
     unsigned int tex;
     int frames;
     int frame;
     switch(state){
         case ATTACK :{
-            tex = playerAttackTexture[MIRROR_GUARD];
+            tex = playerAttackTexture[MELEE_SEIF];
             frames = 8;
             frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
             break;
         }
         case JUMP :{
-            tex = playerJumpTexture[MIRROR_GUARD];
+            tex = playerJumpTexture[MELEE_SEIF];
             frames = 8;
             frame = (int)(stateTime / JUMP_DURATION * 8);              // plays once over the jump
             if (frame > 7) frame = 7;
             break;
         }
         case DUCK :{
-            tex = playerDuckTexture[MIRROR_GUARD];
+            tex = playerDuckTexture[MELEE_SEIF];
             frames = 8;
             frame = (int)(stateTime / DUCK_DURATION * 8);
             if (frame > 7) frame = 7;
@@ -53,7 +53,7 @@ void drawMirrorGuard(float x, float y, float time, AnimState state, float stateT
         }
 
         default :{
-            tex = playerWalkTexture[MIRROR_GUARD];
+            tex = playerWalkTexture[MELEE_SEIF];
             frames = 8;
             frame = (int)(time * 8) % 8;
             break;
@@ -67,33 +67,33 @@ void drawMirrorGuard(float x, float y, float time, AnimState state, float stateT
 
 
         
-void drawLanternGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawRangedLama(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
     unsigned int tex;
     int frames;
     int frame;
     switch(state){
         case ATTACK: {
-            tex = playerAttackTexture[LANTERN_GUARD];
+            tex = playerAttackTexture[RANGED_LAMA];
             frames = 8;
             frame = (int)(stateTime * (8.0f / LANTERN_COOLDOWN) + 4) % 8;
             break;
         }
         case JUMP: {
-            tex = playerJumpTexture[LANTERN_GUARD];
+            tex = playerJumpTexture[RANGED_LAMA];
             frames = 8;
             frame = (int)(stateTime / DUCK_DURATION * 8);
             if (frame > 7) frame = 7;
             break;
         }
         case DUCK: {
-            tex = playerDuckTexture[LANTERN_GUARD];
+            tex = playerDuckTexture[RANGED_LAMA];
             frames = 8;
             frame = (int)(stateTime / DUCK_DURATION * 8);
             if (frame > 7) frame = 7;
             break;
         }
         default: {
-            tex = playerWalkTexture[LANTERN_GUARD];
+            tex = playerWalkTexture[RANGED_LAMA];
             frames = 8;
             frame = (int)(time * 8) % 8;
             break;
@@ -104,10 +104,10 @@ void drawLanternGuard(float x, float y, float time, AnimState state, float state
     drawSprite(tex, frame, frames, x, y + size / 2-4, size, size, 0.0f,
     damageTint(WHITE, healthFrac), flipX);
 }
-void drawDefenseGuard(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawDefenseJana(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
     unsigned int tex;
     int frame;
-    if (state == WALK && playerWalkTexture[DEFENSE_GUARD] != 0) {
+    if (state == WALK && playerWalkTexture[DEFENSE_JANA] != 0) {
         // only the cutscene ever puts Jana in WALK (beat 3/4 walk-ins);
         // gameplay never does, so nothing changes on the field.
         // jana_walk.png frames are tall (272 x 724) with lots of empty space:
@@ -117,11 +117,11 @@ void drawDefenseGuard(float x, float y, float time, AnimState state, float state
         float h = 335.0f;                          // frame height on screen -> Jana ~118 px tall, like jana_defend
         float w = h * (272.0f / 724.0f);           // keep the frame's shape (no squishing)
         float centerY = y + 7.0f + h * (0.5f - 0.31f);   // feet land where jana_defend's feet are
-        drawSprite(playerWalkTexture[DEFENSE_GUARD], frame, 8, x, centerY, w, h, 0.0f,
+        drawSprite(playerWalkTexture[DEFENSE_JANA], frame, 8, x, centerY, w, h, 0.0f,
                    damageTint(WHITE, healthFrac), flipX);
         return;
     } else {
-        tex = playerAttackTexture[DEFENSE_GUARD];    // jana_defend: bracing / standing
+        tex = playerAttackTexture[DEFENSE_JANA];    // jana_defend: bracing / standing
         if (state == ATTACK)                                  // bracing frames while blocked
             frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND) % 8;
         else
@@ -134,9 +134,9 @@ void drawDefenseGuard(float x, float y, float time, AnimState state, float state
 
 void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
     switch (type) {
-        case MIRROR_GUARD:   drawMirrorGuard(x, y, time, state, stateTime, healthFrac, flipX); break;
-        case LANTERN_GUARD:  drawLanternGuard(x, y, time, state, stateTime, healthFrac, flipX); break;
-        case DEFENSE_GUARD:  drawDefenseGuard(x, y, time, state, stateTime, healthFrac, flipX); break;
+        case MELEE_SEIF:   drawMeleeSeif(x, y, time, state, stateTime, healthFrac, flipX); break;
+        case RANGED_LAMA:  drawRangedLama(x, y, time, state, stateTime, healthFrac, flipX); break;
+        case DEFENSE_JANA:  drawDefenseJana(x, y, time, state, stateTime, healthFrac, flipX); break;
     }
 }
 
@@ -192,21 +192,21 @@ void initCharacterTexture() {
     enemyAttackTexture[MAGICIAN] = loadTexture(ASSET_DIR "characters/magician_standing.png");
     enemyAttackTexture[CLOWN] = loadTexture(ASSET_DIR "characters/clown_standing.png");
     enemyAttackTexture[JESTER] = loadTexture(ASSET_DIR "characters/jester_standing.png");
-    playerWalkTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_walk.png");
-    playerWalkTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_walk.png");
-    playerWalkTexture[DEFENSE_GUARD] = loadTexture(ASSET_DIR "characters/jana_walk.png");
-    playerAttackTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_attack.png");
-    playerAttackTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_attack.png");  
-    playerAttackTexture[DEFENSE_GUARD] = loadTexture(ASSET_DIR "characters/jana_defend.png");
-    playerJumpTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_jump.png"); 
-    playerJumpTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_jump.png"); 
-    playerDuckTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_duck.png"); 
-    playerDuckTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_duck.png"); 
+    playerWalkTexture[MELEE_SEIF] = loadTexture(ASSET_DIR "characters/seif_walk.png");
+    playerWalkTexture[RANGED_LAMA] = loadTexture(ASSET_DIR "characters/lama_walk.png");
+    playerWalkTexture[DEFENSE_JANA] = loadTexture(ASSET_DIR "characters/jana_walk.png");
+    playerAttackTexture[MELEE_SEIF] = loadTexture(ASSET_DIR "characters/seif_attack.png");
+    playerAttackTexture[RANGED_LAMA] = loadTexture(ASSET_DIR "characters/lama_attack.png");  
+    playerAttackTexture[DEFENSE_JANA] = loadTexture(ASSET_DIR "characters/jana_defend.png");
+    playerJumpTexture[MELEE_SEIF] = loadTexture(ASSET_DIR "characters/seif_jump.png"); 
+    playerJumpTexture[RANGED_LAMA] = loadTexture(ASSET_DIR "characters/lama_jump.png"); 
+    playerDuckTexture[MELEE_SEIF] = loadTexture(ASSET_DIR "characters/seif_duck.png"); 
+    playerDuckTexture[RANGED_LAMA] = loadTexture(ASSET_DIR "characters/lama_duck.png"); 
     sparkTexture = loadTexture(ASSET_DIR "characters/magician_spell.png");
     clownBallTexture  = loadTexture(ASSET_DIR "characters/clown_ball.png");
-    PlayerFrontTexture[MIRROR_GUARD] = loadTexture(ASSET_DIR "characters/seif_front.png");
-    PlayerFrontTexture[LANTERN_GUARD] = loadTexture(ASSET_DIR "characters/lama_front.png");
-    PlayerFrontTexture[DEFENSE_GUARD] = loadTexture(ASSET_DIR "characters/jana_front.png");
+    PlayerFrontTexture[MELEE_SEIF] = loadTexture(ASSET_DIR "characters/seif_front.png");
+    PlayerFrontTexture[RANGED_LAMA] = loadTexture(ASSET_DIR "characters/lama_front.png");
+    PlayerFrontTexture[DEFENSE_JANA] = loadTexture(ASSET_DIR "characters/jana_front.png");
     dartTexture = loadTexture(ASSET_DIR "characters/lama_dart.png");
     tokenTexture = loadTexture(ASSET_DIR "background/Token.png");
 

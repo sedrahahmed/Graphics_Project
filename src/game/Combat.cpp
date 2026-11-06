@@ -60,7 +60,7 @@ void updateCombat(float dt) {
                 p.stateTimer = 0.0f;//reset to make animations start from beginning frame 0 
             }
             if(enemyIndex == -1 && p.state == ATTACK) {  //theres no enemy infront and i was attacking but now theres no enemy infront so go back to walking
-                if(p.type==DEFENSE_GUARD)
+                if(p.type==DEFENSE_JANA)
                     p.state=IDLE;
                 else
                     p.state=WALK;
@@ -70,7 +70,7 @@ void updateCombat(float dt) {
             if(p.attackTimer<=0){ //time to attack
                 //attack logic
                 switch (p.type){
-                    case MIRROR_GUARD:{
+                    case MELEE_SEIF:{
                         if(enemyIndex != -1) {
                             Enemy& e = enemies[enemyIndex];
                             e.health -= DMG_PLAYER;
@@ -78,12 +78,12 @@ void updateCombat(float dt) {
                         }
                         break;
                     }
-                    case LANTERN_GUARD:{
-                        fireShot(LANTERN_ORB, p.lane, p.x + 40.0f, true); //fire a lantern orb from the guard's position +40 px
+                    case RANGED_LAMA:{
+                        fireShot(LAMA_DART, p.lane, p.x + 40.0f, true); //fire a lantern orb from the guard's position +40 px
                         playSoundEffect(SOUND_RANGED_ATTACK);
                         break;
                     }
-                    case DEFENSE_GUARD:{
+                    case DEFENSE_JANA:{
                         break; //doesnt attack only blocks
                     }
                 }
@@ -107,7 +107,7 @@ void updateCombat(float dt) {
                 //attack logic
                 switch(e.type){
                     case MAGICIAN:{
-                        fireShot(CURSED_CARD, e.lane, e.x - 40.0f, false); //fire a cursed card from the enemy's position. false bec its not from the player its enemy
+                        fireShot(MAGICIAN_HIT, e.lane, e.x - 40.0f, false); //fire a cursed card from the enemy's position. false bec its not from the player its enemy
                         playSoundEffect(SOUND_RANGED_ATTACK);
                         break;
                     }

@@ -22,14 +22,14 @@ std::vector<Player>     players;
 std::vector<Enemy>      enemies;
 std::vector<Projectile> shots;
 std::vector<Drop>       drops;
-float gameTime = 0.0f;
+float gameTime = 0.0f;//counts seconds the game has been running for 
 
-//helpers:
+//helpers
 static int maxHealthOf(PlayerType type) {
     switch(type) {
-        case MIRROR_GUARD:    return HP_MELEE;
-        case LANTERN_GUARD:   return HP_RANGED;
-        case DEFENSE_GUARD:  return HP_DEFENSE;
+        case MELEE_SEIF:    return HP_MELEE;
+        case RANGED_LAMA:   return HP_RANGED;
+        case DEFENSE_JANA:  return HP_DEFENSE;
         default:              return 0;
     }
 }
@@ -48,7 +48,7 @@ static int maxHealthEnemy(EnemyType type) {
 static void moveEveryone(float dt) {
     for(Player& p: players){
         p.stateTimer += dt;
-        if(p.state == JUMP && p.stateTimer >= JUMP_DURATION) {
+        if(p.state == JUMP && p.stateTimer >= JUMP_DURATION) {//if jump lasted its duration go abck to wlaking
             p.state = WALK;
             p.stateTimer = 0;
         }
@@ -57,7 +57,7 @@ static void moveEveryone(float dt) {
             p.stateTimer = 0;
         }
         if(p.state == WALK) {
-            p.x += SPEED_GUARD * dt;
+            p.x += SPEED_GUARD * dt;//distance speedxtime and using dt da makes it same speed for kol el computers
         }
         if(p.x > LANE_RIGHT) {
             p.alive = false; // remove the guard if it walks off the right edge of the screen
@@ -66,7 +66,7 @@ static void moveEveryone(float dt) {
     for(Enemy& e: enemies){
         e.stateTimer += dt;
         if(e.state== WALK){
-        e.x -= (e.type==JESTER)?SPEED_JESTER * dt : SPEED_ENEMY * dt;
+        e.x -= (e.type==JESTER)?SPEED_JESTER * dt : SPEED_ENEMY * dt;//move left but check if jester bec hes quicker
         }
     }
  } 
@@ -87,9 +87,9 @@ if(allWavesSpawned() && enemies.empty()) {
 }
 
 static void removeDead()      { 
-    for(int i=(int)players.size()-1; i>=0; i--) { //typecast 3ashan signed and unsigned moshkela
+    for(int i=(int)players.size()-1; i>=0; i--) { //typecast 3ashan signed and unsigned moshkela and loop backward bec el shifting fel delete yezbot
         if(!players[i].alive) {
-            players.erase(players.begin() + i);
+            players.erase(players.begin() + i);//bec i gets ane rror erase needs marker not int
         
         }
     }
@@ -120,8 +120,8 @@ static void removeDead()      {
 static AttackHeight heightOf(ShotType type) {
     
     switch(type) {
-        case LANTERN_ORB: return HIGH;
-        case CURSED_CARD: return HIGH;
+        case LAMA_DART: return HIGH;//ik enemies cant dodge bas saybaha
+        case MAGICIAN_HIT: return HIGH;
         case JUGGLE_BALL: return LOW;
         default:          return MELEE_HIT;
     }
@@ -142,16 +142,10 @@ void resetGame() {
 }
 
 void updateGame(float dt) {
-    gameTime += dt;
+    gameTime += dt;//akenaha clock
     updatePlayerCards();
-    updateLanes();
-     for (int lane = 0; lane < LANE_COUNT; lane++) {   // go through every lane
-         if (isLaneSelected(lane)){
-             if (keyPressed(GLFW_KEY_1)) placeGuard(MIRROR_GUARD, lane);
-             if (keyPressed(GLFW_KEY_2)) placeGuard(LANTERN_GUARD, lane);
-             if (keyPressed(GLFW_KEY_3)) placeGuard(DEFENSE_GUARD, lane);
-         }
-    }         
+    updateLanes();//hovering clicking etc
+         
     updateWaves(dt);
     moveEveryone(dt);
     updateCombat(dt);
@@ -164,9 +158,7 @@ void updateGame(float dt) {
 }
 
 void drawGame() {
-    // TODO, back to front:
-    // drawBackground, drawEnvironment, drawHomeBase, drawLanes, tokens,
-    // guards, villains, shots, health bars, drawHUD, drawPlayerCards
+   
     drawBackground(gameTime);
     drawEnvironment();
     drawLanes();
@@ -175,9 +167,9 @@ void drawGame() {
     }
     for (const Player& p : players) {
                 float cooldown = HERO_ATTACK_COOLDOWN;
-        float animTime = (p.state == ATTACK) ? (cooldown - p.attackTimer) : p.stateTimer;
+        float animTime = (p.state == ATTACK) ? (cooldown - p.attackTimer) : p.stateTimer;//if attacking right after an attack attack timer is 1.5 fa we draaw frame 0 and so on 
 
-        drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, animTime, (float)p.health / p.maxHealth);
+        drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, animTime, (float)p.health / p.maxHealth);//last argument for the red shades and dec health
         drawHealthBar(p.x, laneFloorY(p.lane) + 140, p.health, p.maxHealth); 
     }
     for (const Enemy& e : enemies) {
@@ -186,16 +178,16 @@ void drawGame() {
     }
     for (const Projectile& s : shots) {
     float floorY = laneFloorY(s.lane);   // the floor of the shot's lane
-        float progress = s.hitting ? s.hitTimer / HIT_DURATION : 0.0f;   // 0 = flying, 1 = finished
+        float progress = s.hitting ? s.hitTimer / HIT_DURATION : 0.0f; // 0 = flying 1 = finished
     switch (s.type) {
-        case CURSED_CARD:   // Magician's spark: head height, so ducking dodges it
-            drawSpark(s.x, floorY + 140 * 0.6f, gameTime, progress);
+        case MAGICIAN_HIT:   //head height so ducking dodges it. tried until zabatet
+            drawSpark(s.x, floorY + 140 -56, gameTime, progress);
             break;
-        case JUGGLE_BALL:   // Clown's ball: on the floor, so jumping dodges it
+        case JUGGLE_BALL:   // clown ball on the floor so jumping dodges it
             drawJuggleBall(s.x, floorY + 12.0f, gameTime, progress);
             break;
-        case LANTERN_ORB:   // Lama's dart: chest height
-            drawDart(s.x, floorY + 140 * 0.4f, gameTime, progress);
+        case LAMA_DART:   //Lamas dart about chest height keda
+            drawDart(s.x, floorY + 140 -84, gameTime, progress);
             break;
     }
     }
@@ -203,28 +195,28 @@ void drawGame() {
     drawPlayerCards();
 }
 
-float laneCenterY(int lane) { return LANE_BOTTOM + LANE_HEIGHT * lane + LANE_HEIGHT / 2.0f; }
+float laneCenterY(int lane) { return LANE_BOTTOM + LANE_HEIGHT * lane + LANE_HEIGHT / 2.0f; }//get where each ones bottom is then add half height
 float laneFloorY(int lane)  { return LANE_BOTTOM + LANE_HEIGHT * lane + 10.0f; }
-
+//initialiize our 4 arrays
 bool placeGuard(PlayerType type, int lane, float x) {
     if(!spend(type)) 
-        return false; //If the player can't afford the guard, return false.
+        return false; //if the player can't afford the guard ha return false
     Player newPlayer;
     newPlayer.type = type;
     newPlayer.lane = lane;
-    newPlayer.x = LANE_LEFT + 40.0f; //Place the guard at the left edge of the lane.
-    if (type == DEFENSE_GUARD && x >= 0) {   // Defense Guard goes where the mouse clicked
+    newPlayer.x = LANE_LEFT + 40.0f; //Place the guard at the left edge of the lane
+    if (type == DEFENSE_JANA && x >= 0) {  // Defense Guard goes where the mouse clicked
         newPlayer.x = x;
-        if (newPlayer.x < LANE_LEFT + 40.0f)  newPlayer.x = LANE_LEFT + 40.0f;    // keep it fully inside the lane
+        if (newPlayer.x < LANE_LEFT + 40.0f)  newPlayer.x = LANE_LEFT + 40.0f;    // keep it fully inside the lane and visisble
         if (newPlayer.x > LANE_RIGHT - 40.0f) newPlayer.x = LANE_RIGHT - 40.0f;
     }
     newPlayer.maxHealth = maxHealthOf(type);
     newPlayer.health = newPlayer.maxHealth;
-    newPlayer.state = (newPlayer.type == DEFENSE_GUARD) ? IDLE : WALK; //Defense guards start idle, others start walking.
+    newPlayer.state = (newPlayer.type == DEFENSE_JANA) ? IDLE : WALK; //Defense guards start idle el ba2y start walking
     newPlayer.stateTimer = 0.0f;
-    newPlayer.attackTimer = 0.0f; //Set the attack timer to the cooldown value.
+    newPlayer.attackTimer = 0.0f; //attack immediatly
     newPlayer.alive = true;
-    players.push_back(newPlayer);
+    players.push_back(newPlayer);//add to list of players
     playSoundEffect(SOUND_PLACEMENT);
     return true;
 }
@@ -238,9 +230,9 @@ Enemy e;
     e.x = LANE_RIGHT; //Place the enemy at the right edge of the lane.
     e.maxHealth = maxHealthEnemy(type);
     e.health = e.maxHealth;
-    e.state = WALK; //Enemies start walking.
+    e.state = WALK; //Enemies start walking
     e.stateTimer = 0.0f;
-    e.attackTimer = 0.0f; //Set the attack timer to the cooldown value.
+    e.attackTimer = 0.0f; //attack immediatly
     e.alive = true;
     enemies.push_back(e);
 
