@@ -30,10 +30,17 @@ void updateLanes() {
     else
         hoveredLane = -1;
    if(mouseClicked() && hoveredLane != -1) { //check en ehna f lane 
-            laneSelected[hoveredLane] = !laneSelected[hoveredLane]; //toggle lane selection
+            int pending = getPendingDefenseLane();
+            if(pending!=-1){
+                if(hoveredLane==pending)
+                    placeGuard(DEFENSE_JANA,pending,m.x);
+                    clearPendingDefense();
+            }else{
+                    laneSelected[hoveredLane] = !laneSelected[hoveredLane]; //toggle lane selection
             if(isLaneSelected(hoveredLane))
                 selectOrder[hoveredLane]=++selectCounter;
             playSoundEffect(SOUND_LANE);
+            }
         
     }
     if (keyPressed(GLFW_KEY_W) || keyPressed(GLFW_KEY_UP)) { //If the W or Up key is pressed, we jump all selected lanes
@@ -68,6 +75,20 @@ void drawLanes() {
             drawRect(centerX, centerY, width, height, 0, HIGHLIGHT);
 
     }
+    glm::vec2 m = mousePos();
+    int pending = getPendingDefenseLane();
+    if(pending!=-1&&laneAtY(m.y) == pending&&m.x >= LANE_LEFT && m.x < LANE_RIGHT){
+       float markerX = m.x;
+       if(markerX<LANE_LEFT+40)
+            markerX = LANE_LEFT + 40;
+        if (markerX > LANE_RIGHT - 40)
+            markerX = LANE_RIGHT - 40;
+        glm::vec4 markerColour = TICKET_GOLD;
+        markerColour.a = 0.6f;
+        drawRect(markerX, laneCenterY(pending), 4, LANE_HEIGHT - 6, 0, markerColour);
+    
+    }
+
 }
 
 int  laneAtY(float y) { 

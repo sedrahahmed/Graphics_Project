@@ -18,6 +18,7 @@ static const float cardHeight=100;
 static const float cardSpacing=24;
 static const float cardYstart=650;
 static const float cardXStart=190;
+static int pendingDefenseLane = -1;
 
 static bool isUnlocked(PlayerType type){
     return canAfford(type)&&(type==MELEE_SEIF || getCurrentWave() >1); //only seif unlocked f wave 1
@@ -39,9 +40,12 @@ void updatePlayerCards() {
    if(mouseClicked()&&hoveredCard!= -1){
         
         int lane = getLastSelectedLane();
-        if (lane != -1) 
-            placeGuard((PlayerType)hoveredCard, lane); 
-                   
+        if (lane != -1){
+            if((PlayerType)hoveredCard==DEFENSE_JANA)
+                pendingDefenseLane=lane;
+            else
+                placeGuard((PlayerType)hoveredCard, lane); 
+        }       
     }
 }
 void drawPlayerCards() { 
@@ -58,7 +62,12 @@ void drawPlayerCards() {
             panel = glm::vec4(0.28f, 0.14f, 0.36f, 1.0f);
         else 
             panel= CARD_PURPLE;
+            
+        if(i==DEFENSE_JANA && pendingDefenseLane !=-1)
+            drawRect(x, y, cardWidth + 8, cardHeight + 8, 0, TICKET_GOLD);
+        else
             drawRect(x, y, cardWidth + 4, cardHeight + 4, 0, CURSE_RED);
+            
             drawRect(x,y,cardWidth,cardHeight,0,panel);
 
         
@@ -73,9 +82,17 @@ void drawPlayerCards() {
         drawTokenIcon(x - 10, y - cardHeight/2 -12, 16, tokenTint);
         setGrayscale(false);
         drawText(std::to_string(costOf(type)), x - 2, y - cardHeight/2 -18, 0.3f, priceColour);
-        
-    
+      
+      
  }
+    
+
+}
+int getPendingDefenseLane(){
+    return pendingDefenseLane;
 }
 
+void clearPendingDefense(){
+    pendingDefenseLane=-1;
+}
 

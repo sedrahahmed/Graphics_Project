@@ -137,6 +137,7 @@ void resetGame() {
     resetEconomy();
     resetWaves();   
     resetLanes();
+    clearPendingDefense();
 
 }
 

@@ -2,5 +2,6 @@
 #include "Entities.h"
 
 void updatePlayerCards();      
-void drawPlayerCards();       
-     
+void drawPlayerCards();  
+int getPendingDefenseLane();     
+void clearPendingDefense();     
