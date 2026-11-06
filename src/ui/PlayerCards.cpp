@@ -64,7 +64,7 @@ void drawPlayerCards() {
             panel= CARD_PURPLE;
             
         if(i==DEFENSE_JANA && pendingDefenseLane !=-1)
-            drawRect(x, y, cardWidth + 8, cardHeight + 8, 0, TICKET_GOLD);
+            drawRect(x, y, cardWidth + 8, cardHeight + 8, 0, CURSE_RED);
         else
             drawRect(x, y, cardWidth + 4, cardHeight + 4, 0, CURSE_RED);
             
