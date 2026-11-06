@@ -33,9 +33,9 @@ void addCoins(int amount) {
  }
 int  costOf(PlayerType type) { 
      switch (type) {
-        case MIRROR_GUARD:   return COST_MELEE;
-        case LANTERN_GUARD:  return COST_RANGED;
-        case DEFENSE_GUARD:  return COST_DEFENSE;
+        case MELEE_SEIF:   return COST_MELEE;
+        case RANGED_LAMA:  return COST_RANGED;
+        case DEFENSE_JANA:  return COST_DEFENSE;
         default:             return 0;
     }
 }

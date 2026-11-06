@@ -364,9 +364,9 @@ static void drawBeat4(float t) {
     AnimState st = WALK;
 
     // back lane first so the front lane is drawn over it
-    drawGuard(lamaX, laneFloorY(3), LANTERN_GUARD, t, st, 0.0f, 1.0f, walking);
-    drawGuard(seifX, laneFloorY(1), MIRROR_GUARD,  t, st, 0.0f, 1.0f, walking);   // face left while walking
-    drawGuard(janaX, laneFloorY(1), DEFENSE_GUARD, t, st, 0.0f, 1.0f, walking);
+    drawGuard(lamaX, laneFloorY(3), RANGED_LAMA, t, st, 0.0f, 1.0f, walking);
+    drawGuard(seifX, laneFloorY(1), MELEE_SEIF,  t, st, 0.0f, 1.0f, walking);   // face left while walking
+    drawGuard(janaX, laneFloorY(1), DEFENSE_JANA, t, st, 0.0f, 1.0f, walking);
 
         drawCassette(150.0f, 157.0f, t >= 10.6f);  // on the booth counter; PLAY pressed at 10.6s
 
@@ -405,9 +405,9 @@ static void drawBeat6Actors(float t) {
     float janaX = chaseX(JANA_POST_X, t);
     float lamaX = chaseX(LAMA_POST_X, t);
 
-    drawGuard(seifX, laneY1, MIRROR_GUARD, t, guardSt, 0.0f, 1.0f, running);
-    if (t < 16.3f) drawGuard(janaX, laneY1, DEFENSE_GUARD, t, guardSt, 0.0f, 1.0f, running);
-    else           drawGuard(janaX, laneY1, DEFENSE_GUARD, t, ATTACK, t - 16.3f, 1.0f);   // Jana braces
+    drawGuard(seifX, laneY1, MELEE_SEIF, t, guardSt, 0.0f, 1.0f, running);
+    if (t < 16.3f) drawGuard(janaX, laneY1, DEFENSE_JANA, t, guardSt, 0.0f, 1.0f, running);
+    else           drawGuard(janaX, laneY1, DEFENSE_JANA, t, ATTACK, t - 16.3f, 1.0f);   // Jana braces
 
     // three pairs of red eyes appear on the right at 11.0 (the performers, not in
     // yet). They fade out once the performers themselves come on screen.
@@ -443,9 +443,9 @@ static void drawBeat6Actors(float t) {
         float jp = (t - 17.0f) / 0.6f;
         if (jp > 1.0f) jp = 1.0f;
         float bob = sinf(jp * 3.1415926f) * 42.0f;                  // small hop arc
-        drawGuard(LAMA_POST_X, laneY3 + bob, LANTERN_GUARD, t, JUMP, t - 17.0f, 1.0f);
+        drawGuard(LAMA_POST_X, laneY3 + bob, RANGED_LAMA, t, JUMP, t - 17.0f, 1.0f);
     } else {
-        drawGuard(lamaX, laneY3, LANTERN_GUARD, t, guardSt, 0.0f, 1.0f, running);
+        drawGuard(lamaX, laneY3, RANGED_LAMA, t, guardSt, 0.0f, 1.0f, running);
     }
 
     // performers: walking while p<1, then standing; the clown winds up his throw

@@ -35,7 +35,7 @@ void updateLanes() {
     }
     if (keyPressed(GLFW_KEY_W) || keyPressed(GLFW_KEY_UP)) { //If the W or Up key is pressed, we jump all selected lanes.
                 for (Player& p : players) {
-                    if (p.alive && isLaneSelected(p.lane) && p.type != DEFENSE_GUARD && p.state != JUMP && p.state != DUCK) { 
+                    if (p.alive && isLaneSelected(p.lane) && p.type != DEFENSE_JANA && p.state != JUMP && p.state != DUCK) { 
                         p.state = JUMP;
                         p.stateTimer = 0;
                     }
@@ -43,7 +43,7 @@ void updateLanes() {
             }
     if (keyPressed(GLFW_KEY_S) || keyPressed(GLFW_KEY_DOWN)) { //If the S or Down key is pressed, we duck all selected lanes.
                 for (Player& p : players) {
-                    if (p.alive && isLaneSelected(p.lane) && p.type != DEFENSE_GUARD && p.state != JUMP && p.state != DUCK) { 
+                    if (p.alive && isLaneSelected(p.lane) && p.type != DEFENSE_JANA && p.state != JUMP && p.state != DUCK) { 
                         p.state = DUCK;
                         p.stateTimer = 0;
                     }

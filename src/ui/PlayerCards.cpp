@@ -19,7 +19,7 @@ static const float cardYstart=650;
 static const float cardXStart=190;
 
 static bool isUnlocked(PlayerType type){
-    return canAfford(type)&&(type==MIRROR_GUARD || getCurrentWave() >1); //only seif locked f wave 1
+    return canAfford(type)&&(type==MELEE_SEIF || getCurrentWave() >1); //only seif locked f wave 1
 }
 
 

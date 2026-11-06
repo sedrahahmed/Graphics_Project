@@ -10,8 +10,8 @@ void updateShots(float dt) {
         if(p.alive){
             float speed;
             switch (p.type) {
-                case LANTERN_ORB: speed = SPEED_DART;  break;
-                case CURSED_CARD: speed = SPEED_SPARK; break;
+                case LAMA_DART: speed = SPEED_DART;  break;
+                case MAGICIAN_HIT: speed = SPEED_SPARK; break;
                 case JUGGLE_BALL: speed = SPEED_BALL;  break;
                 default:          speed = SPEED_PROJECTILE; break;
             }
