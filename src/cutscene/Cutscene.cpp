@@ -229,13 +229,13 @@ static void drawStageBase(float t, bool withBooth, bool lights, bool lightsFlick
     drawBackground(t);
     drawNightOverlay();
     drawEnvironment(t);
-    if (withBooth) {
-        if (boothTexture == 0) boothTexture = loadTexture(ASSET_DIR "background/Ticket_booth.png");
-        drawSprite(boothTexture, 0, 1, 105.0f, 183.5f, 210.0f, 315.0f, 0.0f, glm::vec4(1.0f), false);
+    // if (withBooth) {
+    //     if (boothTexture == 0) boothTexture = loadTexture(ASSET_DIR "background/Ticket_booth.png");
+    //     drawSprite(boothTexture, 0, 1, 105.0f, 183.5f, 210.0f, 315.0f, 0.0f, glm::vec4(1.0f), false);
 
-        // the Golden Ticket in the picture glows
-        drawCircle(108.0f, 128.0f, 26.0f + 6.0f * sinf(t * 6.0f), glm::vec4(0.98f, 0.80f, 0.20f, 0.25f));
-    }
+    //     // the Golden Ticket in the picture glows
+    //     drawCircle(108.0f, 128.0f, 26.0f + 6.0f * sinf(t * 6.0f), glm::vec4(0.98f, 0.80f, 0.20f, 0.25f));
+    // }
     if (lights) drawStringLights(lightsFlicker);
 }
 
