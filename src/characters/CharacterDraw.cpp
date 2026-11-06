@@ -78,7 +78,8 @@ void drawRangedLama(float x, float y, float time, AnimState state, float stateTi
         case ATTACK: {
             tex = playerAttackTexture[RANGED_LAMA];
             frames = 8;
-            frame = (int)(stateTime * ATTACK_FRAMES_PER_SECOND+4) % 8;
+            frame = (int)(stateTime * LAMA_FRAMES_PER_SEC+4) % 8;
+
             break;
         }
         case JUMP: {
@@ -98,7 +99,7 @@ void drawRangedLama(float x, float y, float time, AnimState state, float stateTi
         default: {
             tex = playerWalkTexture[RANGED_LAMA];
             frames = 8;
-            frame = (int)(time * 8) % 8;
+             frame = (int)(time * LAMA_FRAMES_PER_SEC) % 8;
             break;
         }
     }

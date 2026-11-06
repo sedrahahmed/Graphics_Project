@@ -137,6 +137,7 @@ void resetGame() {
     resetEconomy();
     resetWaves();   
     resetLanes();
+    clearPendingDefense();
 
 }
 
@@ -165,7 +166,8 @@ void drawGame() {
         drawToken(d.x, laneFloorY(d.lane));
     }
     for (const Player& p : players) {
-                float cooldown = HERO_ATTACK_COOLDOWN;
+                float cooldown = (p.type == RANGED_LAMA) ? LANTERN_COOLDOWN : HERO_ATTACK_COOLDOWN;
+
         float animTime = (p.state == ATTACK) ? (cooldown - p.attackTimer) : p.stateTimer;//if attacking right after an attack attack timer is 1.5 fa we draaw frame 0 and so on 
 
         drawGuard(p.x, laneFloorY(p.lane), p.type, gameTime, p.state, animTime, (float)p.health / p.maxHealth);//last argument for the red shades and dec health
