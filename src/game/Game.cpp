@@ -145,13 +145,13 @@ void updateGame(float dt) {
     gameTime += dt;
     updatePlayerCards();
     updateLanes();
-    // for (int lane = 0; lane < LANE_COUNT; lane++) {   // go through every lane
-    //     if (isLaneSelected(lane)){
-    //         if (keyPressed(GLFW_KEY_1)) placeGuard(MIRROR_GUARD, lane);
-    //         if (keyPressed(GLFW_KEY_2)) placeGuard(LANTERN_GUARD, lane);
-    //         if (keyPressed(GLFW_KEY_3)) placeGuard(DEFENSE_GUARD, lane);
-    //     }
-    // }         
+     for (int lane = 0; lane < LANE_COUNT; lane++) {   // go through every lane
+         if (isLaneSelected(lane)){
+             if (keyPressed(GLFW_KEY_1)) placeGuard(MIRROR_GUARD, lane);
+             if (keyPressed(GLFW_KEY_2)) placeGuard(LANTERN_GUARD, lane);
+             if (keyPressed(GLFW_KEY_3)) placeGuard(DEFENSE_GUARD, lane);
+         }
+    }         
     updateWaves(dt);
     moveEveryone(dt);
     updateCombat(dt);
