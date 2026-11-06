@@ -12,7 +12,7 @@ static bool allDone = false; // true if all waves have been spawned
 void resetWaves() { 
     waveIndex = 0;
     spawnedCount = 0;
-    spawnTimer = 0.0f;
+        spawnTimer = SPAWN_INTERVAL - FIRST_SPAWN_DELAY; //first enemy comes quicker
     allDone = false;
     srand((unsigned int)time(nullptr)); // seed el random number generator b el current time 3ashan maykonsh nafs el lanes kol new game
 }
@@ -34,7 +34,7 @@ void updateWaves(float dt) {
          else if(enemies.empty()) {// not last wave
             waveIndex++;
             spawnedCount = 0;
-            spawnTimer = 0.0f;
+            spawnTimer = SPAWN_INTERVAL - FIRST_SPAWN_DELAY; //new wave first enemy after 3 sec
         }}
     }
  

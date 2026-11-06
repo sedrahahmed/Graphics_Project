@@ -15,7 +15,7 @@ const int START_COINS = 30;
 const int COST_MELEE = 10;  //seif
 const int COST_RANGED = 20;    // lama 
 const int COST_DEFENSE = 30;   // jana
-const int COINS_PER_KILL = 20; //azon nezawedha 
+const int COINS_PER_KILL = 15; //azon nezawedha 
 const float HIT_DURATION = 0.2f;
 
 const int HP_MELEE = 5, HP_RANGED = 5, HP_DEFENSE = 7;
@@ -42,6 +42,8 @@ const float JUMP_DURATION = 0.6f;
 const float DUCK_DURATION = 0.6f;
 const float ATTACK_FRAMES_PER_SECOND = 8.0f / HERO_ATTACK_COOLDOWN;
 const float ENEMY_FRAMES_PER_SECOND  = 8.0f / ENEMY_ATTACK_COOLDOWN;//how fast el frames hat play like thats why 8 frames over el time mabein el attacks nel7a2 n loop over el frames before starting over
-const float LANTERN_COOLDOWN=2.0; // speed of lamas attack fel animation ha use it fel drawing  but logic is 1.5
+const float LANTERN_COOLDOWN=2.0; //time between darts
+const float LAMA_FRAMES_PER_SEC=8.0f/LANTERN_COOLDOWN;// speed of lamas attack fel animation ha use it fel drawing
 const int WAVE_SIZES[3] = { 3, 5, 10 };//enemies per wave
 const float SPAWN_INTERVAL = 10.0f;    // time between the enemies lama yetla3o
+const float FIRST_SPAWN_DELAY=3.0;//first enemy appears 3 sec into the wave

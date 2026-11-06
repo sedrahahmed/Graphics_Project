@@ -87,7 +87,8 @@ void updateCombat(float dt) {
                         break; //doesnt attack only blocks
                     }
                 }
-                p.attackTimer = HERO_ATTACK_COOLDOWN;//reset the attack timer to the cooldown time(wait 1.5 seconds before attacking again)
+                p.attackTimer = (p.type == RANGED_LAMA) ? LANTERN_COOLDOWN : HERO_ATTACK_COOLDOWN;
+//reset the attack timer to the cooldown time(wait 1.5 seconds before attacking again) in lamas case 2
             }
         }
     }//same as the players but for villains now
