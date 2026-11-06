@@ -1,13 +1,3 @@
-// Button.cpp. Owner: Person A
-// A button is just a rectangle + a word on it:
-//   - hovered  = the mouse is inside the rectangle
-//   - clicked  = hovered AND the left mouse button went down this frame
-//   - drawn    = a gold border, a wooden box (lighter when hovered), and the label in the middle
-//
-// How a menu uses it:
-//   Button start = { 640, 400, 260, 70, "START" };   // x, y (center), w, h, label
-//   drawButton(start);                               // in drawMainMenu()
-//   if (isClicked(start)) changeState(CUTSCENE);     // in updateMainMenu()
 #include "Button.h"
 #include "Draw.h"
 #include "Input.h"
@@ -15,23 +5,18 @@
 #include "Colors.h"
 #include "Sound.h"
 
-// ---------- Look of every button (change these to restyle all menus at once) ----------
 static const float BORDER = 3.0f; 
-static const float TEXT_SCALE = 0.6f;          // label size (1.0 = the font size given to initText)
-static const float TEXT_DROP = 10.0f;
-static const float CORNER =6;
-static const float DEPTH =6;
-static const float LIGHT_H=4;   
-                                               // so we move it down a bit to look centered
+static const float TEXT_SCALE = 0.6f;
+static const float TEXT_DROP = 10.0f;//bottom of text
+static const float CORNER =6; //how big the stepped corners are
+static const float DEPTH =6; //the height of the dark shadow strip at the bottom (the 3D look)
+static const float LIGHT_H=4; //the height of the light strip at the top 
 
-bool isHovered(const Button& b) {
-    // mouseInRect already does the "is the mouse inside this box" check (x, y = center)
+bool isHovered(const Button& b) {//check in el mouse 3al button
     return mouseInRect(b.x, b.y, b.w, b.h);
 }
 
 bool isClicked(const Button& b) {
-    // mouseClicked() is only true on the ONE frame the button goes down,
-    // so holding the mouse doesn't click the button over and over
     if(isHovered(b) && mouseClicked()){
         playSoundEffect(SOUND_CLICK);
         return true;
