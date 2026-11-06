@@ -12,7 +12,6 @@
 #include "Game.h"
 
 
-static int selectedCard =-1;
 static int hoveredCard = -1;
 static const float cardWidth= 80;
 static const float cardHeight=100;
@@ -38,30 +37,19 @@ void updatePlayerCards() {
       
  }
    if(mouseClicked()&&hoveredCard!= -1){
-        bool placed=false;
+        
         int lane = getLastSelectedLane();
-        if (lane != -1 && placeGuard((PlayerType)hoveredCard, lane)) placed = true;
-        if(!placed){
-            if(selectedCard == hoveredCard)
-                selectedCard = -1;
-            else
-                selectedCard = hoveredCard;
-        }}
-        if(selectedCard != -1&&!isUnlocked((PlayerType)selectedCard))
-            selectedCard = -1;
-
+        if (lane != -1) 
+            placeGuard((PlayerType)hoveredCard, lane); 
+                   
     }
-
+}
 void drawPlayerCards() { 
     for(int i=0; i<3; i++) {
         float x = cardXStart + i * (cardWidth + cardSpacing);
         float y = cardYstart;
         PlayerType type = (PlayerType)i;
         bool unlocked= isUnlocked(type);
-        if(i==selectedCard)
-            drawRect(x,y,cardWidth+8,cardHeight+8,0,CURSE_RED);
-        else
-            drawRect(x, y, cardWidth + 4, cardHeight + 4, 0, CURSE_RED);
         
         glm::vec4 panel;
         if(!unlocked)
@@ -70,7 +58,8 @@ void drawPlayerCards() {
             panel = glm::vec4(0.28f, 0.14f, 0.36f, 1.0f);
         else 
             panel= CARD_PURPLE;
-        drawRect(x,y,cardWidth,cardHeight,0,panel);
+            drawRect(x, y, cardWidth + 4, cardHeight + 4, 0, CURSE_RED);
+            drawRect(x,y,cardWidth,cardHeight,0,panel);
 
         
         glm::vec4 tint = unlocked ? WHITE : glm::vec4(0.7f, 0.7f, 0.7f, 1.0f); //fade el locked cards
@@ -89,6 +78,4 @@ void drawPlayerCards() {
  }
 }
 
-bool hasSelectedCard() { return selectedCard != -1; }
-PlayerType getSelectedCard() { return (PlayerType)selectedCard; }
-void clearSelectedCard() { selectedCard = -1; }
+
