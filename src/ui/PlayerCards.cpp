@@ -8,7 +8,8 @@
 #include <string>
 #include "Text.h"
 #include "Waves.h"
-
+#include "Lanes.h"
+#include "Game.h"
 
 
 static int selectedCard =-1;
@@ -37,11 +38,15 @@ void updatePlayerCards() {
       
  }
    if(mouseClicked()&&hoveredCard!= -1){
+        bool placed=false;
+        int lane = getLastSelectedLane();
+        if (lane != -1 && placeGuard((PlayerType)hoveredCard, lane)) placed = true;
+        if(!placed){
             if(selectedCard == hoveredCard)
                 selectedCard = -1;
             else
                 selectedCard = hoveredCard;
-        }
+        }}
         if(selectedCard != -1&&!isUnlocked((PlayerType)selectedCard))
             selectedCard = -1;
 

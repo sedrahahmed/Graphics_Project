@@ -5,3 +5,4 @@ void updateLanes();
 void drawLanes();             
 int  laneAtY(float y);
 bool isLaneSelected(int lane);
+int getLastSelectedLane();
