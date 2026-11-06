@@ -11,6 +11,7 @@
 #include "Background.h"
 #include "Environment.h"
 #include "MainMenu.h"
+#include "HUD.h"
 
 void framebufferSizeCallback(GLFWwindow* window, int width, int height)//GWLF calls it when window is resized
 {
@@ -53,6 +54,7 @@ int main() {
     initBackground();
     initMainMenu();
     initEnvironment();
+    initHUD();
     initText(ASSET_DIR "fonts/carnival.ttf",48);
     initInput(window);// waiting for input 
 

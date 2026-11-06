@@ -28,7 +28,7 @@ void drawGuardIcon(PlayerType type, float x, float y, float w,float h, glm::vec4
     
 }
 
-void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     unsigned int tex;
     int frames;
     int frame;
@@ -62,14 +62,15 @@ void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTim
         }
 
     }
-        float size = 160;
-        drawSprite(tex, frame, frames, x, y + size / 2 - 4, size, size, 0.0f,
+        float size = 160 * scale;   // scale makes him bigger (only the cutscene uses it)
+        // move him down to keep his feet in place
+        drawSprite(tex, frame, frames, x, y + size / 2 - 4 - (size - 160) * 0.094f, size, size, 0.0f,
         damageTint(WHITE, healthFrac), flipX);
         }
 
 
         
-void drawRangedLama(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawRangedLama(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     unsigned int tex;
     int frames;
     int frame;
@@ -101,17 +102,19 @@ void drawRangedLama(float x, float y, float time, AnimState state, float stateTi
             break;
         }
     }
-    float size = 160;
-    if (state == DUCK) size = 130;
-    drawSprite(tex, frame, frames, x, y + size / 2-4, size, size, 0.0f,
+    float base = 160;
+    if (state == DUCK) base = 130;
+    float size = base * scale;   // scale makes her bigger (only the cutscene uses it)
+    // move her downto keep her feet in place
+    drawSprite(tex, frame, frames, x, y + size / 2-6 - (size - base) * 0.109f, size, size, 0.0f,
     damageTint(WHITE, healthFrac), flipX);
 }
-void drawDefenseJana(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawDefenseJana(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     unsigned int tex;
     int frame;
     if (state == WALK && playerWalkTexture[DEFENSE_JANA] != 0) { //only in the cutscene 
         frame = (int)(time * 8) % 8;
-        float h = 335.0f;                          // frame height on screen -> Jana ~118 px tall, like jana_defend
+        float h = 335.0f * scale;                  // picture height on screen (scale makes her bigger in the cutscene)
         float w = h * (272.0f / 724.0f);           // keep the frame's shape (no squishing)
         float centerY = y + 7.0f + h * (0.5f - 0.31f);   // feet land where jana_defend's feet are
         drawSprite(playerWalkTexture[DEFENSE_JANA], frame, 8, x, centerY, w, h, 0.0f,
@@ -124,24 +127,26 @@ void drawDefenseJana(float x, float y, float time, AnimState state, float stateT
         else
             frame = 0;                                        // first frame, standing still
     }
-    float size = 140;
-    drawSprite(tex, frame, 8, x, y + size / 2-4, size, size, 0.0f,
+    float size = 140 * scale;   // scale makes her bigger (only the cutscene uses it)
+    // her picture has empty space under her feet (7% of it), so we move her down
+    // by the extra when she gets bigger to keep her feet in place
+    drawSprite(tex, frame, 8, x, y + size / 2-4 - (size - 140) * 0.07f, size, size, 0.0f,
     damageTint(WHITE, healthFrac), flipX);
 }
 
-void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac, bool flipX) {
+void drawGuard(float x, float y, PlayerType type, float time, AnimState state, float stateTime, float healthFrac, bool flipX, float scale) {
     switch (type) {
-        case MELEE_SEIF:   drawMeleeSeif(x, y, time, state, stateTime, healthFrac, flipX); break;
-        case RANGED_LAMA:  drawRangedLama(x, y, time, state, stateTime, healthFrac, flipX); break;
-        case DEFENSE_JANA:  drawDefenseJana(x, y, time, state, stateTime, healthFrac, flipX); break;
+        case MELEE_SEIF:   drawMeleeSeif(x, y, time, state, stateTime, healthFrac, flipX, scale); break;
+        case RANGED_LAMA:  drawRangedLama(x, y, time, state, stateTime, healthFrac, flipX, scale); break;
+        case DEFENSE_JANA:  drawDefenseJana(x, y, time, state, stateTime, healthFrac, flipX, scale); break;
     }
 }
 
-void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, float stateTime, float healthFrac) {
+void drawEnemy(float x, float y, EnemyType type, float time, AnimState state, float stateTime, float healthFrac, float scale) {
     switch (type) {
-        case MAGICIAN: drawMagician(x, y, time, state, stateTime, healthFrac); break;
-        case CLOWN:    drawClown(x, y, time, state, stateTime, healthFrac);    break;
-        case JESTER:   drawJester(x, y, time, state, stateTime, healthFrac);   break;
+        case MAGICIAN: drawMagician(x, y, time, state, stateTime, healthFrac, scale); break;
+        case CLOWN:    drawClown(x, y, time, state, stateTime, healthFrac, scale);    break;
+        case JESTER:   drawJester(x, y, time, state, stateTime, healthFrac, scale);   break;
     }
 }
 
@@ -207,7 +212,7 @@ void initCharacterTexture() {
 
 }
 
-void drawMagician(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
+void drawMagician(float x, float y, float time, AnimState state, float stateTime, float healthFrac, float scale) {
    
   
     unsigned int tex = (state == ATTACK) ? enemyAttackTexture[MAGICIAN] : enemyWalkTexture[MAGICIAN];
@@ -216,7 +221,7 @@ void drawMagician(float x, float y, float time, AnimState state, float stateTime
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
         int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //i did el seconds le how many frmaes passed then make it int bas
-        float size=140.0f;
+        float size=140.0f*scale;//scale makes them bigger (only the cutscene uses it)
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 
 
@@ -224,24 +229,24 @@ void drawMagician(float x, float y, float time, AnimState state, float stateTime
 
 
 }
-void drawClown(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
+void drawClown(float x, float y, float time, AnimState state, float stateTime, float healthFrac, float scale) {
     unsigned int tex = (state == ATTACK) ? enemyAttackTexture[CLOWN] : enemyWalkTexture[CLOWN];
     float t=(state==ATTACK)?stateTime:time;//time da 3ady fa han loop bas state da starts 0 lama n atack
     if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
         int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //i did el seconds le how many frmaes passed then make it int bas
-        float size=140.0f;
+        float size=140.0f*scale;   // scale makes them bigger (only the cutscene uses it)
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 }
-void drawJester(float x, float y, float time, AnimState state, float stateTime, float healthFrac) {
+void drawJester(float x, float y, float time, AnimState state, float stateTime, float healthFrac, float scale) {
     unsigned int tex = (state == ATTACK) ? enemyAttackTexture[JESTER] : enemyWalkTexture[JESTER];
     float t=(state==ATTACK)?stateTime:time;//time da 3ady fa han loop bas state da starts 0 lama n atack
     if(tex==0){
         drawRect(x, y + 40, 40, 80, 0, damageTint(PLACEHOLDER_GRAY, healthFrac));   // di el grey box test law el sooora bazet or smt
         return;}
         int frameCount = (int) (t*ENEMY_FRAMES_PER_SECOND) % 8; //i did el seconds le how many frmaes passed then make it int bas
-        float size=140.0f;
+        float size=154.0f*scale;   // scale makes them bigger (only the cutscene uses it)
         drawSprite(tex, frameCount, 8, x, y+size/2, size, size, 0.0f, damageTint(  WHITE, healthFrac));
 }
 
