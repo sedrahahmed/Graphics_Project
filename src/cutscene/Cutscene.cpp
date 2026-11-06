@@ -10,6 +10,8 @@
 #include "Environment.h"
 #include <cmath>
 
+void drawGame();   // from Game.cpp (we can't include Game.h: its laneFloorY clashes with ours)
+
 static float cutsceneTime = 0.0f;
 static float previousCutsceneTime = 0.0f;   // for "play sound once at moment T" checks
 static unsigned int ownerTexture = 0, shadowArmTexture = 0, ticketTexture = 0,
@@ -347,11 +349,16 @@ static void drawScene5(float t) {
 }
 
 static void drawScene6(float t) {
-    // the stage stays until the card is gone: scene 5's actors frozen behind
-    drawStageBase(t, true, true, false);
-    drawScene5Actors(t);
+    // behind the card: scene 5's stage until 19.7, then the game itself,
+    // so when the card fades away you see the game and not the old scene
+    if (t < 19.7f) {
+        drawStageBase(t, true, true, false);
+        drawScene5Actors(t);
+    } else {
+        drawGame();
+    }
 
-    // fade to black 18.5-19.0, card 19.0-19.7, everything fades back to the stage 19.7-20.0
+    // fade to black 18.5-19.0, card 19.0-19.7, card fades away into the game 19.7-20.0
     float blackA = progressBetween(18.5f, 19.0f);
     if (t >= 19.7f) blackA = 1.0f - progressBetween(19.7f, 20.0f);
     float cardA = 0.0f;

@@ -33,6 +33,7 @@ void changeState(GameState next) {
     switch (next) {
     case CUTSCENE:
         startCutscene(); // play the cutscene from the start
+        resetGame();     // fresh field, so the end of the cutscene can show it behind the Night One card
         break;
     case PLAYING:
         if (previous != PAUSED) resetGame(); // from pause: keep the same round. from anywhere else: new round

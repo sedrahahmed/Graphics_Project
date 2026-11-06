@@ -23,7 +23,7 @@ static const char* soundFiles[] = {ASSET_DIR "sounds/click.mp3",
                                    ASSET_DIR "sounds/win.mp3",
                                    ASSET_DIR "sounds/lose.mp3",
                                    ASSET_DIR "sounds/cassette_click.mp3",
-                                   ASSET_DIR "sounds/owner_recording.mp3",
+                                   ASSET_DIR "sounds/carnival_owner_5mp3.mp3",
                                    ASSET_DIR "sounds/clock_midnight.mp3"
                         };
 
