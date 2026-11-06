@@ -37,8 +37,6 @@ void drawHUD(int coins, int wave) {
     bool hover = mouseInRect(PAUSE_X, PAUSE_Y, 2*PAUSE_R, 2*PAUSE_R);
     // a bit darker normally, full color when the mouse is on it
     glm::vec4 tint = hover ? WHITE : glm::vec4(0.85f, 0.85f, 0.85f, 1.0f);
-    // the circle only fills the middle of the picture (empty space around it),
-    // so the picture is drawn bigger to make the circle the same size as before
     drawSprite(pauseTexture, 0, 1, PAUSE_X, PAUSE_Y, 80, 75, 0, tint);
  }
 

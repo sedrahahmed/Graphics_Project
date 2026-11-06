@@ -18,12 +18,7 @@ static GameState current = MAIN_MENU;
 // lets other files ask which screen is showing
 GameState getState() { return current; }
 
-// Switches to another screen and does any setup that screen needs.
-//   Start button -> CUTSCENE
-//   Pause "Continue" -> PLAYING (same round)
-//   Pause "Restart"  -> resetGame() then PLAYING (new round)
-//   Win/Lose "Restart" -> PLAYING (new round)
-//   any "Main Menu" -> MAIN_MENU
+// Switches to another screen and does any setup that screen needs
 
 void changeState(GameState next) {
     if (next == current) return;   // already on this screen
@@ -32,20 +27,20 @@ void changeState(GameState next) {
 
     switch (next) {
     case CUTSCENE:
-        startCutscene(); // play the cutscene from the start
-        resetGame();     // fresh field, so the end of the cutscene can show it behind the Night One card
+        startCutscene(); 
+        resetGame();  
         break;
     case PLAYING:
         if (previous != PAUSED) resetGame(); // from pause: keep the same round. from anywhere else: new round
         break;
     case WON:
-        playSoundEffect(SOUND_WIN); // played once, when the screen opens
+        playSoundEffect(SOUND_WIN); // played once when the screen opens
         break;
     case LOST:
         playSoundEffect(SOUND_LOSE);
         break;
     default:
-        break;   // main menu, sound menu and pause need no setup
+        break;   // main menu and sound menu and pause need no setup
     }
 }
 

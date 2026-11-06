@@ -10,7 +10,7 @@
 #include "Environment.h"
 #include <cmath>
 
-void drawGame();   // from Game.cpp (we can't include Game.h: its laneFloorY clashes with ours)
+void drawGame();  
 
 static float cutsceneTime = 0.0f;
 static float previousCutsceneTime = 0.0f;   // for "play sound once at moment T" checks
@@ -221,8 +221,7 @@ static const float STOP_TIME       = 16.0f;
 static const float SEIF_SCALE = 1.19f;
 static const float LAMA_SCALE = 1.12f;
 static const float JANA_SCALE = 1.06f;
-// how far to move each guard down so their feet touch the middle of the lane
-// (their pictures have some empty space under the feet)
+// how far to move each guard down so their feet touch the middle of the lane (their pictures have some empty space under the feet)
 static const float SEIF_FEET_DROP = 11.0f;
 static const float JANA_FEET_DROP = 6.0f;
 static const float LAMA_FEET_DROP = 19.0f;
@@ -349,8 +348,7 @@ static void drawScene5(float t) {
 }
 
 static void drawScene6(float t) {
-    // behind the card: scene 5's stage until 19.7, then the game itself,
-    // so when the card fades away you see the game and not the old scene
+    // behind the card: scene 5' until 19.7 s, then the game itself so when the card fades away we see the game and not the old scene
     if (t < 19.7f) {
         drawStageBase(t, true, true, false);
         drawScene5Actors(t);
@@ -358,7 +356,7 @@ static void drawScene6(float t) {
         drawGame();
     }
 
-    // fade to black 18.5-19.0, card 19.0-19.7, card fades away into the game 19.7-20.0
+    // fade to black 18.5-19, card 19-19.7, card fades away into the game 19.7-20
     float blackA = progressBetween(18.5f, 19.0f);
     if (t >= 19.7f) blackA = 1.0f - progressBetween(19.7f, 20.0f);
     float cardA = 0.0f;
@@ -367,19 +365,17 @@ static void drawScene6(float t) {
     drawFullscreenRect(0, 0, 0, blackA);
 
     if (cardA > 0.001f) {
-        glm::vec4 gold = TICKET_GOLD; gold.a = cardA;
-        glm::vec4 white = WHITE;      white.a = cardA;
-        glm::vec4 dim(0.9f, 0.9f, 0.9f, cardA);
+        glm::vec4 red = CURSE_RED; red.a = cardA;   // all three lines are red, fading with the card
         glm::vec4 shadow(0, 0, 0, 0.9f * cardA);
         // title card centered with textWidth
         float x1 = SCREEN_W / 2.0f - textWidth("12:00 AM", 1.5f) / 2.0f;
         float x2 = SCREEN_W / 2.0f - textWidth("NIGHT ONE", 1.0f) / 2.0f;
         float x3 = SCREEN_W / 2.0f - textWidth("SURVIVE UNTIL 6:00 AM", 0.7f) / 2.0f;
         drawText("12:00 AM", x1 + 2, 428.0f, 1.5f, shadow);
-        drawText("12:00 AM", x1, 430.0f, 1.5f, gold);
+        drawText("12:00 AM", x1, 430.0f, 1.5f, red);
         drawText("NIGHT ONE", x2 + 2, 348.0f, 1.0f, shadow);
-        drawText("NIGHT ONE", x2, 350.0f, 1.0f, white);
-        drawText("SURVIVE UNTIL 6:00 AM", x3, 295.0f, 0.7f, dim);
+        drawText("NIGHT ONE", x2, 350.0f, 1.0f, red);
+        drawText("SURVIVE UNTIL 6:00 AM", x3, 295.0f, 0.7f, red);
     }
 }
 

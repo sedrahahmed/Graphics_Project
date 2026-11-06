@@ -10,7 +10,7 @@
 
 // Guards
 // flipX = true makes the guard face left (only the cutscene uses it)
-// scale     = how big to draw them (1 = normal size, only the cutscene uses a bigger number)
+// scale = how big to draw them (1 = normal size, only the cutscene uses a bigger number)
 void drawMeleeSeif(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX = false, float scale = 1.0f);
 void drawRangedLama(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX = false, float scale = 1.0f);
 void drawDefenseJana(float x, float y, float time, AnimState state, float stateTime, float healthFrac, bool flipX = false, float scale = 1.0f);

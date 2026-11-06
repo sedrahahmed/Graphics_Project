@@ -129,7 +129,7 @@ void drawDefenseJana(float x, float y, float time, AnimState state, float stateT
     }
     float size = 140 * scale;   // scale makes her bigger for cutscene
    // move her down bc empty space underfeet
-    // by the extra when she gets bigger to keep her feet in place
+   
     drawSprite(tex, frame, 8, x, y + size / 2-4 - (size - 140) * 0.07f, size, size, 0.0f,
     damageTint(WHITE, healthFrac), flipX);
 }

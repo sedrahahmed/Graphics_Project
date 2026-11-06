@@ -19,8 +19,7 @@ void initEnvironment() {
 
 //5 primitives for the background
 // widths follow each PNG's shape (height kept) so nothing is stretched.
-// y is picked so each prop's visible bottom (PNGs have different empty
-// space under them) stands at y = 400, right on the boardwalk's top rail
+// y is picked so each prop's visible bottom stands at y = 400 (on the boardwalk lane)
 void drawEnvironment() {
     drawSprite(balloon_booth,0,1,271,476.7f,143,157,0,WHITE);
     drawSprite(circus_tent,0,1,676,479.0f,198,163,0,WHITE);
