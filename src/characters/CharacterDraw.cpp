@@ -108,7 +108,7 @@ void drawDefenseGuard(float x, float y, float time, AnimState state, float state
     unsigned int tex;
     int frame;
     if (state == WALK && playerWalkTexture[DEFENSE_GUARD] != 0) {
-        // only the cutscene ever puts Jana in WALK (beat 3/4 walk-ins);
+        // only the cutscene ever puts Jana in WALK (scene 3/4 walk-ins);
         // gameplay never does, so nothing changes on the field.
         // jana_walk.png frames are tall (272 x 724) with lots of empty space:
         // she fills only ~35% of the frame height and her feet are ~31% up from the bottom.
